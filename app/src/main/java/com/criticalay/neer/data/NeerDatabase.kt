@@ -14,19 +14,20 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.criticalay.neer
+package com.criticalay.neer.data
 
-import android.app.Application
-import dagger.hilt.android.HiltAndroidApp
-import timber.log.Timber
-import timber.log.Timber.Forest.plant
+import androidx.room.Database
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.criticalay.neer.data.dao.UserDao
+import com.criticalay.neer.data.dao.WaterDao
+import com.criticalay.neer.data.model.User
+import com.criticalay.neer.data.model.Water
+import com.criticalay.neer.utils.Converters
 
-@HiltAndroidApp
-class NeerApp:Application() {
-    override fun onCreate() {
-        super.onCreate()
-        if (BuildConfig.DEBUG) {
-            plant(Timber.DebugTree())
-        }
-    }
+@Database(entities = [Water::class, User::class], version = 1, exportSchema = true)
+@TypeConverters(Converters::class)
+abstract class NeerDatabase : RoomDatabase() {
+    abstract fun userDao(): UserDao
+    abstract fun waterDao(): WaterDao
 }

@@ -14,19 +14,30 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.criticalay.neer
+package com.criticalay.neer.data.model
 
-import android.app.Application
-import dagger.hilt.android.HiltAndroidApp
-import timber.log.Timber
-import timber.log.Timber.Forest.plant
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
+import com.criticalay.neer.utils.Constants
+import java.time.LocalDate
+import java.time.LocalTime
 
-@HiltAndroidApp
-class NeerApp:Application() {
-    override fun onCreate() {
-        super.onCreate()
-        if (BuildConfig.DEBUG) {
-            plant(Timber.DebugTree())
-        }
-    }
-}
+@Entity(
+    tableName = Constants.WATER_DATABASE_TABLE,
+    foreignKeys = [ForeignKey(
+        entity = User::class,
+        parentColumns = ["id"],
+        childColumns = ["userId"],
+        onDelete = ForeignKey.CASCADE
+    )]
+)
+data class Water(
+    val date: LocalDate,
+    val time: LocalTime,
+    val dailyWaterGoal: Double,
+    val intake: Int,
+    val userId: Long,
+    @PrimaryKey
+    val waterId : Long
+)

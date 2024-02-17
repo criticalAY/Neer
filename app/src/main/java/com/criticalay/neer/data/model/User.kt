@@ -14,19 +14,26 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.criticalay.neer
+package com.criticalay.neer.data.model
 
-import android.app.Application
-import dagger.hilt.android.HiltAndroidApp
-import timber.log.Timber
-import timber.log.Timber.Forest.plant
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.criticalay.neer.utils.Constants.USER_DATABASE_TABLE
+import java.time.LocalTime
 
-@HiltAndroidApp
-class NeerApp:Application() {
-    override fun onCreate() {
-        super.onCreate()
-        if (BuildConfig.DEBUG) {
-            plant(Timber.DebugTree())
-        }
-    }
+@Entity(tableName = USER_DATABASE_TABLE)
+data class User(
+    // No id field
+    val name: String?= null,
+    val age: Int? = null,
+    val gender: Gender = Gender.FEMALE,
+    val weight: Double = 0.0,
+    val height: Double = 0.0,
+    val bedTime: LocalTime = LocalTime.now(),
+    val wakeUpTime: LocalTime? = LocalTime.now(),
+    val unit: String? = null,
+    @PrimaryKey
+    val id: Long = 1
+) {
+
 }

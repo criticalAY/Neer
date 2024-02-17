@@ -14,19 +14,28 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.criticalay.neer
+package com.criticalay.neer.ui.composables
 
-import android.app.Application
-import dagger.hilt.android.HiltAndroidApp
-import timber.log.Timber
-import timber.log.Timber.Forest.plant
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.unit.dp
 
-@HiltAndroidApp
-class NeerApp:Application() {
-    override fun onCreate() {
-        super.onCreate()
-        if (BuildConfig.DEBUG) {
-            plant(Timber.DebugTree())
-        }
+@Composable
+fun SectionSpacer(
+    modifier: Modifier = Modifier
+){
+    Box(
+        modifier = modifier
+            .height(50.dp)
+            .alpha(0.12f)
+            .background(color = MaterialTheme.colorScheme.onSurface)
+
+    ){
+
     }
 }

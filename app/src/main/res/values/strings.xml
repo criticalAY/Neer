@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">Neer</string>
+    <string name="kg_ml">Kg/ml</string>
+    <string name="settings">Settings</string>
+    <string name="go_back">Go back to previous screen</string>
+    <string name="setting_app_version_title">App Version</string>
+    <string name="add_water">Add water</string>
+    <string name="today_record">Today\'s Record</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="enter_details">Enter details</string>
+    <string name="wake_up_time">Wake-up time</string>
+    <string name="sleep_time">Sleep time</string>
+    <string name="select_wake_up_time">Select wake-up time</string>
+    <string name="select_sleep_time">Select sleep time</string>
+    <string name="select_unit">Select unit</string>
+    <string name="select_gender">Select gender</string>
+    <string name="gender">Gender</string>
 </resources>

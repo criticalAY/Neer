@@ -14,19 +14,13 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.criticalay.neer
+package com.criticalay.neer.data.event
 
-import android.app.Application
-import dagger.hilt.android.HiltAndroidApp
-import timber.log.Timber
-import timber.log.Timber.Forest.plant
+sealed class WaterRecordEvent {
 
-@HiltAndroidApp
-class NeerApp:Application() {
-    override fun onCreate() {
-        super.onCreate()
-        if (BuildConfig.DEBUG) {
-            plant(Timber.DebugTree())
-        }
-    }
+    data object Delete : WaterRecordEvent()
+
+    data class EditWaterAmount(val waterId: Long) : WaterRecordEvent()
+
+    data class EditWaterTime(val waterId: Long) : WaterRecordEvent()
 }

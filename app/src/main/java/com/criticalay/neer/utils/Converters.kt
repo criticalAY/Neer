@@ -14,19 +14,34 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.criticalay.neer
+package com.criticalay.neer.utils
 
-import android.app.Application
-import dagger.hilt.android.HiltAndroidApp
-import timber.log.Timber
-import timber.log.Timber.Forest.plant
+import androidx.room.TypeConverter
+import java.time.LocalDate
+import java.time.LocalTime
 
-@HiltAndroidApp
-class NeerApp:Application() {
-    override fun onCreate() {
-        super.onCreate()
-        if (BuildConfig.DEBUG) {
-            plant(Timber.DebugTree())
-        }
+object Converters {
+    @TypeConverter
+    @JvmStatic
+    fun fromDate(date: LocalDate?): Long? {
+        return date?.toEpochDay()
+    }
+
+    @TypeConverter
+    @JvmStatic
+    fun toDate(epochDay: Long?): LocalDate? {
+        return epochDay?.let { LocalDate.ofEpochDay(it) }
+    }
+
+    @TypeConverter
+    @JvmStatic
+    fun fromTime(time: LocalTime?): String? {
+        return time?.toString()
+    }
+
+    @TypeConverter
+    @JvmStatic
+    fun toTime(timeStr: String?): LocalTime? {
+        return timeStr?.let { LocalTime.parse(it) }
     }
 }

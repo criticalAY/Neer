@@ -14,19 +14,25 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.criticalay.neer
+package com.criticalay.neer.ui.composables.settings
 
-import android.app.Application
-import dagger.hilt.android.HiltAndroidApp
-import timber.log.Timber
-import timber.log.Timber.Forest.plant
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import com.criticalay.neer.BuildConfig
+import com.criticalay.neer.data.event.SettingsEvent
+import com.criticalay.neer.ui.composables.SectionSpacer
 
-@HiltAndroidApp
-class NeerApp:Application() {
-    override fun onCreate() {
-        super.onCreate()
-        if (BuildConfig.DEBUG) {
-            plant(Timber.DebugTree())
-        }
-    }
+@Composable
+fun SettingsList(
+    modifier: Modifier = Modifier,
+    handleSettingsEvent: SettingsEvent
+) {
+
+    SectionSpacer(modifier = Modifier.fillMaxWidth())
+
+    AppVersionSettingItem(
+        modifier = Modifier.fillMaxWidth(),
+        appVersion = BuildConfig.VERSION_NAME
+    )
 }

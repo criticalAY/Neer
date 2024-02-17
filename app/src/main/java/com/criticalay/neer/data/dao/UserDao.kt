@@ -14,19 +14,25 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.criticalay.neer
+package com.criticalay.neer.data.dao
 
-import android.app.Application
-import dagger.hilt.android.HiltAndroidApp
-import timber.log.Timber
-import timber.log.Timber.Forest.plant
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
+import com.criticalay.neer.data.model.User
+import com.criticalay.neer.utils.Constants
 
-@HiltAndroidApp
-class NeerApp:Application() {
-    override fun onCreate() {
-        super.onCreate()
-        if (BuildConfig.DEBUG) {
-            plant(Timber.DebugTree())
-        }
-    }
+@Dao
+interface UserDao {
+    @Query("SELECT * FROM ${Constants.USER_DATABASE_TABLE}")
+    suspend fun getUser(): User?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addUser(user: User)
+
+    @Update
+    suspend fun updateUser(user: User)
 }

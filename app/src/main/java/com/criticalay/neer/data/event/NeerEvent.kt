@@ -14,19 +14,16 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.criticalay.neer
+package com.criticalay.neer.data.event
 
-import android.app.Application
-import dagger.hilt.android.HiltAndroidApp
-import timber.log.Timber
-import timber.log.Timber.Forest.plant
+import com.criticalay.neer.data.model.User
 
-@HiltAndroidApp
-class NeerApp:Application() {
-    override fun onCreate() {
-        super.onCreate()
-        if (BuildConfig.DEBUG) {
-            plant(Timber.DebugTree())
-        }
-    }
+sealed class NeerEvent {
+    class AddUser(val user: User) : NeerEvent()
+
+    class UpdateUser(val user: User) : NeerEvent()
+
+    data object GetUser : NeerEvent()
+
+    data object Notification : NeerEvent()
 }

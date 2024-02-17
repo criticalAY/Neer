@@ -14,19 +14,16 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.criticalay.neer
+package com.criticalay.neer.data.model
 
-import android.app.Application
-import dagger.hilt.android.HiltAndroidApp
-import timber.log.Timber
-import timber.log.Timber.Forest.plant
+import androidx.room.Embedded
+import androidx.room.Relation
 
-@HiltAndroidApp
-class NeerApp:Application() {
-    override fun onCreate() {
-        super.onCreate()
-        if (BuildConfig.DEBUG) {
-            plant(Timber.DebugTree())
-        }
-    }
-}
+data class UserWithWater(
+    @Embedded val user: User,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "userId"
+    )
+    val waters: List<Water>
+)

@@ -14,19 +14,10 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.criticalay.neer
+package com.criticalay.neer.utils
 
-import android.app.Application
-import dagger.hilt.android.HiltAndroidApp
-import timber.log.Timber
-import timber.log.Timber.Forest.plant
-
-@HiltAndroidApp
-class NeerApp:Application() {
-    override fun onCreate() {
-        super.onCreate()
-        if (BuildConfig.DEBUG) {
-            plant(Timber.DebugTree())
-        }
-    }
+object Constants {
+    const val USER_DATABASE_TABLE = "user_table"
+    const val NEER_DATABASE_NAME = "user_database"
+    const val WATER_DATABASE_TABLE = "water_table"
 }
