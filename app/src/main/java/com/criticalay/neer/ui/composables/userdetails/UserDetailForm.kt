@@ -21,6 +21,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -28,6 +29,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -35,7 +38,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -48,19 +50,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.text.isDigitsOnly
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.criticalay.neer.R
+import com.criticalay.neer.data.event.NeerEvent
 import com.criticalay.neer.data.model.Gender
+import com.criticalay.neer.data.model.Units
+import com.criticalay.neer.data.model.User
 import com.criticalay.neer.ui.composables.SectionSpacer
 import com.criticalay.neer.ui.composables.userdetails.time.SleepTimePicker
 import com.criticalay.neer.ui.composables.userdetails.time.WakeUpTimePicker
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserDetailForm() {
+fun UserDetailForm(
+    onProceed : () -> Unit,
+    neerEventListener: (neerEvent: NeerEvent) -> Unit
+) {
 
     var selectedSleepHour by remember { mutableIntStateOf(0) }
     var selectedSleepMinute by remember { mutableIntStateOf(0) }
@@ -72,7 +81,7 @@ fun UserDetailForm() {
 
     Scaffold(
         topBar = {
-            TopAppBar(title = {
+            CenterAlignedTopAppBar(title = {
                 Text(text = stringResource(R.string.enter_details))
             })
         }
@@ -98,7 +107,7 @@ fun UserDetailForm() {
             }
 
             var userGender by remember {
-                mutableStateOf("")
+                mutableStateOf(Gender.FEMALE)
             }
 
             var userSleepTime by remember {
@@ -110,11 +119,11 @@ fun UserDetailForm() {
             }
 
             var userSelectedUnit by remember {
-                mutableStateOf("")
+                mutableStateOf(Units.KG_ML)
             }
 
             Column(modifier = Modifier.padding(8.dp)) {
-                UserDetailTextField(
+                DetailTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = userName,
                     onValueChange = { newValue -> userName = newValue },
@@ -129,7 +138,7 @@ fun UserDetailForm() {
                 )
 
 
-                UserDetailTextField(
+                DetailTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = userAge,
                     onValueChange = { newValue ->
@@ -151,7 +160,7 @@ fun UserDetailForm() {
 
                 )
 
-                UserDetailTextField(
+                DetailTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = userHeight,
                     onValueChange = { newValue ->
@@ -173,18 +182,18 @@ fun UserDetailForm() {
 
                 )
 
-                UserDetailTextField(
+                DetailTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = userWeight,
                     onValueChange = { newValue ->
-                        if (newValue.length <= 3 && newValue.isDigitsOnly() && newValue.isNotBlank()) {
+                        if (newValue.length <= 5 && newValue.isDigitsOnly() && newValue.isNotBlank()) {
                             userWeight = newValue
                         } else if (newValue.isEmpty()) {
-                            userWeight = ""
+                            userWeight = "" // Clear the field if the input is empty
                         }
-                                    },
+                    },
                     label = "Weight",
-                    placeholder = "Enter your height",
+                    placeholder = "Enter your weight",
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Outlined.Person,
@@ -201,10 +210,13 @@ fun UserDetailForm() {
 
                 GenderItem(
                     title = stringResource(R.string.gender),
-                    selectedGender = Gender.FEMALE
-                ) {
+                    selectedGender = userGender,
+                    onOptionSelected = { gender ->
+                        userGender = gender
+                        Timber.d("User gender", gender)
 
-                }
+                    }
+                )
 
                 HorizontalDivider()
 
@@ -220,11 +232,38 @@ fun UserDetailForm() {
 
                 HorizontalDivider()
 
-                UnitItem(title = "Unit", setUnit = "kg/ml") {
+                UnitItem(
+                    title = stringResource(R.string.units),
+                    selectedUnit = userSelectedUnit,
+                    onOptionSelected = { units ->
+                        userSelectedUnit = units
+                        Timber.d("User selected", units.name)
 
-                }
+                    }
+                )
 
                 HorizontalDivider()
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+                    .align(Alignment.CenterHorizontally),
+                onClick = {
+                    neerEventListener(NeerEvent.AddUser(User(
+                        userName,
+                        userAge.toInt(),
+                        userGender,
+                        userWeight.toDouble(),
+                        userHeight.toDouble()
+                    )))
+                    onProceed()
+                }
+            ) {
+                Text(text = stringResource(R.string.proceed))
+
             }
 
         }
@@ -268,5 +307,5 @@ fun UserDetailForm() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewUserDetailForm() {
-    UserDetailForm()
+    UserDetailForm(viewModel(),{})
 }

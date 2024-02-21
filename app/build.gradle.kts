@@ -69,6 +69,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(libs.androidx.navigation.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -92,4 +94,7 @@ dependencies {
     kapt(libs.hilt.android.compiler)
     // desugaring
     coreLibraryDesugaring(libs.desugar.jdk.libs.nio)
+
+    implementation( libs.androidx.datastore.preferences)
+
 }

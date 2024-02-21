@@ -14,34 +14,22 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.criticalay.neer.utils
+package com.criticalay.neer.data.event
 
-import androidx.room.TypeConverter
-import java.time.LocalDate
+import com.criticalay.neer.data.model.Intake
 import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.ZoneOffset
 
-object Converters {
-    @TypeConverter
-    fun fromTimestamp(value: Long?): LocalDateTime? {
-        return value?.let { LocalDateTime.ofEpochSecond(it, 0, ZoneOffset.UTC) }
-    }
+sealed class IntakeEvent {
 
-    @TypeConverter
-    fun dateToTimestamp(date: LocalDateTime?): Long? {
-        return date?.toEpochSecond(ZoneOffset.UTC)
-    }
+    data class AddIntake(val intake:Intake) : IntakeEvent()
 
-    @TypeConverter
-    @JvmStatic
-    fun fromTime(time: LocalTime?): String? {
-        return time?.toString()
-    }
+    data class GetTodayIntake(val startDay: LocalDateTime, val endDay:LocalDateTime): IntakeEvent()
 
-    @TypeConverter
-    @JvmStatic
-    fun toTime(timeStr: String?): LocalTime? {
-        return timeStr?.let { LocalTime.parse(it) }
-    }
+    data class GetTodayTotalIntake(val startDay: LocalDateTime, val endDay:LocalDateTime): IntakeEvent()
+
+    data class DeleteIntake(val intake: Intake):IntakeEvent()
+
+    // TODO: add them
+//    data object DeleteIntake:IntakeEvent()
+//    data object UpdateIntake:IntakeEvent()
 }

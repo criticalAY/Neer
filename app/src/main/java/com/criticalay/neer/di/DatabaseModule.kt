@@ -46,6 +46,10 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideWaterDao(database: NeerDatabase) = database.waterDao()
+    fun provideBeverageDao(database: NeerDatabase) = database.beverageDao()
+
+    @Provides
+    @Singleton
+    fun provideIntakeDao(database: NeerDatabase) = database.intakeDao()
 
 }

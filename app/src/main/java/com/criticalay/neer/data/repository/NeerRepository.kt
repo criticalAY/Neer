@@ -16,22 +16,25 @@
 
 package com.criticalay.neer.data.repository
 
+import com.criticalay.neer.data.dao.BeverageDao
+import com.criticalay.neer.data.dao.IntakeDao
 import com.criticalay.neer.data.dao.UserDao
-import com.criticalay.neer.data.dao.WaterDao
+import com.criticalay.neer.data.model.Beverage
+import com.criticalay.neer.data.model.Intake
 import com.criticalay.neer.data.model.User
-import com.criticalay.neer.data.model.Water
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.Flow
-import java.time.LocalDate
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 @ViewModelScoped
 class NeerRepository @Inject constructor(
     private val userDao: UserDao,
-    private val waterDao: WaterDao
+    private val intakeDao: IntakeDao,
+    private val beverageDao: BeverageDao
 ) {
-
-    suspend fun getUser() : User? = userDao.getUser()
+    // ---- User ---- //
+    suspend fun getUser(): User? = userDao.getUser()
 
     suspend fun addUser(user: User) {
         userDao.addUser(user = user)
@@ -41,26 +44,41 @@ class NeerRepository @Inject constructor(
         userDao.updateUser(user = user)
     }
 
-    suspend fun insertWater(water: Water) {
-        waterDao.insertWater(water = water)
+    // ---- Beverage ---- //
+    suspend fun addBeverage(beverage: Beverage) {
+        beverageDao.insertBeverage(beverage = beverage)
     }
 
-    suspend fun deleteWaterById(waterId: Long) {
-        waterDao.deleteWaterById(waterId = waterId)
+    // ---- Intake ---- //
+    suspend fun addIntake(intake: Intake) {
+        intakeDao.insertIntake(intake = intake)
     }
 
-    fun getAllWaterEntries(userId: Long): Flow<List<Water>> =
-        waterDao.getAllWaterEntries(userId = userId)
+    suspend fun deleteIntake(intake: Intake) {
+        intakeDao.deleteIntake(intake = intake)
+    }
 
-    fun getWaterEntriesInDateRange(
-        userId: Long,
-        startDate: LocalDate,
-        endDate: LocalDate
-    ): Flow<List<Water>> = waterDao.getWaterEntriesInDateRange(userId, startDate, endDate)
+    suspend fun updateIntake(intake: Intake) {
+        intakeDao.updateIntake(intake = intake)
+    }
 
-    fun getWaterEntryForDate(userId: Long, date: LocalDate): Water? =
-        waterDao.getWaterEntryForDate(userId, date)
+    suspend fun getWaterIntakesForToday(
+        waterBeverageId: Long,
+        startDay: LocalDateTime,
+        endDay: LocalDateTime
+    ): Flow<List<Intake>> {
+        return intakeDao.getWaterIntakesForToday(
+            waterBeverageId = waterBeverageId,
+            startOfDay = startDay,
+            startOfNextDay = endDay
+        )
+    }
 
-    fun getLastWaterEntry(userId: Long): Water? = waterDao.getLastWaterEntry(userId)
+    suspend fun getTodayTotalIntake(waterBeverageId: Long, startDay: LocalDateTime,
+                                    endDay: LocalDateTime): Int{
+        return intakeDao.getTotalWaterIntakeForToday(waterBeverageId = waterBeverageId,
+            startDate = startDay,
+            endDate = endDay)
+    }
 
 }

@@ -14,14 +14,26 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.criticalay.neer.utils
+package com.criticalay.neer.ui.navigation
 
-object Constants {
-    const val USER_DATABASE_TABLE = "user_table"
-    const val NEER_DATABASE_NAME = "user_database"
+sealed class Destination(val path: String) {
+    data object HomeScreen : Destination("home")
 
-    const val BEVERAGE_DATABASE_TABLE = "beverage"
-    const val INTAKE_DATABASE_TABLE = "intake"
-    const val USER_ID =100L
-    const val BEVERAGE_ID = 101L
+    data object UserDetails : Destination("userDetails")
+
+    data object WaterDetails : Destination("waterDetails")
+
+    data object Settings : Destination("settings")
+
+    companion object {
+        fun fromString(route: String): Destination {
+            return when (route) {
+                Settings.path -> Settings
+                UserDetails.path -> UserDetails
+                WaterDetails.path -> WaterDetails
+                else -> HomeScreen
+            }
+
+        }
+    }
 }

@@ -19,25 +19,16 @@ package com.criticalay.neer.data.model
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import com.criticalay.neer.utils.Constants
-import java.time.LocalDate
-import java.time.LocalTime
+import com.criticalay.neer.utils.Constants.BEVERAGE_DATABASE_TABLE
 
-@Entity(
-    tableName = Constants.WATER_DATABASE_TABLE,
-    foreignKeys = [ForeignKey(
-        entity = User::class,
-        parentColumns = ["id"],
-        childColumns = ["userId"],
-        onDelete = ForeignKey.CASCADE
-    )]
-)
-data class Water(
-    val date: LocalDate,
-    val time: LocalTime,
-    val dailyWaterGoal: Double,
-    val intake: Int,
-    val userId: Long,
+@Entity(tableName = BEVERAGE_DATABASE_TABLE,
+    foreignKeys = [
+        ForeignKey(entity = User::class, parentColumns = ["id"], childColumns = ["userId"], onDelete = ForeignKey.CASCADE),
+    ])
+data class Beverage(
+    val userId:Long,
+    val beverageName: String,
+    val totalIntakeAmount : Double,
     @PrimaryKey
-    val waterId : Long
+    val beverageId: Long = 101,
 )

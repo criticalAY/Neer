@@ -16,11 +16,10 @@
 
 package com.criticalay.neer.data.event
 
-sealed class WaterRecordEvent {
+import com.criticalay.neer.data.model.Beverage
 
-    data object Delete : WaterRecordEvent()
+sealed class BeverageEvent {
 
-    data class EditWaterAmount(val waterId: Long) : WaterRecordEvent()
+    data class AddBeverage(val beverage: Beverage) : BeverageEvent()
 
-    data class EditWaterTime(val waterId: Long) : WaterRecordEvent()
 }

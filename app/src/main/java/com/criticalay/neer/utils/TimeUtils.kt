@@ -16,32 +16,13 @@
 
 package com.criticalay.neer.utils
 
-import androidx.room.TypeConverter
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
-object Converters {
-    @TypeConverter
-    fun fromTimestamp(value: Long?): LocalDateTime? {
-        return value?.let { LocalDateTime.ofEpochSecond(it, 0, ZoneOffset.UTC) }
-    }
-
-    @TypeConverter
-    fun dateToTimestamp(date: LocalDateTime?): Long? {
-        return date?.toEpochSecond(ZoneOffset.UTC)
-    }
-
-    @TypeConverter
-    @JvmStatic
-    fun fromTime(time: LocalTime?): String? {
-        return time?.toString()
-    }
-
-    @TypeConverter
-    @JvmStatic
-    fun toTime(timeStr: String?): LocalTime? {
-        return timeStr?.let { LocalTime.parse(it) }
+object TimeUtils {
+    fun formatLocalDateTimeToTime(dateTime: LocalDateTime): String {
+        val time = dateTime.toLocalTime()
+        val formattedTime = DateTimeFormatter.ofPattern("hh:mm a").format(time)
+        return formattedTime
     }
 }

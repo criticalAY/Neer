@@ -23,19 +23,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.criticalay.neer.data.model.User
-import com.criticalay.neer.ui.composables.home.Home
+import androidx.navigation.compose.rememberNavController
+import com.criticalay.neer.ui.navigation.Navigation
 import com.criticalay.neer.ui.theme.NeerTheme
 import com.criticalay.neer.ui.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -44,36 +38,13 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             NeerTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
+                    val navController = rememberNavController()
+                    val viewModel: SharedViewModel = viewModel()
+                    Navigation(
+                        navController = navController,
+                        sharedViewModel = viewModel
                     )
-                    Home()
-                }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-//    val viewModel = viewModel<SharedViewModel>()
-//    LaunchedEffect(Unit) {
-//        withContext(Dispatchers.IO) {
-//            viewModel.addUser(User("Ashish"))
-//        }
-//    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    NeerTheme {
-        Greeting("Android")
     }
 }

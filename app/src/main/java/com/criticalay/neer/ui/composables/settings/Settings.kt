@@ -33,10 +33,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.criticalay.neer.R
+import com.criticalay.neer.ui.viewmodel.SharedViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Settings(){
+fun Settings(
+    sharedViewModel: SharedViewModel
+){
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     Column(
         modifier = Modifier.verticalScroll(

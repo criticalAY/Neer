@@ -26,4 +26,5 @@ sealed class NeerEvent {
     data object GetUser : NeerEvent()
 
     data object Notification : NeerEvent()
+
 }

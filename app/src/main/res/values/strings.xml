@@ -16,4 +16,13 @@
     <string name="select_unit">Select unit</string>
     <string name="select_gender">Select gender</string>
     <string name="gender">Gender</string>
+    <string name="units">Units</string>
+    <string name="proceed">Proceed</string>
+    <string name="water_amount">Water amount</string>
+    <string name="enter_your_water_intake">Enter your water intake</string>
+    <string name="done">Done</string>
+    <string name="close">Close</string>
+    <string name="change_the_water_intake_amount">Change the water intake amount</string>
+    <string name="drink_target">Drink Target</string>
+    <string name="no_water_consumed">No water consumed today</string>
 </resources>

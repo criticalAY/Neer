@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.criticalay.neer.ui.composables.water
+package com.criticalay.neer.ui.composables.home.water
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -43,15 +43,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.criticalay.neer.R
-import com.criticalay.neer.data.event.WaterRecordEvent
-
 import androidx.compose.foundation.layout.Box
 import androidx.compose.ui.res.stringResource
 
 @Composable
 fun WaterRecordItem(
     modifier: Modifier = Modifier,
-    handleWaterClickEvents: (waterRecordEvent: WaterRecordEvent) -> Unit,
+    handleDelete: () -> Unit,
+    handleEdit: () -> Unit,
     waterIntakeTime: String,
     waterIntakeAmount: String
 ) {
@@ -63,7 +62,7 @@ fun WaterRecordItem(
             Icon(
                 modifier = Modifier
                     .weight(0.2f)
-                    .sizeIn(minWidth = 34.dp, minHeight = 34.dp),
+                    .sizeIn(minWidth = 30.dp, minHeight = 30.dp),
                 painter = painterResource(id = R.drawable.ic_outline_water_bottle),
                 contentDescription = null
             )
@@ -93,14 +92,14 @@ fun WaterRecordItem(
                 ) {
                     DropdownMenuItem(text = { Text(text = stringResource(R.string.edit)) },
                         onClick = {
-                           // handleWaterClickEvents(WaterRecordEvent.Ed)
+                           handleEdit()
                             expanded = false
                         },
                         Modifier.offset(16.dp, 0.dp)
                     )
                     DropdownMenuItem(text = { Text(text = stringResource(R.string.delete)) },
                         onClick = {
-                            handleWaterClickEvents(WaterRecordEvent.Delete)
+                            handleDelete()
                             expanded = false
                         },
                         Modifier.offset(16.dp, 0.dp)
@@ -116,5 +115,5 @@ fun WaterRecordItem(
 @Preview(showBackground = true)
 @Composable
 fun PreviewWaterRecordItem(){
-    WaterRecordItem(waterIntakeAmount = "300ml", waterIntakeTime = "12:53 AM", handleWaterClickEvents = {})
+    WaterRecordItem(waterIntakeAmount = "300ml", waterIntakeTime = "12:53 AM", handleDelete = {}, handleEdit = {})
 }

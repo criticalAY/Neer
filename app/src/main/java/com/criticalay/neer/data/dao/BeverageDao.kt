@@ -14,16 +14,18 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.criticalay.neer.data.model
+package com.criticalay.neer.data.dao
 
-import androidx.room.Embedded
-import androidx.room.Relation
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.Query
+import com.criticalay.neer.data.model.Beverage
+import com.criticalay.neer.utils.Constants.BEVERAGE_DATABASE_TABLE
+import kotlinx.coroutines.flow.Flow
 
-data class UserWithWater(
-    @Embedded val user: User,
-    @Relation(
-        parentColumn = "id",
-        entityColumn = "userId"
-    )
-    val waters: List<Water>
-)
+@Dao
+interface BeverageDao {
+    @Insert
+    suspend fun insertBeverage(beverage: Beverage)
+
+}

@@ -14,14 +14,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.criticalay.neer.utils
+package com.criticalay.neer.data.model
 
-object Constants {
-    const val USER_DATABASE_TABLE = "user_table"
-    const val NEER_DATABASE_NAME = "user_database"
-
-    const val BEVERAGE_DATABASE_TABLE = "beverage"
-    const val INTAKE_DATABASE_TABLE = "intake"
-    const val USER_ID =100L
-    const val BEVERAGE_ID = 101L
+enum class Units(val unitValue: String) {
+    KG_ML("kg/ml"),
+    LBS_OZ("lbs/oz")
 }
