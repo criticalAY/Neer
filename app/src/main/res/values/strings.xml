@@ -25,4 +25,9 @@
     <string name="change_the_water_intake_amount">Change the water intake amount</string>
     <string name="drink_target">Drink Target</string>
     <string name="no_water_consumed">No water consumed today</string>
+    <string name="amount">Amount</string>
+    <string name="edit_drunk_amount">Edit water drunk amount</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="confirm">Confirm</string>
+    <string name="clear">Clear</string>
 </resources>

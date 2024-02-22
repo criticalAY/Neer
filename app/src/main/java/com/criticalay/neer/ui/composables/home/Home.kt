@@ -57,7 +57,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.criticalay.neer.R
 import com.criticalay.neer.data.event.IntakeEvent
 import com.criticalay.neer.data.model.Intake
-import com.criticalay.neer.ui.composables.home.alertdialog.EditWaterAmountDialog
+import com.criticalay.neer.ui.composables.home.alertdialog.SelectWaterAmountDialog
 import com.criticalay.neer.ui.composables.home.water.RecordList
 import com.criticalay.neer.ui.composables.progressbar.CustomCircularProgressIndicator
 import com.criticalay.neer.ui.theme.Light_blue
@@ -122,7 +122,7 @@ fun Home(
                 )
 
                 if (showDialog.value)
-                    EditWaterAmountDialog(setShowDialog = { show ->
+                    SelectWaterAmountDialog(setShowDialog = { show ->
                         showDialog.value = show
                     }, onDismissRequest = { selectedValue ->
                         PreferencesManager(context = context).setWaterAmount(selectedValue)

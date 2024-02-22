@@ -22,6 +22,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import kotlin.math.sin
 
 @Composable
 fun DetailTextField(
@@ -33,7 +34,8 @@ fun DetailTextField(
     trailingIcon: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    keyboardActions: KeyboardActions = KeyboardActions.Default
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    singleLine:Boolean = true
 ) {
     OutlinedTextField(
         value = value,
@@ -44,6 +46,7 @@ fun DetailTextField(
         trailingIcon = trailingIcon,
         leadingIcon = leadingIcon,
         maxLines = 1,
+        singleLine = singleLine,
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions
     )

@@ -81,11 +81,13 @@ class SharedViewModel @Inject constructor(
 
             is IntakeEvent.GetTodayTotalIntake -> {
                 viewModelScope.launch {
-                    _todayTotalIntake.value = repository.getTodayTotalIntake(
+                    repository.getTodayTotalIntake(
                         waterBeverageId = BEVERAGE_ID,
                         startDay = intakeEvent.startDay,
                         endDay = intakeEvent.endDay
-                    )
+                    ).collect{
+                        _todayTotalIntake.value = it
+                    }
                 }
             }
 

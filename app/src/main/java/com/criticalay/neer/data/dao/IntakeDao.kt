@@ -50,8 +50,8 @@ interface IntakeDao {
     fun getWaterIntakesForDateRange(waterBeverageId: Long, startDate: LocalDateTime, endDate: LocalDateTime): Flow<List<Intake>>
 
     // Method to get the total amount of water intake for today
-    @Query("SELECT SUM(intakeAmount) FROM intake WHERE beverageId = :waterBeverageId AND DATE(intakeDateTime) BETWEEN DATE(:startDate) AND DATE(:endDate)")
-    suspend fun getTotalWaterIntakeForToday(waterBeverageId: Long,startDate: LocalDateTime, endDate: LocalDateTime): Int
+    @Query("SELECT SUM(intakeAmount) FROM intake WHERE beverageId = :waterBeverageId AND intakeDateTime >= :startDate AND intakeDateTime < :endDate ")
+    fun getTotalWaterIntakeForToday(waterBeverageId: Long, startDate: LocalDateTime, endDate: LocalDateTime): Flow<Int>
 
     // Method to get monthly average intake amount for a specific month
     @Query("SELECT AVG(intakeAmount) FROM intake WHERE beverageId = :beverageId AND strftime('%Y-%m', intakeDateTime) = :month")

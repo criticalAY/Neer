@@ -62,7 +62,7 @@ class NeerRepository @Inject constructor(
         intakeDao.updateIntake(intake = intake)
     }
 
-    suspend fun getWaterIntakesForToday(
+    fun getWaterIntakesForToday(
         waterBeverageId: Long,
         startDay: LocalDateTime,
         endDay: LocalDateTime
@@ -74,8 +74,8 @@ class NeerRepository @Inject constructor(
         )
     }
 
-    suspend fun getTodayTotalIntake(waterBeverageId: Long, startDay: LocalDateTime,
-                                    endDay: LocalDateTime): Int{
+    fun getTodayTotalIntake(waterBeverageId: Long, startDay: LocalDateTime,
+                                    endDay: LocalDateTime): Flow<Int>{
         return intakeDao.getTotalWaterIntakeForToday(waterBeverageId = waterBeverageId,
             startDate = startDay,
             endDate = endDay)
