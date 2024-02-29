@@ -41,19 +41,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.criticalay.neer.R
+import com.criticalay.neer.utils.TimeUtils
+import java.time.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WakeUpTimePicker(
-    onTimeSelected: (hour: Int, minute: Int) -> Unit,
+    onTimeSelected: (time:LocalTime) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var showDialog by remember { mutableStateOf(false) }
-    var selectedHour by remember { mutableIntStateOf(0) }
-    var selectedMinute by remember { mutableIntStateOf(0) }
+    val defaultSelectedTime by remember { mutableStateOf(LocalTime.of(7, 0)) }
     val timeState = rememberTimePickerState(
-        initialHour = selectedHour,
-        initialMinute = selectedMinute
+        initialHour = defaultSelectedTime.hour,
+        initialMinute = defaultSelectedTime.minute
     )
 
     if (showDialog) {
@@ -82,7 +83,8 @@ fun WakeUpTimePicker(
                     }
                     TextButton(onClick = {
                         showDialog = false
-                        onTimeSelected(timeState.hour, timeState.minute)
+                        val selectedTime = LocalTime.of(timeState.hour, timeState.minute)
+                        onTimeSelected(selectedTime)
                     }) {
                         Text(text = "Confirm")
                     }
@@ -90,9 +92,14 @@ fun WakeUpTimePicker(
             }
         }
     }
+
+    val formattedTime = remember(timeState.hour, timeState.minute) {
+        TimeUtils.formatTime(timeState.hour, timeState.minute, timeState.hour < 12)
+    }
+
     WakeUpTimeItem(
         title = stringResource(id = R.string.wake_up_time),
-        setTime = "${timeState.hour}:${timeState.minute}",
+        setTime = formattedTime,
         onSettingClicked = {
             showDialog = true
         }
@@ -102,7 +109,7 @@ fun WakeUpTimePicker(
 @Preview(showBackground = true)
 @Composable
 fun ShowDialog(){
-    WakeUpTimePicker(onTimeSelected = { hour, minute ->
+    WakeUpTimePicker(onTimeSelected = {
         // Do something with the selected time
     })
 }

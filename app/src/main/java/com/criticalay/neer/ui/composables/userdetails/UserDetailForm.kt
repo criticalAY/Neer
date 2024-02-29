@@ -63,6 +63,7 @@ import com.criticalay.neer.ui.composables.SectionSpacer
 import com.criticalay.neer.ui.composables.userdetails.time.SleepTimePicker
 import com.criticalay.neer.ui.composables.userdetails.time.WakeUpTimePicker
 import timber.log.Timber
+import java.time.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,14 +71,12 @@ fun UserDetailForm(
     onProceed : () -> Unit,
     neerEventListener: (neerEvent: NeerEvent) -> Unit
 ) {
-
-    var selectedSleepHour by remember { mutableIntStateOf(0) }
-    var selectedSleepMinute by remember { mutableIntStateOf(0) }
-    var showDialog by remember { mutableStateOf(false) }
-    val timeState = rememberTimePickerState(
-        initialHour = selectedSleepHour,
-        initialMinute = selectedSleepMinute
-    )
+    var selectedSleepTime by remember {
+        mutableStateOf(LocalTime.of(23, 0))
+    }
+    var selectedWakeTime by remember {
+        mutableStateOf(LocalTime.of(7, 0))
+    }
 
     Scaffold(
         topBar = {
@@ -108,14 +107,6 @@ fun UserDetailForm(
 
             var userGender by remember {
                 mutableStateOf(Gender.FEMALE)
-            }
-
-            var userSleepTime by remember {
-                mutableStateOf("")
-            }
-
-            var userWakeUpTime by remember {
-                mutableStateOf("")
             }
 
             var userSelectedUnit by remember {
@@ -220,14 +211,14 @@ fun UserDetailForm(
 
                 HorizontalDivider()
 
-                WakeUpTimePicker(onTimeSelected = { hour, minute ->
-                    // Do something with the selected time
+                WakeUpTimePicker(onTimeSelected = { wakeTime ->
+                    selectedWakeTime =wakeTime
                 })
 
                 HorizontalDivider()
 
-                SleepTimePicker(onTimeSelected = { hour, minute ->
-                    // Do something with the selected time
+                SleepTimePicker(onTimeSelected = { sleepTime ->
+                    selectedSleepTime = sleepTime
                 })
 
                 HorizontalDivider()
@@ -257,7 +248,9 @@ fun UserDetailForm(
                         userAge.toInt(),
                         userGender,
                         userWeight.toDouble(),
-                        userHeight.toDouble()
+                        userHeight.toDouble(),
+                        bedTime = selectedSleepTime,
+                        wakeUpTime = selectedWakeTime
                     )))
                     onProceed()
                 }
@@ -266,39 +259,6 @@ fun UserDetailForm(
 
             }
 
-        }
-
-        if (showDialog) {
-            BasicAlertDialog(
-                onDismissRequest = { showDialog = false },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(
-                    modifier = Modifier
-                        .background(color = Color.LightGray.copy(alpha = .3f))
-                        .padding(top = 28.dp, start = 20.dp, end = 20.dp, bottom = 12.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    TimePicker(state = timeState)
-                    Row(
-                        modifier = Modifier
-                            .padding(top = 12.dp)
-                            .fillMaxWidth(), horizontalArrangement = Arrangement.End
-                    ) {
-                        TextButton(onClick = { showDialog = false }) {
-                            Text(text = "Dismiss")
-                        }
-                        TextButton(onClick = {
-                            showDialog = false
-                            selectedSleepHour = timeState.hour
-                            selectedSleepMinute = timeState.minute
-                        }) {
-                            Text(text = "Confirm")
-                        }
-                    }
-                }
-            }
         }
 
     }

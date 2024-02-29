@@ -41,19 +41,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.criticalay.neer.R
+import com.criticalay.neer.utils.TimeUtils.formatTime
+import java.time.LocalTime
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SleepTimePicker(
-    onTimeSelected: (hour: Int, minute: Int) -> Unit,
+    onTimeSelected: (time: LocalTime) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var showDialog by remember { mutableStateOf(false) }
-    var selectedHour by remember { mutableIntStateOf(0) }
-    var selectedMinute by remember { mutableIntStateOf(0) }
+
+    val defaultSelectedTime by remember { mutableStateOf(LocalTime.of(23, 0)) }
     val timeState = rememberTimePickerState(
-        initialHour = selectedHour,
-        initialMinute = selectedMinute
+        initialHour = defaultSelectedTime.hour,
+        initialMinute = defaultSelectedTime.minute
     )
 
     if (showDialog) {
@@ -82,7 +85,8 @@ fun SleepTimePicker(
                     }
                     TextButton(onClick = {
                         showDialog = false
-                        onTimeSelected(timeState.hour, timeState.minute)
+                        val selectedTime = LocalTime.of(timeState.hour, timeState.minute)
+                        onTimeSelected(selectedTime)
                     }) {
                         Text(text = "Confirm")
                     }
@@ -90,9 +94,15 @@ fun SleepTimePicker(
             }
         }
     }
+
+    val formattedTime = remember(timeState.hour, timeState.minute) {
+        formatTime(timeState.hour, timeState.minute, timeState.hour < 12)
+    }
+
+
     SleepTimeItem(
         title = stringResource(id = R.string.sleep_time),
-        setTime = "${timeState.hour}:${timeState.minute}",
+        setTime = formattedTime,
         onSettingClicked = {
             showDialog = true
         }
@@ -102,7 +112,6 @@ fun SleepTimePicker(
 @Preview(showBackground = true)
 @Composable
 fun ShowSleepDialog() {
-    SleepTimePicker(onTimeSelected = { hour, minute ->
-
+    SleepTimePicker(onTimeSelected = {
     })
 }
