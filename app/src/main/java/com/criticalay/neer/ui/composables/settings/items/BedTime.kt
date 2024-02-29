@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.criticalay.neer.ui.composables.settings
+package com.criticalay.neer.ui.composables.settings.items
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -28,27 +28,34 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.criticalay.neer.R
+import com.criticalay.neer.ui.composables.settings.SettingItem
 
 @Composable
-fun AppVersionSettingItem(
+fun BedTime(
     modifier: Modifier = Modifier,
-    appVersion:String
-){
-    SettingItem(modifier= modifier) {
+    userBedTime:String,
+    handleClick: () -> Unit
+) {
+    SettingItem(modifier = modifier .clickable {
+        handleClick()
+    }) {
         Row(
             modifier = Modifier
-                .semantics(mergeDescendants = true){}
+                .semantics(mergeDescendants = true) {}
                 .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
-        ){
+        ) {
             Text(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f),
                 fontSize = 18.sp,
-                text = stringResource(id = R.string.setting_app_version_title))
+                text = stringResource(R.string.sleep_time)
+            )
 
             Text(
                 fontSize = 18.sp,
-                text = appVersion)
+                text = userBedTime
+            )
         }
     }
 }

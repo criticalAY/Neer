@@ -28,6 +28,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -36,6 +41,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.criticalay.neer.R
 import com.criticalay.neer.data.event.IntakeEvent
+import com.criticalay.neer.ui.composables.home.alertdialog.AmountEditDialog
 import com.criticalay.neer.ui.viewmodel.SharedViewModel
 import com.criticalay.neer.utils.TimeUtils.formatLocalDateTimeToTime
 import timber.log.Timber
@@ -46,32 +52,45 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun RecordList(
-    modifier: Modifier=Modifier,
+    modifier: Modifier = Modifier,
     sharedViewModel: SharedViewModel,
     intakeEventListener: (intakeEvent: IntakeEvent) -> Unit,
 ) {
     LaunchedEffect(Unit) {
         val startOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MIN)
         val startOfNextDay = LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.MIN)
-        intakeEventListener(IntakeEvent.GetTodayIntake(startDay = startOfDay, endDay = startOfNextDay))
+        intakeEventListener(
+            IntakeEvent.GetTodayIntake(
+                startDay = startOfDay,
+                endDay = startOfNextDay
+            )
+        )
     }
 
     val lazyListState = rememberLazyListState()
-    val todayAllIntakes  = sharedViewModel.todayAllIntakes.collectAsState().value
+    val todayAllIntakes = sharedViewModel.todayAllIntakes.collectAsState().value
 
     LaunchedEffect(todayAllIntakes) {
         lazyListState.animateScrollToItem(0)
     }
 
-    if (todayAllIntakes.isEmpty()){
-        Column( modifier = modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center) {
+    var intakeAmount by remember {
+        mutableIntStateOf(0)
+    }
+
+    if (todayAllIntakes.isEmpty()) {
+        Column(
+            modifier = modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center
+        ) {
 
             Icon(
                 modifier = Modifier
                     .sizeIn(50.dp, 50.dp)
                     .align(Alignment.CenterHorizontally),
-                painter = painterResource(id = R.drawable.ic_rounded_glass_cup), contentDescription = null)
+                painter = painterResource(id = R.drawable.ic_rounded_glass_cup),
+                contentDescription = null
+            )
 
             Text(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -79,28 +98,37 @@ fun RecordList(
             )
 
         }
-    } else{
+    } else {
+        val showDialog = remember { mutableStateOf(false) }
         LazyColumn(state = lazyListState, modifier = modifier) {
-            items(todayAllIntakes, key =  {intakeId->  intakeId.intakeId} ){intake ->
+            items(todayAllIntakes, key = { intakeId -> intakeId.intakeId }) { intake ->
                 val time = formatLocalDateTimeToTime(intake.intakeDateTime)
-                val intakeAmout = intake.intakeAmount
+                intakeAmount = intake.intakeAmount
                 WaterRecordItem(
                     handleDelete = {
-                         intakeEventListener(IntakeEvent.DeleteIntake(intake))
+                        intakeEventListener(IntakeEvent.DeleteIntake(intake))
                     },
                     handleEdit = {
+                        showDialog.value = true
 
                     },
                     waterIntakeTime = time,
-                    waterIntakeAmount = "$intakeAmout ml"
+                    waterIntakeAmount = "$intakeAmount ml"
                 )
             }
         }
+
+        if (showDialog.value) {
+            AmountEditDialog(
+                setShowDialog = { show ->
+                    showDialog.value = show
+                },
+                onDismissRequest = { newValue ->
+                   // TODO: update the value
+
+                },
+                currentValue = intakeAmount,
+            )
+        }
     }
-}
-
-@Composable
-@Preview
-fun PreviewRecordList(){
-
 }

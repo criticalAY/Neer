@@ -16,6 +16,8 @@
 
 package com.criticalay.neer.ui.composables.home
 
+import android.app.Activity
+import android.content.pm.ActivityInfo
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -29,15 +31,19 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Water
 import androidx.compose.material.icons.filled.WaterDrop
+import androidx.compose.material.icons.rounded.NotificationsActive
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -46,6 +52,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -55,6 +62,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.criticalay.neer.R
+import com.criticalay.neer.data.event.BeverageEvent
 import com.criticalay.neer.data.event.IntakeEvent
 import com.criticalay.neer.data.model.Intake
 import com.criticalay.neer.ui.composables.home.alertdialog.SelectWaterAmountDialog
@@ -65,6 +73,7 @@ import com.criticalay.neer.ui.viewmodel.SharedViewModel
 import com.criticalay.neer.utils.Constants.BEVERAGE_ID
 import com.criticalay.neer.utils.Constants.USER_ID
 import com.criticalay.neer.utils.PreferencesManager
+import timber.log.Timber
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -72,8 +81,10 @@ import java.time.LocalTime
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(
-    sharedViewModel: SharedViewModel
+    sharedViewModel: SharedViewModel,
+    navigateToSettings: () -> Unit
 ) {
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -81,11 +92,20 @@ fun Home(
                     Text(text = stringResource(id = R.string.app_name))
                 },
                 actions = {
-                    IconButton(onClick = { /* do something */ }) {
+                    IconButton(onClick = { navigateToSettings() }) {
                         Icon(
                             imageVector = Icons.Filled.Settings,
                             contentDescription = "Localized description"
                         )
+                    }
+                },
+                navigationIcon = {
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Icon(imageVector = Icons.Rounded.NotificationsActive, contentDescription = stringResource(
+                            R.string.notification
+                        )
+                        )
+
                     }
                 }
             )
@@ -93,14 +113,16 @@ fun Home(
     ) {
         Column(modifier = Modifier.padding(it)) {
             val context = LocalContext.current
-            val showDialog = remember { mutableStateOf(false) }
+
+            HorizontalDivider()
 
             Text(
                 text = stringResource(R.string.drink_target),
                 textAlign = TextAlign.Center,
                 fontSize = 20.sp,
-                modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
+                modifier = Modifier.align(alignment = Alignment.CenterHorizontally).padding(8.dp)
             )
+
             Box(
                 modifier = Modifier
                     .fillMaxHeight(0.4f)
@@ -108,39 +130,36 @@ fun Home(
             ) {
                 LaunchedEffect(Unit) {
                     val startOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MIN)
-                    val startOfNextDay = LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.MIN)
-                    sharedViewModel.handleIntakeEvent(IntakeEvent.GetTodayTotalIntake(startDay = startOfDay, endDay = startOfNextDay))
+                    val startOfNextDay =
+                        LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.MIN)
+                    sharedViewModel.handleIntakeEvent(
+                        IntakeEvent.GetTodayTotalIntake(
+                            startDay = startOfDay,
+                            endDay = startOfNextDay
+                        )
+                    )
+                    sharedViewModel.handleBeverageEvent(BeverageEvent.GetTargetAmount)
                 }
-                val todayTotalIntakes  = sharedViewModel.todayTotalIntake.collectAsState().value
+                val todayTotalIntakes = sharedViewModel.todayTotalIntake.collectAsState().value
+                val targetIntakeAmount = sharedViewModel.targetIntakeAmount.collectAsState().value
+                Timber.d("Intake total", todayTotalIntakes)
+                Timber.i(todayTotalIntakes.toString())
+                Timber.i(targetIntakeAmount.toString())
+
                 CustomCircularProgressIndicator(
+                    modifier = Modifier.padding(50.dp),
                     initialValue = todayTotalIntakes,
-                    maxValue = 200,
+                    maxValue = targetIntakeAmount,
                     primaryColor = Color.Blue,
                     secondaryColor = Light_blue,
-                    circleRadius = 230f,
                     onPositionChange = {}
                 )
 
-                if (showDialog.value)
-                    SelectWaterAmountDialog(setShowDialog = { show ->
-                        showDialog.value = show
-                    }, onDismissRequest = { selectedValue ->
-                        PreferencesManager(context = context).setWaterAmount(selectedValue)
-                    }, currentValue = PreferencesManager(context = context).getWaterAmount())
-
-                OutlinedButton(
-                    onClick = { showDialog.value = true },
+                ChangeIntakeAmountDialog(
                     modifier = Modifier
-                        .size(30.dp)
-                        .align(Alignment.CenterEnd),
-                    shape = CircleShape,
-                    contentPadding = PaddingValues(0.dp),
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Water,
-                        contentDescription = stringResource(id = R.string.change_the_water_intake_amount)
-                    )
-                }
+                        .align(Alignment.CenterEnd)
+                        .padding(10.dp)
+                )
             }
 
             Row(
@@ -207,9 +226,28 @@ fun Home(
     }
 }
 
-
 @Composable
-@Preview(showBackground = true)
-fun PreviewHome() {
-    Home(sharedViewModel = viewModel())
+private fun ChangeIntakeAmountDialog(modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val showDialog = remember { mutableStateOf(false) }
+
+    OutlinedButton(
+        onClick = { showDialog.value = true },
+        modifier = modifier
+            .size(30.dp),
+        shape = CircleShape,
+        contentPadding = PaddingValues(0.dp),
+    ) {
+        Icon(
+            imageVector = Icons.Default.Water,
+            contentDescription = stringResource(id = R.string.change_the_water_intake_amount)
+        )
+    }
+
+    if (showDialog.value)
+        SelectWaterAmountDialog(setShowDialog = { show ->
+            showDialog.value = show
+        }, onDismissRequest = { selectedValue ->
+            PreferencesManager(context = context).setWaterAmount(selectedValue)
+        }, currentValue = PreferencesManager(context = context).getWaterAmount())
 }

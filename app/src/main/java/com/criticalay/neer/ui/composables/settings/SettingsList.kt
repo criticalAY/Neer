@@ -16,23 +16,105 @@
 
 package com.criticalay.neer.ui.composables.settings
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.criticalay.neer.BuildConfig
 import com.criticalay.neer.data.event.SettingsEvent
+import com.criticalay.neer.data.event.UserEvent
 import com.criticalay.neer.ui.composables.SectionSpacer
+import com.criticalay.neer.ui.composables.settings.items.AppVersionSettingItem
+import com.criticalay.neer.ui.composables.settings.items.BedTime
+import com.criticalay.neer.ui.composables.settings.items.Gender
+import com.criticalay.neer.ui.composables.settings.items.Height
+import com.criticalay.neer.ui.composables.settings.items.NameDisplay
+import com.criticalay.neer.ui.composables.settings.items.PrivacyPolicy
+import com.criticalay.neer.ui.composables.settings.items.Units
+import com.criticalay.neer.ui.composables.settings.items.WakeUpTime
+import com.criticalay.neer.ui.composables.settings.items.Weight
+import com.criticalay.neer.ui.viewmodel.SharedViewModel
 
 @Composable
 fun SettingsList(
     modifier: Modifier = Modifier,
-    handleSettingsEvent: SettingsEvent
+    sharedViewModel: SharedViewModel
 ) {
+    LaunchedEffect(Unit) {
+        sharedViewModel.handleUserEvent(UserEvent.GetUserDetails)
+    }
 
-    SectionSpacer(modifier = Modifier.fillMaxWidth())
+    val userDetails = sharedViewModel.userDetails.collectAsState().value
 
-    AppVersionSettingItem(
-        modifier = Modifier.fillMaxWidth(),
-        appVersion = BuildConfig.VERSION_NAME
-    )
+
+
+    Column {
+        userDetails.name?.let {
+            NameDisplay(userName = it) {
+
+            }
+        }
+
+        HorizontalDivider()
+        
+        Gender(userGender = userDetails.gender.name) {
+            
+        }
+
+        HorizontalDivider()
+
+        Height(userHeight = userDetails.height.toString()) {
+
+        }
+
+        HorizontalDivider()
+
+        Weight(userWeight = userDetails.weight.toString()) {
+            
+        }
+
+        HorizontalDivider()
+
+        Units(userSelectedUnits = userDetails.unit.unitValue) {
+            
+        }
+
+        SectionSpacer(modifier = Modifier.fillMaxWidth())
+
+        WakeUpTime(userWakeTime = userDetails.wakeUpTime.toString()) {
+            
+        }
+
+        HorizontalDivider()
+
+        BedTime(userBedTime = userDetails.bedTime.toString()) {
+            
+        }
+
+
+        SectionSpacer(modifier = Modifier.fillMaxWidth())
+
+        PrivacyPolicy {
+
+        }
+
+        HorizontalDivider()
+
+        AppVersionSettingItem(
+            modifier = Modifier.fillMaxWidth(),
+            appVersion = BuildConfig.VERSION_NAME
+        )
+    }
+
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewSettingList(){
+    SettingsList(sharedViewModel = viewModel())
 }

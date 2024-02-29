@@ -28,7 +28,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.NavHost
 import com.criticalay.neer.ui.composables.home.Home
-import com.criticalay.neer.ui.composables.settings.Settings
+import com.criticalay.neer.ui.composables.settings.SettingsScreen
 import com.criticalay.neer.ui.composables.userdetails.UserDetailForm
 import com.criticalay.neer.ui.composables.waterdetails.WaterDetailForm
 import com.criticalay.neer.ui.viewmodel.SharedViewModel
@@ -82,14 +82,23 @@ fun Navigation(
 
         composable(route = Destination.HomeScreen.path) {
             Home(
-                sharedViewModel = sharedViewModel
+                sharedViewModel = sharedViewModel,
+                navigateToSettings = {
+                    navController.navigate(Destination.Settings.path)
+                }
             )
         }
 
         composable(route = Destination.Settings.path) {
-            Settings(
+            SettingsScreen(
                 sharedViewModel = sharedViewModel
-            )
+            ){
+                navController.navigate(Destination.HomeScreen.path){
+                    popUpTo(Destination.HomeScreen.path){
+                        inclusive=true
+                    }
+                }
+            }
         }
 
 

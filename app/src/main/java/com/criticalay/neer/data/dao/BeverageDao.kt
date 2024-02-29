@@ -28,4 +28,8 @@ interface BeverageDao {
     @Insert
     suspend fun insertBeverage(beverage: Beverage)
 
+    @Query("SELECT totalIntakeAmount FROM $BEVERAGE_DATABASE_TABLE")
+    suspend fun getTotalIntakeAmount(): Int
+
+
 }

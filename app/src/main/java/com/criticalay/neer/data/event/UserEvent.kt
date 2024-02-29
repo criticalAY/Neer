@@ -16,12 +16,11 @@
 
 package com.criticalay.neer.data.event
 
-import com.criticalay.neer.data.model.Beverage
+import com.criticalay.neer.data.model.User
 
-sealed class BeverageEvent {
 
-    data class AddBeverage(val beverage: Beverage) : BeverageEvent()
+sealed class UserEvent {
+    data object GetUserDetails : UserEvent()
 
-    data object GetTargetAmount: BeverageEvent()
-
+    data class UpdateDetails(val user : User) : UserEvent()
 }

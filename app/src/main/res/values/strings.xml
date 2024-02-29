@@ -30,4 +30,10 @@
     <string name="dismiss">Dismiss</string>
     <string name="confirm">Confirm</string>
     <string name="clear">Clear</string>
+    <string name="privacy_policy">Privacy policy</string>
+    <string name="name">Name</string>
+    <string name="height">Height</string>
+    <string name="weight">Weight</string>
+    <string name="notification">Notification</string>
+    <string name="edit_your_name">Edit your name</string>
 </resources>

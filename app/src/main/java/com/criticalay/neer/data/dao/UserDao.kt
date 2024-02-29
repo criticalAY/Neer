@@ -24,6 +24,7 @@ import androidx.room.Transaction
 import androidx.room.Update
 import com.criticalay.neer.data.model.User
 import com.criticalay.neer.utils.Constants
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
@@ -35,4 +36,7 @@ interface UserDao {
 
     @Update
     suspend fun updateUser(user: User)
+
+    @Query("SELECT * FROM ${Constants.USER_DATABASE_TABLE}")
+    fun getUserDetails() : Flow<User>
 }

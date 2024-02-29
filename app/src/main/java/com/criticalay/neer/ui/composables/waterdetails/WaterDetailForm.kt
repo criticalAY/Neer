@@ -151,7 +151,7 @@ fun WaterDetailForm(
                             Beverage(
                                 userId = USER_ID,
                                 beverageName = "Water",
-                                totalIntakeAmount = waterIntakeAmount.toDouble()
+                                totalIntakeAmount = waterIntakeAmount.toInt()
                             )
                         ))
                         onProceed()

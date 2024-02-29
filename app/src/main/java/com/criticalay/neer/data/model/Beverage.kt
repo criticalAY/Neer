@@ -28,7 +28,7 @@ import com.criticalay.neer.utils.Constants.BEVERAGE_DATABASE_TABLE
 data class Beverage(
     val userId:Long,
     val beverageName: String,
-    val totalIntakeAmount : Double,
+    val totalIntakeAmount : Int,
     @PrimaryKey
     val beverageId: Long = 101,
 )

@@ -14,8 +14,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.criticalay.neer.ui.composables.home.alertdialog
+package com.criticalay.neer.ui.composables.settings.items
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,20 +36,52 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.core.text.isDigitsOnly
 import com.criticalay.neer.R
+import com.criticalay.neer.ui.composables.settings.SettingItem
 import com.criticalay.neer.ui.composables.userdetails.DetailTextField
 
 @Composable
-fun AmountEditDialog(
+fun NameDisplay(
+    modifier: Modifier = Modifier,
+    userName:String,
+    handleClick: () -> Unit
+) {
+    SettingItem(modifier = modifier .clickable {
+        handleClick()
+    }) {
+        Row(
+            modifier = Modifier
+                .semantics(mergeDescendants = true) {}
+                .padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                modifier = Modifier
+                    .weight(1f),
+                fontSize = 18.sp,
+                text = stringResource(R.string.name)
+            )
+
+            Text(
+                fontSize = 18.sp,
+                text = userName
+            )
+        }
+    }
+}
+
+@Composable
+private fun EditNameDialog(
     modifier: Modifier = Modifier,
     setShowDialog: (Boolean) -> Unit,
     onDismissRequest: (Int) -> Unit,
@@ -67,7 +100,7 @@ fun AmountEditDialog(
             ) {
                 Text(
                     modifier = Modifier.padding(10.dp),
-                    text = stringResource(R.string.edit_drunk_amount),
+                    text = stringResource(R.string.edit_your_name),
                     fontSize = 20.sp
                 )
                 DetailTextField(
@@ -80,8 +113,8 @@ fun AmountEditDialog(
                             currentAmount = ""
                         }
                     },
-                    label = stringResource(R.string.amount),
-                    placeholder = stringResource(R.string.edit_drunk_amount),
+                    label = stringResource(R.string.name),
+                    placeholder = stringResource(R.string.edit_your_name),
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Outlined.Person,
@@ -130,10 +163,4 @@ fun AmountEditDialog(
             }
         }
     }
-}
-
-@Composable
-@Preview(showBackground = true)
-fun PreviewAmountDialog() {
-    AmountEditDialog(setShowDialog = {}, onDismissRequest = {}, currentValue = 20)
 }

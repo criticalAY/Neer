@@ -34,6 +34,10 @@ class NeerRepository @Inject constructor(
     private val beverageDao: BeverageDao
 ) {
     // ---- User ---- //
+    fun getUserDetails(): Flow<User>{
+        return userDao.getUserDetails()
+    }
+
     suspend fun getUser(): User? = userDao.getUser()
 
     suspend fun addUser(user: User) {
@@ -47,6 +51,10 @@ class NeerRepository @Inject constructor(
     // ---- Beverage ---- //
     suspend fun addBeverage(beverage: Beverage) {
         beverageDao.insertBeverage(beverage = beverage)
+    }
+
+    suspend fun getTargetAmount(): Int{
+        return beverageDao.getTotalIntakeAmount()
     }
 
     // ---- Intake ---- //

@@ -23,6 +23,7 @@ import androidx.lifecycle.viewModelScope
 import com.criticalay.neer.data.event.BeverageEvent
 import com.criticalay.neer.data.event.IntakeEvent
 import com.criticalay.neer.data.event.NeerEvent
+import com.criticalay.neer.data.event.UserEvent
 import com.criticalay.neer.data.model.Beverage
 import com.criticalay.neer.data.model.Intake
 import com.criticalay.neer.data.model.User
@@ -32,6 +33,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -48,11 +50,43 @@ class SharedViewModel @Inject constructor(
     private val _todayTotalIntake = MutableStateFlow<Int>(0)
     val todayTotalIntake: StateFlow<Int> = _todayTotalIntake
 
+    private val _targetIntakeAmount = MutableStateFlow<Int>(0)
+    val targetIntakeAmount: StateFlow<Int> = _targetIntakeAmount
+
+    private val _userDetails = MutableStateFlow(User())
+    val userDetails : StateFlow<User> = _userDetails
+
+
+    fun handleUserEvent(userEvent: UserEvent){
+        when(userEvent){
+            UserEvent.GetUserDetails -> {
+                viewModelScope.launch {
+                    repository.getUserDetails().collect{user ->
+                        _userDetails.value = user
+                    }
+                }
+            }
+
+            is UserEvent.UpdateDetails -> {
+                viewModelScope.launch {
+                    repository.updateUser(userEvent.user)
+                }
+            }
+        }
+    }
+
+
 
     fun handleBeverageEvent(beverageEvent: BeverageEvent) {
         when (beverageEvent) {
             is BeverageEvent.AddBeverage -> {
                 addBeverage(beverage = beverageEvent.beverage)
+            }
+
+            BeverageEvent.GetTargetAmount -> {
+                viewModelScope.launch {
+                    _targetIntakeAmount.value = repository.getTargetAmount()
+                }
             }
         }
 
