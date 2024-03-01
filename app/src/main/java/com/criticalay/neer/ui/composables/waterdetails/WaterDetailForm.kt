@@ -16,6 +16,7 @@
 
 package com.criticalay.neer.ui.composables.waterdetails
 
+import android.os.Build
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -46,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -55,11 +57,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
 import com.criticalay.neer.R
+import com.criticalay.neer.alarm.data.AlarmItem
+import com.criticalay.neer.alarm.data.NeerAlarmScheduler
 import com.criticalay.neer.data.event.BeverageEvent
-import com.criticalay.neer.data.event.NeerEvent
 import com.criticalay.neer.data.model.Beverage
+import com.criticalay.neer.ui.composables.notification.NotificationDialog
 import com.criticalay.neer.ui.composables.userdetails.DetailTextField
 import com.criticalay.neer.utils.Constants.USER_ID
+import com.criticalay.neer.utils.PreferencesManager
+import timber.log.Timber
+import java.time.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,6 +74,7 @@ fun WaterDetailForm(
     onProceed: () -> Unit,
     beverageEventListener: (neerEvent: BeverageEvent) -> Unit
 ) {
+    val context = LocalContext.current
     var waterIntakeAmount by remember {
         mutableStateOf("")
     }
@@ -81,6 +89,30 @@ fun WaterDetailForm(
             )
         }
     ) {
+
+        var notificationTriggered by remember {
+            mutableStateOf(false)
+        }
+
+        if (!notificationTriggered && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            NotificationDialog { value ->
+                if (value) {
+                    Timber.d("Creating notification")
+                    val scheduler = NeerAlarmScheduler(context = context)
+                    val alarmItem = AlarmItem(
+                        LocalDateTime.now().plusSeconds(5),
+                        1.0,
+                        context.getString(R.string.notification_title),
+                        context.getString(R.string.notification_message)
+                    )
+                    scheduler.schedule(alarmItem)
+                    notificationTriggered = true
+                }
+            }
+        }
+
+
+        PreferencesManager(context).saveNotificationPreference(notificationTriggered)
         Column(
             modifier = Modifier
                 .padding(it)

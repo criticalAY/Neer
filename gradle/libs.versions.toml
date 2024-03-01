@@ -1,4 +1,5 @@
 [versions]
+accompanistPermissions = "0.35.0-alpha"
 agp = "8.4.0-alpha11"
 datastorePreferences = "1.0.0"
 desugar_jdk_libs_nio = "2.0.4"
@@ -21,6 +22,7 @@ navigationRuntimeKtx = "2.7.7"
 navigationCompose = "2.7.7"
 
 [libraries]
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleViewmodelKtx" }

@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
     <application
         android:name=".NeerApp"
         android:allowBackup="true"
@@ -14,7 +17,7 @@
         android:theme="@style/Theme.Neer"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".NeerActivity"
             android:exported="true"
             android:theme="@style/Theme.Neer">
             <intent-filter>
@@ -23,6 +26,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver android:name=".alarm.AlarmReceiver"/>
+        <receiver android:name=".notification.WaterNotificationReceiver"/>
     </application>
 
 </manifest>

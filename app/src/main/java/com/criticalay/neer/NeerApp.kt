@@ -17,6 +17,12 @@
 package com.criticalay.neer
 
 import android.app.Application
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.os.Build
+import com.criticalay.neer.utils.Constants.WATER_REMINDER_CHANNEL_ID
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 import timber.log.Timber.Forest.plant
@@ -27,6 +33,21 @@ class NeerApp:Application() {
         super.onCreate()
         if (BuildConfig.DEBUG) {
             plant(Timber.DebugTree())
+        }
+        createNotificationChannel()
+    }
+
+    private fun createNotificationChannel() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            val channel = NotificationChannel(
+                WATER_REMINDER_CHANNEL_ID,
+                getString(R.string.water),
+                NotificationManager.IMPORTANCE_HIGH
+            )
+            channel.description = getString(R.string.notification_description)
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+
         }
     }
 }

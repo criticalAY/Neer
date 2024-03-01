@@ -94,7 +94,7 @@ dependencies {
     kapt(libs.hilt.android.compiler)
     // desugaring
     coreLibraryDesugaring(libs.desugar.jdk.libs.nio)
-
     implementation( libs.androidx.datastore.preferences)
+    implementation(libs.accompanist.permissions)
 
 }

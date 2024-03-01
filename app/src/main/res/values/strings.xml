@@ -36,4 +36,14 @@
     <string name="weight">Weight</string>
     <string name="notification">Notification</string>
     <string name="edit_your_name">Edit your name</string>
+    <string name="water">Water</string>
+    <string name="notification_description">For drinking water reminders</string>
+    <string name="reminder_notification">Reminder Notification</string>
+    <string name="notification_permission_message">Grant notification permission to receive timely reminders and stay hydrated effortlessly with our app.</string>
+    <string name="notification_title">Time for a Sip!</string>
+    <string name="notification_message">Stay on top of your hydration game! It\'s time for a quick water break. Keep the refreshments flowing!</string>
+    <string name="drunk">Drunk</string>
+    <string name="cd_notifications_enabled">Notifications Enabled</string>
+    <string name="cd_notifications_disabled">Notifications Disabled</string>
+    <string name="setting_enable_notifications">Enable Notifications</string>
 </resources>

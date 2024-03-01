@@ -14,16 +14,11 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.criticalay.neer.utils
+package com.criticalay.neer.alarm
 
-object Constants {
-    const val USER_DATABASE_TABLE = "user_table"
-    const val NEER_DATABASE_NAME = "user_database"
+import com.criticalay.neer.alarm.data.AlarmItem
 
-    const val BEVERAGE_DATABASE_TABLE = "beverage"
-    const val INTAKE_DATABASE_TABLE = "intake"
-    const val USER_ID =100L
-    const val BEVERAGE_ID = 101L
-
-    const val WATER_REMINDER_CHANNEL_ID = "neer_water_reminder_channel"
+interface AlarmScheduler {
+    fun schedule(item: AlarmItem)
+    fun cancel()
 }

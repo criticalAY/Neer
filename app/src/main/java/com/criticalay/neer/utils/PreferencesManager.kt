@@ -54,4 +54,14 @@ class PreferencesManager(context: Context) {
         return sharedPreferences.getInt("selected_water_amount", 100)
     }
 
+    fun saveNotificationPreference(value:Boolean){
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("notification_pref", value)
+        editor.apply()
+    }
+
+    fun getNotificationPreference():Boolean{
+        return sharedPreferences.getBoolean("notification_pref", false)
+    }
+
 }
