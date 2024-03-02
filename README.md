@@ -1,6 +1,7 @@
 # Neer - Water Reminder
 The Water Reminder App is a simple application designed to help users stay hydrated by reminding them to drink water regularly throughout the day. 
 It allows users to set their daily water intake goals and track their progress towards achieving them.
+
 ![image](https://github.com/criticalAY/Neer/assets/48384865/05efbcf9-4ee9-4e54-8ab5-71df16ffe680) ![image](https://github.com/criticalAY/Neer/assets/48384865/ff549dc5-0212-429f-8065-f99b7e3fbdfa)
 
 ## Features
