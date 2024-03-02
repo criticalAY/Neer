@@ -61,6 +61,7 @@ import com.criticalay.neer.ui.composables.home.alertdialog.SelectWaterAmountDial
 import com.criticalay.neer.ui.composables.home.water.RecordList
 import com.criticalay.neer.ui.composables.progressbar.CustomCircularProgressIndicator
 import com.criticalay.neer.ui.theme.Light_blue
+import com.criticalay.neer.ui.theme.Progress_Blue
 import com.criticalay.neer.ui.viewmodel.SharedViewModel
 import com.criticalay.neer.utils.Constants.BEVERAGE_ID
 import com.criticalay.neer.utils.Constants.USER_ID
@@ -144,7 +145,7 @@ fun Home(
                     modifier = Modifier.padding(50.dp),
                     initialValue = todayTotalIntakes,
                     maxValue = targetIntakeAmount,
-                    primaryColor = Color.Blue,
+                    primaryColor = Progress_Blue,
                     secondaryColor = Light_blue,
                     onPositionChange = {}
                 )

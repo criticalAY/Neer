@@ -70,8 +70,8 @@ fun CustomCircularProgressIndicator(
             drawCircle(
                 brush = Brush.radialGradient(
                     listOf(
-                        primaryColor.copy(0.45f),
-                        secondaryColor.copy(0.15f)
+                        primaryColor.copy(0.65f),
+                        secondaryColor.copy(0.25f)
                     )
                 ),
                 radius = cRadius,

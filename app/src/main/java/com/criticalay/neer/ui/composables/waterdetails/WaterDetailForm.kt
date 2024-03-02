@@ -173,11 +173,17 @@ fun WaterDetailForm(
 
                 Spacer(modifier = Modifier.weight(1f))
 
+                var submitButtonEnabled by remember {
+                    mutableStateOf(false)
+                }
+                submitButtonEnabled = waterIntakeAmount.isNotEmpty()
+
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp)
                         .align(Alignment.CenterHorizontally),
+                    enabled = submitButtonEnabled,
                     onClick = {
                         beverageEventListener(BeverageEvent.AddBeverage(
                             Beverage(

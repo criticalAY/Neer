@@ -30,8 +30,8 @@ android {
         applicationId = "com.criticalay.neer"
         minSdk = 25
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 10000001
+        versionName = "1.0alpha1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
