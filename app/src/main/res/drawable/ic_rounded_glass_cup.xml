@@ -1,3 +1,19 @@
+<!--
+  ~ Copyright (c) 2024 Ashish Yadav <mailtoashish693@gmail.com>
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
 <vector xmlns:android="http://schemas.android.com/apk/res/android" android:height="24dp" android:tint="#000000" android:viewportHeight="960" android:viewportWidth="960" android:width="24dp">
       
     <path android:fillColor="@android:color/white" android:pathData="M279,880Q248,880 225.5,860Q203,840 200,809L130,169Q126,134 149.5,107Q173,80 209,80L751,80Q787,80 810.5,107Q834,134 830,169L760,809Q757,840 734.5,860Q712,880 681,880L279,880ZM271,720L280,800Q280,800 280,800Q280,800 280,800L680,800Q680,800 680,800Q680,800 680,800L689,720L271,720ZM263,640L698,640L750,160L210,160L263,640ZM271,800L689,800L680,800Q680,800 680,800Q680,800 680,800L280,800Q280,800 280,800Q280,800 280,800L271,800Z"/>
