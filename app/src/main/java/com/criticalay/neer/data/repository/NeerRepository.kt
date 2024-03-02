@@ -20,11 +20,14 @@ import com.criticalay.neer.data.dao.BeverageDao
 import com.criticalay.neer.data.dao.IntakeDao
 import com.criticalay.neer.data.dao.UserDao
 import com.criticalay.neer.data.model.Beverage
+import com.criticalay.neer.data.model.Gender
 import com.criticalay.neer.data.model.Intake
+import com.criticalay.neer.data.model.Units
 import com.criticalay.neer.data.model.User
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDateTime
+import java.time.LocalTime
 import javax.inject.Inject
 
 @ViewModelScoped
@@ -43,6 +46,39 @@ class NeerRepository @Inject constructor(
     suspend fun addUser(user: User) {
         userDao.addUser(user = user)
     }
+
+    suspend fun updateUserName(name:String){
+        userDao.updateUserName(name)
+    }
+
+    suspend fun updateUserAge(age: Int) {
+        userDao.updateUserAge(age)
+    }
+
+    suspend fun updateUserWeight(weight: Double) {
+        userDao.updateUserWeight(weight)
+    }
+
+    suspend fun updateUserHeight(height: Double) {
+        userDao.updateUserHeight(height)
+    }
+
+    suspend fun updateUserGender(gender: Gender) {
+        userDao.updateUserGender(gender)
+    }
+
+    suspend fun updateUserSleepTime(bedTime: LocalTime) {
+        userDao.updateUserSleepTime(bedTime)
+    }
+
+    suspend fun updateUserWakeUpTime(wakeUpTime: LocalTime) {
+        userDao.updateUserWakeUpTime(wakeUpTime)
+    }
+
+    suspend fun updateUserUnits(unit: Units) {
+        userDao.updateUserUnits(unit)
+    }
+
 
     suspend fun updateUser(user: User) {
         userDao.updateUser(user = user)
@@ -68,6 +104,10 @@ class NeerRepository @Inject constructor(
 
     suspend fun updateIntake(intake: Intake) {
         intakeDao.updateIntake(intake = intake)
+    }
+
+    suspend fun updateIntakeById(intakeId: Long, intakeAmount: Int){
+        intakeDao.updateIntakeAmountById(intakeId = intakeId, intakeAmount = intakeAmount)
     }
 
     fun getWaterIntakesForToday(

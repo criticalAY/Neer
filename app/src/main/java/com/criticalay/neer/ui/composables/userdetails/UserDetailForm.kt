@@ -191,11 +191,10 @@ fun UserDetailForm(
 
                 GenderItem(
                     title = stringResource(R.string.gender),
-                    selectedGender = userGender,
+                    selectedGender = userGender.genderValue,
                     onOptionSelected = { gender ->
                         userGender = gender
                         Timber.d("User gender", gender)
-
                     }
                 )
 

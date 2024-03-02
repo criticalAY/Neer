@@ -17,10 +17,15 @@
 package com.criticalay.neer.ui.composables.notification
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -54,6 +59,8 @@ fun NotificationScreen(
     var switchState by remember {
         mutableStateOf(PreferencesManager(context).getNotificationPreference())
     }
+    // State for showing/hiding the alert dialog
+    var showDialog by remember { mutableStateOf(false) }
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -80,17 +87,38 @@ fun NotificationScreen(
         Column(modifier = modifier.padding(padding)) {
             NotificationSetting(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .verticalScroll(
+                        rememberScrollState()
+                    ),
                 title = stringResource(R.string.setting_enable_notifications),
                 checked = switchState,
                 onCheckChanged = {checked ->
-                    switchState = checked
-                    PreferencesManager(context).saveNotificationPreference(checked)
-                    if (!checked){
+                    if (!checked) {
+                        showDialog = true
+                    } else {
+                        switchState = true
+                        PreferencesManager(context).saveNotificationPreference(true)
                         NeerAlarmScheduler(context = context).cancel()
                     }
                 }
             )
+
+            if (showDialog){
+                AlertDialogNotification(
+                    onDismissRequest = {
+                        showDialog = false
+                                       },
+                    onConfirmation = {
+                        showDialog = false
+                        switchState = false
+                        PreferencesManager(context).saveNotificationPreference(false)
+                        NeerAlarmScheduler(context = context).cancel()
+                    },
+                    dialogTitle = stringResource(R.string.disable_notifications),
+                    dialogText = stringResource(R.string.notification_disable_message),
+                    icon = Icons.Default.Warning
+                )
+            }
         }
     }
 }

@@ -66,10 +66,44 @@ class SharedViewModel @Inject constructor(
                     }
                 }
             }
-
-            is UserEvent.UpdateDetails -> {
+            is UserEvent.UpdateUserAge -> {
                 viewModelScope.launch {
-                    repository.updateUser(userEvent.user)
+                    repository.updateUserAge(userEvent.age)
+                }
+            }
+            is UserEvent.UpdateUserGender -> {
+                viewModelScope.launch {
+                    repository.updateUserGender(userEvent.gender)
+                }
+            }
+            is UserEvent.UpdateUserHeight -> {
+                viewModelScope.launch {
+                    repository.updateUserHeight(userEvent.height)
+                }
+            }
+            is UserEvent.UpdateUserName -> {
+                viewModelScope.launch {
+                    repository.updateUserName(userEvent.name)
+                }
+            }
+            is UserEvent.UpdateUserSleepTime -> {
+                viewModelScope.launch {
+                    repository.updateUserSleepTime(userEvent.bedTime)
+                }
+            }
+            is UserEvent.UpdateUserUnits -> {
+                viewModelScope.launch {
+                    repository.updateUserUnits(userEvent.unit)
+                }
+            }
+            is UserEvent.UpdateUserWakeUpTime -> {
+                viewModelScope.launch {
+                    repository.updateUserWakeUpTime(userEvent.wakeUpTime)
+                }
+            }
+            is UserEvent.UpdateUserWeight -> {
+                viewModelScope.launch {
+                    repository.updateUserWeight(userEvent.weight)
                 }
             }
         }
@@ -130,6 +164,12 @@ class SharedViewModel @Inject constructor(
                     repository.deleteIntake(intakeEvent.intake)
                 }
             }
+
+            is IntakeEvent.UpdateIntakeById -> {
+                viewModelScope.launch {
+                    repository.updateIntakeById(intakeId = intakeEvent.intakeId, intakeAmount =  intakeEvent.intakeAmount)
+                }
+            }
         }
     }
 
@@ -141,10 +181,6 @@ class SharedViewModel @Inject constructor(
 
             is NeerEvent.GetUser -> {
                 getUser()
-            }
-
-            is NeerEvent.UpdateUser -> {
-                updateUser(contentEvent.user)
             }
 
             NeerEvent.Notification -> {
@@ -173,12 +209,6 @@ class SharedViewModel @Inject constructor(
     fun addUser(user: User) {
         viewModelScope.launch {
             repository.addUser(user)
-        }
-    }
-
-    fun updateUser(user: User) {
-        viewModelScope.launch {
-            repository.updateUser(user)
         }
     }
 }

@@ -28,6 +28,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.criticalay.neer.BuildConfig
 import com.criticalay.neer.data.event.SettingsEvent
 import com.criticalay.neer.data.event.UserEvent
+import com.criticalay.neer.data.model.User
 import com.criticalay.neer.ui.composables.SectionSpacer
 import com.criticalay.neer.ui.composables.settings.items.AppVersionSettingItem
 import com.criticalay.neer.ui.composables.settings.items.BedTime
@@ -39,6 +40,7 @@ import com.criticalay.neer.ui.composables.settings.items.Units
 import com.criticalay.neer.ui.composables.settings.items.WakeUpTime
 import com.criticalay.neer.ui.composables.settings.items.Weight
 import com.criticalay.neer.ui.viewmodel.SharedViewModel
+import timber.log.Timber
 
 @Composable
 fun SettingsList(
@@ -55,45 +57,50 @@ fun SettingsList(
 
     Column {
         userDetails.name?.let {
-            NameDisplay(userName = it) {
-
+            NameDisplay(userName = it) { name ->
+                Timber.d("User updated name")
+                sharedViewModel.handleUserEvent(UserEvent.UpdateUserName(name))
             }
         }
 
         HorizontalDivider()
-        
-        Gender(userGender = userDetails.gender.name) {
-            
+
+        Gender(userGender = userDetails.gender.genderValue) { gender ->
+            Timber.d("user updated gender")
+            sharedViewModel.handleUserEvent(UserEvent.UpdateUserGender(gender))
         }
 
         HorizontalDivider()
 
-        Height(userHeight = userDetails.height.toString()) {
-
+        Height(userHeight = userDetails.height) { height ->
+            Timber.d("User updated height")
+            sharedViewModel.handleUserEvent(UserEvent.UpdateUserHeight(height = height))
         }
 
         HorizontalDivider()
 
-        Weight(userWeight = userDetails.weight.toString()) {
-            
+        Weight(userWeight = userDetails.weight) { weight ->
+            Timber.d("User updated weight")
+            sharedViewModel.handleUserEvent(UserEvent.UpdateUserWeight(weight))
         }
 
         HorizontalDivider()
 
-        Units(userSelectedUnits = userDetails.unit.unitValue) {
-            
+        Units(userSelectedUnits = userDetails.unit.unitValue) {units->
+            Timber.d("User updated weight")
+            sharedViewModel.handleUserEvent(UserEvent.UpdateUserUnits(units))
         }
 
         SectionSpacer(modifier = Modifier.fillMaxWidth())
 
         WakeUpTime(userWakeTime = userDetails.wakeUpTime.toString()) {
-            
+
         }
 
         HorizontalDivider()
 
         BedTime(userBedTime = userDetails.bedTime.toString()) {
-            
+
         }
 
 
@@ -115,6 +122,6 @@ fun SettingsList(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewSettingList(){
+fun PreviewSettingList() {
     SettingsList(sharedViewModel = viewModel())
 }

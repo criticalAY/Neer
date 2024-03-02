@@ -41,7 +41,7 @@ import com.criticalay.neer.ui.composables.settings.SettingItem
 fun GenderItem(
     modifier: Modifier = Modifier,
     title: String,
-    selectedGender: Gender,
+    selectedGender:String,
     onOptionSelected: (option: Gender) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -61,17 +61,17 @@ fun GenderItem(
                 fontSize = 18.sp,
                 text = title
             )
-            Text(text = selectedGender.name)
+            Text(text = selectedGender)
         }
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
         ) {
-            Gender.entries.forEach { theme ->
+            Gender.entries.forEach { gender ->
                 DropdownMenuItem(
-                    text = { Text(text = theme.name) },
+                    text = { Text(text = gender.name) },
                     onClick = {
-                        onOptionSelected(theme)
+                        onOptionSelected(gender)
                         expanded = false
                     },
                     Modifier.offset(16.dp, 0.dp)

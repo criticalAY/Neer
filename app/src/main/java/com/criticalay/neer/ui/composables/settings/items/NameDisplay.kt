@@ -16,6 +16,7 @@
 
 package com.criticalay.neer.ui.composables.settings.items
 
+import android.app.AlertDialog
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -39,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -53,15 +55,20 @@ import com.criticalay.neer.ui.composables.userdetails.DetailTextField
 @Composable
 fun NameDisplay(
     modifier: Modifier = Modifier,
-    userName:String,
-    handleClick: () -> Unit
+    userName: String,
+    newValue: (name: String) -> Unit,
 ) {
-    SettingItem(modifier = modifier .clickable {
-        handleClick()
+    var showDialog by remember {
+        mutableStateOf(false)
+    }
+    SettingItem(modifier = modifier.clickable {
+        showDialog = true
     }) {
         Row(
             modifier = Modifier
-                .semantics(mergeDescendants = true) {}
+                .semantics(mergeDescendants = true) {
+
+                }
                 .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -78,17 +85,27 @@ fun NameDisplay(
             )
         }
     }
+    if (showDialog) {
+        EditNameDialog(
+            name = userName,
+            newValue = { name ->
+                newValue(name)
+
+            },
+            showAlertDialog = { show -> showDialog = show }
+        )
+    }
 }
 
 @Composable
 private fun EditNameDialog(
     modifier: Modifier = Modifier,
-    setShowDialog: (Boolean) -> Unit,
-    onDismissRequest: (Int) -> Unit,
-    currentValue: Int,
+    name: String,
+    newValue: (name: String) -> Unit,
+    showAlertDialog: (show: Boolean) -> Unit,
 ) {
-    var currentAmount by remember {
-        mutableStateOf(currentValue.toString())
+    var userName by remember {
+        mutableStateOf(name)
     }
     Dialog(onDismissRequest = {
         // Do nothing
@@ -105,12 +122,12 @@ private fun EditNameDialog(
                 )
                 DetailTextField(
                     modifier = Modifier.fillMaxWidth(),
-                    value = currentAmount,
+                    value = userName,
                     onValueChange = { newValue ->
-                        if (newValue.isNotEmpty() && newValue.isDigitsOnly()) {
-                            currentAmount = newValue
+                        if (newValue.isNotEmpty()) {
+                            userName = newValue
                         } else if (newValue.isEmpty()) {
-                            currentAmount = ""
+                            userName = ""
                         }
                     },
                     label = stringResource(R.string.name),
@@ -122,8 +139,8 @@ private fun EditNameDialog(
                         )
                     },
                     trailingIcon = {
-                        if (currentAmount.isNotBlank() && currentAmount.toInt() > 0) {
-                            IconButton(onClick = { currentAmount = "" }) {
+                        if (userName.isNotBlank()) {
+                            IconButton(onClick = { userName = "" }) {
                                 Icon(
                                     imageVector = Icons.Outlined.Clear,
                                     contentDescription = stringResource(R.string.clear)
@@ -132,7 +149,7 @@ private fun EditNameDialog(
                         }
                     },
                     keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
+                        keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Done
                     ),
                 )
@@ -143,19 +160,20 @@ private fun EditNameDialog(
                     horizontalArrangement = Arrangement.End,
                 ) {
                     TextButton(
-                        onClick = { setShowDialog(false) },
+                        onClick = {
+                            showAlertDialog(false)
+                        },
                         modifier = Modifier.padding(8.dp),
                     ) {
                         Text(stringResource(R.string.dismiss))
                     }
                     TextButton(
                         onClick = {
-                            if (currentAmount.isDigitsOnly()) onDismissRequest(currentAmount.toInt())
-
-                            setShowDialog(false)
+                            newValue(userName)
+                            showAlertDialog(false)
                         },
                         modifier = Modifier.padding(8.dp),
-                        enabled = currentAmount.isNotBlank() && currentAmount.toInt() > 0
+                        enabled = userName.isNotBlank()
                     ) {
                         Text(stringResource(R.string.confirm))
                     }

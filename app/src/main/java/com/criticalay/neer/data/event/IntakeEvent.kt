@@ -29,6 +29,8 @@ sealed class IntakeEvent {
 
     data class DeleteIntake(val intake: Intake):IntakeEvent()
 
+    data class UpdateIntakeById(val intakeId:Long, val intakeAmount:Int) : IntakeEvent()
+
     // TODO: add them
 //    data object DeleteIntake:IntakeEvent()
 //    data object UpdateIntake:IntakeEvent()

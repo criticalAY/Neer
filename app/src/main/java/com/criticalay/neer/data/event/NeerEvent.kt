@@ -16,12 +16,13 @@
 
 package com.criticalay.neer.data.event
 
+import com.criticalay.neer.data.model.Gender
+import com.criticalay.neer.data.model.Units
 import com.criticalay.neer.data.model.User
+import java.time.LocalTime
 
 sealed class NeerEvent {
     class AddUser(val user: User) : NeerEvent()
-
-    class UpdateUser(val user: User) : NeerEvent()
 
     data object GetUser : NeerEvent()
 

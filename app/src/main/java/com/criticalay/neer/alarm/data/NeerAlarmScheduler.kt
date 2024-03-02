@@ -42,7 +42,7 @@ class NeerAlarmScheduler(
         alarmManager.setInexactRepeating(
             AlarmManager.RTC_WAKEUP,
             item.time.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
-            5 * 1000,
+            item.interval.toLong() * 60 * 60 * 1000,
             PendingIntent.getBroadcast(
                 context,
                 101,

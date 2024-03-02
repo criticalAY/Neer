@@ -61,4 +61,7 @@ interface IntakeDao {
     @Query("SELECT AVG(intakeAmount) FROM intake WHERE beverageId = :beverageId AND strftime('%W', intakeDateTime) = :week")
     suspend fun getWeeklyAverageIntake(beverageId: Long, week: String): Double?
 
+    @Query("UPDATE intake SET intakeAmount = :intakeAmount WHERE intakeId = :intakeId")
+    suspend fun updateIntakeAmountById(intakeId: Long, intakeAmount: Int)
+
 }

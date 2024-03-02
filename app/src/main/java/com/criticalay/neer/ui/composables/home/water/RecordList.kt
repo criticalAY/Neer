@@ -30,6 +30,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -73,6 +74,7 @@ fun RecordList(
     LaunchedEffect(todayAllIntakes) {
         lazyListState.animateScrollToItem(0)
     }
+    var selectedIntakeId by remember { mutableLongStateOf(0L) }
 
     var intakeAmount by remember {
         mutableIntStateOf(0)
@@ -109,6 +111,8 @@ fun RecordList(
                         intakeEventListener(IntakeEvent.DeleteIntake(intake))
                     },
                     handleEdit = {
+                        Timber.d("Edit water amount dialog shown")
+                        selectedIntakeId = intake.intakeId
                         showDialog.value = true
 
                     },
@@ -124,8 +128,8 @@ fun RecordList(
                     showDialog.value = show
                 },
                 onDismissRequest = { newValue ->
-                   // TODO: update the value
-
+                    Timber.d("Updated selected item water amount")
+                    intakeEventListener(IntakeEvent.UpdateIntakeById(intakeId = selectedIntakeId, intakeAmount = newValue))
                 },
                 currentValue = intakeAmount,
             )

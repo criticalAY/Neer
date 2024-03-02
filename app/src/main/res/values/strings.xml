@@ -46,4 +46,8 @@
     <string name="cd_notifications_enabled">Notifications Enabled</string>
     <string name="cd_notifications_disabled">Notifications Disabled</string>
     <string name="setting_enable_notifications">Enable Notifications</string>
+    <string name="notification_disable_message">Turning off notifications will prevent reminders from appearing. Are you sure you want to proceed?</string>
+    <string name="disable_notifications">Disable Notifications</string>
+    <string name="change_your_height">Change your height</string>
+    <string name="change_your_weight">Change your weight</string>
 </resources>

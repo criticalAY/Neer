@@ -16,8 +16,8 @@
 
 package com.criticalay.neer.data.model
 
-enum class Gender {
-    MALE,
-    FEMALE,
-    OTHER
+enum class Gender(val genderValue:String) {
+    MALE("Male"),
+    FEMALE("Female"),
+    OTHER("Other")
 }
