@@ -29,6 +29,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.NavHost
 import com.criticalay.neer.ui.composables.home.Home
 import com.criticalay.neer.ui.composables.notification.NotificationScreen
+import com.criticalay.neer.ui.composables.privacy.PrivacyScreen
 import com.criticalay.neer.ui.composables.settings.SettingsScreen
 import com.criticalay.neer.ui.composables.userdetails.UserDetailForm
 import com.criticalay.neer.ui.composables.waterdetails.WaterDetailForm
@@ -105,16 +106,30 @@ fun Navigation(
             )
         }
 
-        composable(route = Destination.Settings.path) {
-            SettingsScreen(
-                sharedViewModel = sharedViewModel
-            ){
+        composable(route = Destination.Privacy.path){
+            PrivacyScreen(onBack = {
                 navController.navigate(Destination.HomeScreen.path){
                     popUpTo(Destination.HomeScreen.path){
                         inclusive=true
                     }
                 }
-            }
+            })
+        }
+
+        composable(route = Destination.Settings.path) {
+            SettingsScreen(
+                sharedViewModel = sharedViewModel,
+                onPrivacy = {
+                    navController.navigate(Destination.Privacy.path)
+                },
+                onBack = {
+                    navController.navigate(Destination.HomeScreen.path){
+                        popUpTo(Destination.HomeScreen.path){
+                            inclusive=true
+                        }
+                    }
+                }
+            )
         }
 
 

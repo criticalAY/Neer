@@ -29,8 +29,8 @@ data class User(
     val gender: Gender = Gender.FEMALE,
     val weight: Double = 0.0,
     val height: Double = 0.0,
-    val bedTime: LocalTime = LocalTime.now(),
-    val wakeUpTime: LocalTime? = LocalTime.now(),
+    val bedTime: LocalTime?= null,
+    val wakeUpTime: LocalTime?=null,
     val unit: Units = Units.KG_ML,
     @PrimaryKey
     val id: Long = 100

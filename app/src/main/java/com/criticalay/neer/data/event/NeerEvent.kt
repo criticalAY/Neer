@@ -24,8 +24,6 @@ import java.time.LocalTime
 sealed class NeerEvent {
     class AddUser(val user: User) : NeerEvent()
 
-    data object GetUser : NeerEvent()
-
     data object Notification : NeerEvent()
 
 }

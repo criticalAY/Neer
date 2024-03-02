@@ -42,7 +42,7 @@ class NeerApp:Application() {
             val channel = NotificationChannel(
                 WATER_REMINDER_CHANNEL_ID,
                 getString(R.string.water),
-                NotificationManager.IMPORTANCE_HIGH
+                NotificationManager.IMPORTANCE_DEFAULT
             )
             channel.description = getString(R.string.notification_description)
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

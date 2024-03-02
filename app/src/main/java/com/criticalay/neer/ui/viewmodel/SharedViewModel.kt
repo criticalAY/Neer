@@ -41,9 +41,6 @@ import javax.inject.Inject
 class SharedViewModel @Inject constructor(
     private val repository: NeerRepository
 ) : ViewModel() {
-
-    val uiState = MutableStateFlow(User())
-
     private val _todayAllIntakes = MutableStateFlow<List<Intake>>(emptyList())
     val todayAllIntakes: StateFlow<List<Intake>> = _todayAllIntakes
 
@@ -179,10 +176,6 @@ class SharedViewModel @Inject constructor(
                 addUser(contentEvent.user)
             }
 
-            is NeerEvent.GetUser -> {
-                getUser()
-            }
-
             NeerEvent.Notification -> {
                 // TODO: add notification system
             }
@@ -194,15 +187,6 @@ class SharedViewModel @Inject constructor(
             repository.addBeverage(beverage)
         }
 
-    }
-
-    fun getUser() {
-        viewModelScope.launch {
-            val user = repository.getUser()
-            if (user != null) {
-                uiState.value = user
-            }
-        }
     }
 
 

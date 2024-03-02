@@ -27,6 +27,8 @@ sealed class Destination(val path: String) {
 
     data object Notification : Destination("notifications")
 
+    data object Privacy : Destination("privacy")
+
     companion object {
         fun fromString(route: String): Destination {
             return when (route) {

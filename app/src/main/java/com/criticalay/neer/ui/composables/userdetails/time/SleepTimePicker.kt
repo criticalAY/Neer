@@ -27,6 +27,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
+import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,6 +42,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.criticalay.neer.R
+import com.criticalay.neer.ui.composables.timepicker.TimeDialog
 import com.criticalay.neer.utils.TimeUtils.formatTime
 import java.time.LocalTime
 import java.util.Locale
@@ -52,58 +54,35 @@ fun SleepTimePicker(
     modifier: Modifier = Modifier
 ) {
     var showDialog by remember { mutableStateOf(false) }
+    var timeSelected by remember { mutableStateOf(false) }
 
     val defaultSelectedTime by remember { mutableStateOf(LocalTime.of(23, 0)) }
     val timeState = rememberTimePickerState(
         initialHour = defaultSelectedTime.hour,
         initialMinute = defaultSelectedTime.minute
     )
-
-    if (showDialog) {
-        BasicAlertDialog(
-            onDismissRequest = { showDialog = false },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Column(
-                modifier = Modifier
-                    .background(color = Color.LightGray)
-                    .padding(top = 28.dp, start = 20.dp, end = 20.dp, bottom = 12.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-
-                TimePicker(state = timeState)
-
-                Row(
-                    modifier = Modifier
-                        .padding(top = 12.dp)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    TextButton(onClick = { showDialog = false }) {
-                        Text(text = "Dismiss")
-                    }
-                    TextButton(onClick = {
-                        showDialog = false
-                        val selectedTime = LocalTime.of(timeState.hour, timeState.minute)
-                        onTimeSelected(selectedTime)
-                    }) {
-                        Text(text = "Confirm")
-                    }
-                }
-            }
-        }
-    }
-
     val formattedTime = remember(timeState.hour, timeState.minute) {
         formatTime(timeState.hour, timeState.minute, timeState.hour < 12)
     }
+    if (!showDialog && !timeSelected) {
+        onTimeSelected(defaultSelectedTime)
+    }
 
+    TimeDialog(
+        showDialog = showDialog,
+        onDismissRequest = { showDialog = false },
+        onConfirm = { selectedTime ->
+            showDialog = false
+            onTimeSelected(selectedTime)
+        },
+        timeState = timeState
+    )
 
     SleepTimeItem(
         title = stringResource(id = R.string.sleep_time),
         setTime = formattedTime,
         onSettingClicked = {
+            timeSelected=true
             showDialog = true
         }
     )

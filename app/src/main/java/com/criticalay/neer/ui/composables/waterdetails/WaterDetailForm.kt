@@ -100,7 +100,7 @@ fun WaterDetailForm(
                     Timber.d("Creating notification")
                     val scheduler = NeerAlarmScheduler(context = context)
                     val alarmItem = AlarmItem(
-                        LocalDateTime.now().plusSeconds(5),
+                        LocalDateTime.now().plusHours(1),
                         1.0,
                         context.getString(R.string.notification_title),
                         context.getString(R.string.notification_message)
