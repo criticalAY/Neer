@@ -58,7 +58,7 @@ import java.time.LocalTime
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserDetailForm(
-    onProceed : () -> Unit,
+    onProceed: () -> Unit,
     neerEventListener: (neerEvent: NeerEvent) -> Unit
 ) {
     var selectedSleepTime by remember {
@@ -201,7 +201,7 @@ fun UserDetailForm(
                 HorizontalDivider()
 
                 WakeUpTimePicker(onTimeSelected = { wakeTime ->
-                    selectedWakeTime =wakeTime
+                    selectedWakeTime = wakeTime
                 })
 
                 HorizontalDivider()
@@ -226,21 +226,31 @@ fun UserDetailForm(
             }
 
             Spacer(modifier = Modifier.weight(1f))
+            var submitButtonEnabled by remember {
+                mutableStateOf(false)
+            }
+            submitButtonEnabled = userName.isNotEmpty() && userAge.isNotEmpty() && userHeight.isNotEmpty() && userWeight.isNotEmpty()
+
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp)
                     .align(Alignment.CenterHorizontally),
+                enabled = submitButtonEnabled,
                 onClick = {
-                    neerEventListener(NeerEvent.AddUser(User(
-                        userName,
-                        userAge.toInt(),
-                        userGender,
-                        userWeight.toDouble(),
-                        userHeight.toDouble(),
-                        bedTime = selectedSleepTime,
-                        wakeUpTime = selectedWakeTime
-                    )))
+                    neerEventListener(
+                        NeerEvent.AddUser(
+                            User(
+                                userName,
+                                userAge.toInt(),
+                                userGender,
+                                userWeight.toDouble(),
+                                userHeight.toDouble(),
+                                bedTime = selectedSleepTime,
+                                wakeUpTime = selectedWakeTime
+                            )
+                        )
+                    )
                     onProceed()
                 }
             ) {
@@ -256,5 +266,5 @@ fun UserDetailForm(
 @Preview(showBackground = true)
 @Composable
 fun PreviewUserDetailForm() {
-    UserDetailForm(viewModel(),{})
+    UserDetailForm(viewModel(), {})
 }
