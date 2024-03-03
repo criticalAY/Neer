@@ -24,4 +24,6 @@ sealed class BeverageEvent {
 
     data object GetTargetAmount: BeverageEvent()
 
+    data class UpdateTarget(val target:Int) : BeverageEvent()
+
 }

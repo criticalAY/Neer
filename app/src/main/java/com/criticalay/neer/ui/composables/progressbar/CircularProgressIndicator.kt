@@ -110,20 +110,24 @@ fun CustomCircularProgressIndicator(
 
 
             drawContext.canvas.nativeCanvas.apply {
-                drawIntoCanvas {
-                    drawText(
-                        "$initialValue ml",
-                        circleCenter.x,
-                        circleCenter.y + 45.dp.toPx()/3f,
-                        Paint().apply {
-                            textSize = 28.sp.toPx()
-                            textAlign = Paint.Align.CENTER
-                            color = Color.White.toArgb()
-                            isFakeBoldText = true
-                        }
-                    )
+                val text = "$initialValue/\n${maxValue}ml"
+                val textPaint = Paint().apply {
+                    textSize = 28.sp.toPx()
+                    textAlign = Paint.Align.CENTER
+                    color = Color.White.toArgb()
+                    isFakeBoldText = true
+                }
+
+                val textLines = text.split("\n")
+                val lineHeight = textPaint.fontSpacing
+
+                var yPosition = circleCenter.y + 45.dp.toPx() / 3f
+                textLines.forEach { line ->
+                    drawText(line, circleCenter.x, yPosition, textPaint)
+                    yPosition += lineHeight
                 }
             }
+
 
         }
     }

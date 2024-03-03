@@ -194,8 +194,6 @@ fun Home(
                     )
 
                 }
-
-
             }
 
             Spacer(Modifier.size(26.dp))

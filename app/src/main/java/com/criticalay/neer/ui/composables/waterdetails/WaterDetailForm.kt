@@ -110,7 +110,7 @@ fun WaterDetailForm(
                     notificationTriggered = true
                 }
             }
-        }else{
+        }else if (!notificationTriggered){
             Timber.d("Creating notification")
             val scheduler = NeerAlarmScheduler(context = context)
             val alarmItem = AlarmItem(
@@ -188,7 +188,7 @@ fun WaterDetailForm(
                     mutableStateOf(false)
                 }
                 submitButtonEnabled = waterIntakeAmount.isNotEmpty()
-
+                val beverageName = stringResource(id = R.string.water)
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -199,7 +199,7 @@ fun WaterDetailForm(
                         neerEventListener(NeerEvent.TriggerBeverageEvent(BeverageEvent.AddBeverage(
                             Beverage(
                                 userId = USER_ID,
-                                beverageName = "Water",
+                                beverageName = beverageName,
                                 totalIntakeAmount = waterIntakeAmount.toInt()
                             )
                         )))

@@ -42,19 +42,18 @@ class NeerNotificationService(
             PendingIntent.FLAG_IMMUTABLE
         )
 
-        val actionPendingIntent = PendingIntent.getBroadcast(
-            context,
-            2,
-            Intent(context, WaterNotificationReceiver::class.java),
-            PendingIntent.FLAG_IMMUTABLE
-        )
+        // TODO: add this after resolving the bugs
+//        val actionPendingIntent = PendingIntent.getBroadcast(
+//            context,
+//            2,
+//            Intent(context, WaterNotificationReceiver::class.java),
+//            PendingIntent.FLAG_IMMUTABLE
+//        )
         val notification = NotificationCompat.Builder(context, WATER_REMINDER_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_outline_water_bottle)
             .setContentTitle(notificationItem.title)
             .setContentText(notificationItem.message)
             .setContentIntent(activityPendingIntent)
-            .addAction(R.drawable.ic_outline_water_bottle,
-                context.getString(R.string.drunk), actionPendingIntent)
             .build()
 
         notificationManager.notify(1, notification)

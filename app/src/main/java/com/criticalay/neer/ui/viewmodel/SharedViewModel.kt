@@ -22,7 +22,6 @@ import com.criticalay.neer.data.event.BeverageEvent
 import com.criticalay.neer.data.event.IntakeEvent
 import com.criticalay.neer.data.event.NeerEvent
 import com.criticalay.neer.data.event.UserEvent
-import com.criticalay.neer.data.model.Beverage
 import com.criticalay.neer.data.model.Intake
 import com.criticalay.neer.data.model.User
 import com.criticalay.neer.data.repository.NeerRepository
@@ -72,6 +71,12 @@ class SharedViewModel @Inject constructor(
                     BeverageEvent.GetTargetAmount -> {
                         viewModelScope.launch {
                             _targetIntakeAmount.value = repository.getTargetAmount()
+                        }
+                    }
+
+                    is BeverageEvent.UpdateTarget -> {
+                        viewModelScope.launch {
+                            repository.updateIntakeTarget(neerEvent.beverageEvent.target)
                         }
                     }
                 }

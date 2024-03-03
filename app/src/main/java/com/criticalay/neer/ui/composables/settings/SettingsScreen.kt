@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.criticalay.neer.BuildConfig
 import com.criticalay.neer.R
+import com.criticalay.neer.data.event.BeverageEvent
 import com.criticalay.neer.data.event.NeerEvent
 import com.criticalay.neer.data.event.UserEvent
 import com.criticalay.neer.data.model.User
@@ -56,6 +57,7 @@ import com.criticalay.neer.ui.composables.settings.items.Gender
 import com.criticalay.neer.ui.composables.settings.items.Height
 import com.criticalay.neer.ui.composables.settings.items.NameDisplay
 import com.criticalay.neer.ui.composables.settings.items.PrivacyPolicy
+import com.criticalay.neer.ui.composables.settings.items.TargetAmount
 import com.criticalay.neer.ui.composables.settings.items.Units
 import com.criticalay.neer.ui.composables.settings.items.WakeUpTime
 import com.criticalay.neer.ui.composables.settings.items.Weight
@@ -66,6 +68,7 @@ import timber.log.Timber
 @Composable
 fun SettingsScreen(
     userDetails : User,
+    waterDrinkTarget : Int,
     neerEventListener: (neerEvent:NeerEvent) -> Unit,
     onBack : () -> Unit,
     onPrivacy:() -> Unit
@@ -136,6 +139,14 @@ fun SettingsScreen(
 
                 HorizontalDivider()
 
+                TargetAmount(targetAmount = waterDrinkTarget) {newTarget->
+                    Timber.d("User updated drink target")
+                    neerEventListener(NeerEvent.TriggerBeverageEvent(BeverageEvent.UpdateTarget(newTarget)))
+
+                }
+
+                HorizontalDivider()
+
                 Units(userSelectedUnits = userDetails.unit.unitValue) {units->
                     Timber.d("User updated weight")
                     neerEventListener(NeerEvent.TriggerUserEvent(UserEvent.UpdateUserUnits(units)))
@@ -180,5 +191,11 @@ fun SettingsScreen(
 @Composable
 @Preview(showBackground = true)
 fun PreviewSettingsScreen(){
-    SettingsScreen(userDetails = User("Ashish"), neerEventListener = {}, onBack = { /*TODO*/ }) {}
+    SettingsScreen(
+        userDetails = User("Ashish"),
+        waterDrinkTarget = 5000,
+        neerEventListener = {},
+        onBack = { /*TODO*/ }) {
+        
+    }
 }

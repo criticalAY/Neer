@@ -41,8 +41,6 @@ class NeerRepository @Inject constructor(
         return userDao.getUserDetails()
     }
 
-    suspend fun getUser(): User? = userDao.getUser()
-
     suspend fun addUser(user: User) {
         userDao.addUser(user = user)
     }
@@ -91,6 +89,10 @@ class NeerRepository @Inject constructor(
 
     suspend fun getTargetAmount(): Int{
         return beverageDao.getTotalIntakeAmount()
+    }
+
+    suspend fun updateIntakeTarget(target:Int){
+        beverageDao.updateTotalIntakeAmount(newTotalIntakeAmount = target)
     }
 
     // ---- Intake ---- //

@@ -17,14 +17,11 @@
 package com.criticalay.neer.ui.composables.notification
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -43,10 +40,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.criticalay.neer.R
+import com.criticalay.neer.alarm.data.AlarmItem
 import com.criticalay.neer.alarm.data.NeerAlarmScheduler
 import com.criticalay.neer.utils.PreferencesManager
+import timber.log.Timber
+import java.time.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -83,7 +84,7 @@ fun NotificationScreen(
                 scrollBehavior = scrollBehavior
             )
         }
-    )  {padding ->
+    ) { padding ->
         Column(modifier = modifier.padding(padding)) {
             NotificationSetting(
                 modifier = Modifier
@@ -92,25 +93,36 @@ fun NotificationScreen(
                     ),
                 title = stringResource(R.string.setting_enable_notifications),
                 checked = switchState,
-                onCheckChanged = {checked ->
+                onCheckChanged = { checked ->
                     if (!checked) {
+                        Timber.d("Showing cancel notification dialog")
                         showDialog = true
                     } else {
-                        switchState = true
+                        Timber.d("Turning back notification on")
                         PreferencesManager(context).saveNotificationPreference(true)
-                        NeerAlarmScheduler(context = context).cancel()
+                        val scheduler = NeerAlarmScheduler(context = context)
+                        val alarmItem = AlarmItem(
+                            LocalDateTime.now().plusHours(1),
+                            1.0,
+                            context.getString(R.string.notification_title),
+                            context.getString(R.string.notification_message)
+                        )
+                        scheduler.schedule(alarmItem)
+                        switchState = true
                     }
                 }
             )
 
-            if (showDialog){
+            if (showDialog) {
                 AlertDialogNotification(
                     onDismissRequest = {
+                        Timber.d("Dismissing the notification dialog")
                         showDialog = false
-                                       },
+                    },
                     onConfirmation = {
                         showDialog = false
                         switchState = false
+                        Timber.d("User turned off Notifications")
                         PreferencesManager(context).saveNotificationPreference(false)
                         NeerAlarmScheduler(context = context).cancel()
                     },
@@ -120,5 +132,13 @@ fun NotificationScreen(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun PreviewNotificationScreen() {
+    NotificationScreen {
+
     }
 }

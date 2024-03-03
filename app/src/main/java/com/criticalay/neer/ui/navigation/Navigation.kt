@@ -127,6 +127,7 @@ fun Navigation(
                     navController.navigate(Destination.Privacy.path)
                 },
                 userDetails = sharedViewModel.userDetails.collectAsState().value,
+                waterDrinkTarget = sharedViewModel.targetIntakeAmount.collectAsState().value,
                 onBack = {
                     navController.navigate(Destination.HomeScreen.path){
                         popUpTo(Destination.HomeScreen.path){
