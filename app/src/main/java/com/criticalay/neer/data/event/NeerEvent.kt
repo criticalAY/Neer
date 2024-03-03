@@ -26,4 +26,10 @@ sealed class NeerEvent {
 
     data object Notification : NeerEvent()
 
+    data class TriggerIntakeEvent(val intakeEvent: IntakeEvent) : NeerEvent()
+
+    data class TriggerUserEvent(val userEvent: UserEvent): NeerEvent()
+
+    data class TriggerBeverageEvent(val beverageEvent: BeverageEvent) : NeerEvent()
+
 }

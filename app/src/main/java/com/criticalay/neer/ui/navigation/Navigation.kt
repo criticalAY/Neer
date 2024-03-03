@@ -17,6 +17,7 @@
 package com.criticalay.neer.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,9 +57,9 @@ fun Navigation(
         else -> Destination.UserDetails.path
     }
 
+    val userDetails = sharedViewModel.userDetails.collectAsState().value
+
     startDestination = initialDestination
-
-
 
     NavHost(
         navController = navController,
@@ -74,7 +75,7 @@ fun Navigation(
         }
 
         composable(route = Destination.WaterDetails.path) {
-            WaterDetailForm(beverageEventListener = sharedViewModel::handleBeverageEvent,
+            WaterDetailForm(neerEventListener = sharedViewModel::handleEvent,
                 onProceed = {
                     preferencesManager.saveWaterDetails()
                     navController.navigate(Destination.HomeScreen.path)
@@ -84,7 +85,10 @@ fun Navigation(
 
         composable(route = Destination.HomeScreen.path) {
             Home(
-                sharedViewModel = sharedViewModel,
+                neerEventListener = sharedViewModel::handleEvent,
+                todayIntake = sharedViewModel.todayTotalIntake.collectAsState().value,
+                targetIntake = sharedViewModel.targetIntakeAmount.collectAsState().value,
+                intakeList = sharedViewModel.todayAllIntakes.collectAsState().value,
                 navigateToSettings = {
                     navController.navigate(Destination.Settings.path)
                 },
@@ -118,10 +122,11 @@ fun Navigation(
 
         composable(route = Destination.Settings.path) {
             SettingsScreen(
-                sharedViewModel = sharedViewModel,
+                neerEventListener = sharedViewModel::handleEvent,
                 onPrivacy = {
                     navController.navigate(Destination.Privacy.path)
                 },
+                userDetails = sharedViewModel.userDetails.collectAsState().value,
                 onBack = {
                     navController.navigate(Destination.HomeScreen.path){
                         popUpTo(Destination.HomeScreen.path){

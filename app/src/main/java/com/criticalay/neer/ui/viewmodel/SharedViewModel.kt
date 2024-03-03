@@ -16,8 +16,6 @@
 
 package com.criticalay.neer.ui.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.criticalay.neer.data.event.BeverageEvent
@@ -30,10 +28,8 @@ import com.criticalay.neer.data.model.User
 import com.criticalay.neer.data.repository.NeerRepository
 import com.criticalay.neer.utils.Constants.BEVERAGE_ID
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -53,146 +49,129 @@ class SharedViewModel @Inject constructor(
     private val _userDetails = MutableStateFlow(User())
     val userDetails : StateFlow<User> = _userDetails
 
-
-    fun handleUserEvent(userEvent: UserEvent){
-        when(userEvent){
-            UserEvent.GetUserDetails -> {
-                viewModelScope.launch {
-                    repository.getUserDetails().collect{user ->
-                        _userDetails.value = user
-                    }
-                }
-            }
-            is UserEvent.UpdateUserAge -> {
-                viewModelScope.launch {
-                    repository.updateUserAge(userEvent.age)
-                }
-            }
-            is UserEvent.UpdateUserGender -> {
-                viewModelScope.launch {
-                    repository.updateUserGender(userEvent.gender)
-                }
-            }
-            is UserEvent.UpdateUserHeight -> {
-                viewModelScope.launch {
-                    repository.updateUserHeight(userEvent.height)
-                }
-            }
-            is UserEvent.UpdateUserName -> {
-                viewModelScope.launch {
-                    repository.updateUserName(userEvent.name)
-                }
-            }
-            is UserEvent.UpdateUserSleepTime -> {
-                viewModelScope.launch {
-                    repository.updateUserSleepTime(userEvent.bedTime)
-                }
-            }
-            is UserEvent.UpdateUserUnits -> {
-                viewModelScope.launch {
-                    repository.updateUserUnits(userEvent.unit)
-                }
-            }
-            is UserEvent.UpdateUserWakeUpTime -> {
-                viewModelScope.launch {
-                    repository.updateUserWakeUpTime(userEvent.wakeUpTime)
-                }
-            }
-            is UserEvent.UpdateUserWeight -> {
-                viewModelScope.launch {
-                    repository.updateUserWeight(userEvent.weight)
-                }
-            }
-        }
-    }
-
-
-
-    fun handleBeverageEvent(beverageEvent: BeverageEvent) {
-        when (beverageEvent) {
-            is BeverageEvent.AddBeverage -> {
-                addBeverage(beverage = beverageEvent.beverage)
-            }
-
-            BeverageEvent.GetTargetAmount -> {
-                viewModelScope.launch {
-                    _targetIntakeAmount.value = repository.getTargetAmount()
-                }
-            }
-        }
-
-    }
-
-
-    fun handleIntakeEvent(intakeEvent: IntakeEvent) {
-        when (intakeEvent) {
-            is IntakeEvent.AddIntake -> {
-                viewModelScope.launch {
-                    repository.addIntake(intakeEvent.intake)
-                }
-            }
-
-            is IntakeEvent.GetTodayIntake -> {
-                viewModelScope.launch {
-                    repository.getWaterIntakesForToday(
-                        waterBeverageId = BEVERAGE_ID,
-                        startDay = intakeEvent.startDay,
-                        endDay = intakeEvent.endDay
-                    ).collect {
-                        _todayAllIntakes.value = it
-                    }
-                }
-            }
-
-            is IntakeEvent.GetTodayTotalIntake -> {
-                viewModelScope.launch {
-                    repository.getTodayTotalIntake(
-                        waterBeverageId = BEVERAGE_ID,
-                        startDay = intakeEvent.startDay,
-                        endDay = intakeEvent.endDay
-                    ).collect{
-                        _todayTotalIntake.value = it
-                    }
-                }
-            }
-
-            is IntakeEvent.DeleteIntake -> {
-                viewModelScope.launch {
-                    repository.deleteIntake(intakeEvent.intake)
-                }
-            }
-
-            is IntakeEvent.UpdateIntakeById -> {
-                viewModelScope.launch {
-                    repository.updateIntakeById(intakeId = intakeEvent.intakeId, intakeAmount =  intakeEvent.intakeAmount)
-                }
-            }
-        }
-    }
-
-    fun handleEvent(contentEvent: NeerEvent) {
-        when (contentEvent) {
+    fun handleEvent(neerEvent: NeerEvent) {
+        when (neerEvent) {
             is NeerEvent.AddUser -> {
-                addUser(contentEvent.user)
+                viewModelScope.launch {
+                    repository.addUser(neerEvent.user)
+                }
             }
 
             NeerEvent.Notification -> {
                 // TODO: add notification system
             }
-        }
-    }
 
-    private fun addBeverage(beverage: Beverage) {
-        viewModelScope.launch {
-            repository.addBeverage(beverage)
-        }
+            is NeerEvent.TriggerBeverageEvent -> {
+                when (neerEvent.beverageEvent) {
+                    is BeverageEvent.AddBeverage -> {
+                        viewModelScope.launch {
+                            repository.addBeverage(neerEvent.beverageEvent.beverage)
+                        }
+                    }
 
-    }
+                    BeverageEvent.GetTargetAmount -> {
+                        viewModelScope.launch {
+                            _targetIntakeAmount.value = repository.getTargetAmount()
+                        }
+                    }
+                }
+            }
+            is NeerEvent.TriggerIntakeEvent -> {
+                when (neerEvent.intakeEvent) {
+                    is IntakeEvent.AddIntake -> {
+                        viewModelScope.launch {
+                            repository.addIntake(neerEvent.intakeEvent.intake)
+                        }
+                    }
 
+                    is IntakeEvent.GetTodayIntake -> {
+                        viewModelScope.launch {
+                            repository.getWaterIntakesForToday(
+                                waterBeverageId = BEVERAGE_ID,
+                                startDay = neerEvent.intakeEvent.startDay,
+                                endDay = neerEvent.intakeEvent.endDay
+                            ).collect {
+                                _todayAllIntakes.value = it
+                            }
+                        }
+                    }
 
-    fun addUser(user: User) {
-        viewModelScope.launch {
-            repository.addUser(user)
+                    is IntakeEvent.GetTodayTotalIntake -> {
+                        viewModelScope.launch {
+                            repository.getTodayTotalIntake(
+                                waterBeverageId = BEVERAGE_ID,
+                                startDay = neerEvent.intakeEvent.startDay,
+                                endDay = neerEvent.intakeEvent.endDay
+                            ).collect{
+                                _todayTotalIntake.value = it
+                            }
+                        }
+                    }
+
+                    is IntakeEvent.DeleteIntake -> {
+                        viewModelScope.launch {
+                            repository.deleteIntake(neerEvent.intakeEvent.intake)
+                        }
+                    }
+
+                    is IntakeEvent.UpdateIntakeById -> {
+                        viewModelScope.launch {
+                            repository.updateIntakeById(intakeId = neerEvent.intakeEvent.intakeId, intakeAmount =  neerEvent.intakeEvent.intakeAmount)
+                        }
+                    }
+                }
+            }
+            is NeerEvent.TriggerUserEvent -> {
+                when(neerEvent.userEvent){
+                    UserEvent.GetUserDetails -> {
+                        viewModelScope.launch {
+                            repository.getUserDetails().collect{user ->
+                                _userDetails.value = user
+                            }
+                        }
+                    }
+                    is UserEvent.UpdateUserAge -> {
+                        viewModelScope.launch {
+                            repository.updateUserAge(neerEvent.userEvent.age)
+                        }
+                    }
+                    is UserEvent.UpdateUserGender -> {
+                        viewModelScope.launch {
+                            repository.updateUserGender(neerEvent.userEvent.gender)
+                        }
+                    }
+                    is UserEvent.UpdateUserHeight -> {
+                        viewModelScope.launch {
+                            repository.updateUserHeight(neerEvent.userEvent.height)
+                        }
+                    }
+                    is UserEvent.UpdateUserName -> {
+                        viewModelScope.launch {
+                            repository.updateUserName(neerEvent.userEvent.name)
+                        }
+                    }
+                    is UserEvent.UpdateUserSleepTime -> {
+                        viewModelScope.launch {
+                            repository.updateUserSleepTime(neerEvent.userEvent.bedTime)
+                        }
+                    }
+                    is UserEvent.UpdateUserUnits -> {
+                        viewModelScope.launch {
+                            repository.updateUserUnits(neerEvent.userEvent.unit)
+                        }
+                    }
+                    is UserEvent.UpdateUserWakeUpTime -> {
+                        viewModelScope.launch {
+                            repository.updateUserWakeUpTime(neerEvent.userEvent.wakeUpTime)
+                        }
+                    }
+                    is UserEvent.UpdateUserWeight -> {
+                        viewModelScope.launch {
+                            repository.updateUserWeight(neerEvent.userEvent.weight)
+                        }
+                    }
+                }
+            }
         }
     }
 }

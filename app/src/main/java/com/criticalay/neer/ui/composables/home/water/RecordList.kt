@@ -42,6 +42,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.criticalay.neer.R
 import com.criticalay.neer.data.event.IntakeEvent
+import com.criticalay.neer.data.event.NeerEvent
+import com.criticalay.neer.data.model.Intake
 import com.criticalay.neer.ui.composables.home.alertdialog.AmountEditDialog
 import com.criticalay.neer.ui.viewmodel.SharedViewModel
 import com.criticalay.neer.utils.TimeUtils.formatLocalDateTimeToTime
@@ -50,26 +52,24 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.util.EventListener
 
 @Composable
 fun RecordList(
     modifier: Modifier = Modifier,
-    sharedViewModel: SharedViewModel,
-    intakeEventListener: (intakeEvent: IntakeEvent) -> Unit,
+    todayAllIntakes: List<Intake>,
+    neerEventListener: (neerEvent: NeerEvent) -> Unit
 ) {
     LaunchedEffect(Unit) {
         val startOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MIN)
         val startOfNextDay = LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.MIN)
-        intakeEventListener(
-            IntakeEvent.GetTodayIntake(
-                startDay = startOfDay,
-                endDay = startOfNextDay
-            )
-        )
+        neerEventListener(NeerEvent.TriggerIntakeEvent( IntakeEvent.GetTodayIntake(
+            startDay = startOfDay,
+            endDay = startOfNextDay
+        )))
     }
 
     val lazyListState = rememberLazyListState()
-    val todayAllIntakes = sharedViewModel.todayAllIntakes.collectAsState().value
 
     LaunchedEffect(todayAllIntakes) {
         lazyListState.animateScrollToItem(0)
@@ -108,7 +108,7 @@ fun RecordList(
                 intakeAmount = intake.intakeAmount
                 WaterRecordItem(
                     handleDelete = {
-                        intakeEventListener(IntakeEvent.DeleteIntake(intake))
+                        neerEventListener(NeerEvent.TriggerIntakeEvent(IntakeEvent.DeleteIntake(intake)))
                     },
                     handleEdit = {
                         Timber.d("Edit water amount dialog shown")
@@ -129,7 +129,7 @@ fun RecordList(
                 },
                 onDismissRequest = { newValue ->
                     Timber.d("Updated selected item water amount")
-                    intakeEventListener(IntakeEvent.UpdateIntakeById(intakeId = selectedIntakeId, intakeAmount = newValue))
+                    neerEventListener(NeerEvent.TriggerIntakeEvent(IntakeEvent.UpdateIntakeById(intakeId = selectedIntakeId, intakeAmount = newValue)))
                 },
                 currentValue = intakeAmount,
             )

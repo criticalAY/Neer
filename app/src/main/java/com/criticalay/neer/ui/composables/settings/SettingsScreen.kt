@@ -45,11 +45,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.criticalay.neer.BuildConfig
 import com.criticalay.neer.R
-import com.criticalay.neer.data.dao.BeverageDao
-import com.criticalay.neer.data.dao.IntakeDao
-import com.criticalay.neer.data.dao.UserDao
-import com.criticalay.neer.data.event.SettingsEvent
+import com.criticalay.neer.data.event.NeerEvent
 import com.criticalay.neer.data.event.UserEvent
+import com.criticalay.neer.data.model.User
 import com.criticalay.neer.data.repository.NeerRepository
 import com.criticalay.neer.ui.composables.SectionSpacer
 import com.criticalay.neer.ui.composables.settings.items.AppVersionSettingItem
@@ -67,7 +65,8 @@ import timber.log.Timber
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-    sharedViewModel: SharedViewModel,
+    userDetails : User,
+    neerEventListener: (neerEvent:NeerEvent) -> Unit,
     onBack : () -> Unit,
     onPrivacy:() -> Unit
 ) {
@@ -103,16 +102,14 @@ fun SettingsScreen(
                 .padding(padding)
         ) {
             LaunchedEffect(Unit) {
-                sharedViewModel.handleUserEvent(UserEvent.GetUserDetails)
+                neerEventListener(NeerEvent.TriggerUserEvent(UserEvent.GetUserDetails))
             }
-
-            val userDetails = sharedViewModel.userDetails.collectAsState().value
 
             Column {
                 userDetails.name?.let {
                     NameDisplay(userName = it) { name ->
                         Timber.d("User updated name")
-                        sharedViewModel.handleUserEvent(UserEvent.UpdateUserName(name))
+                        neerEventListener(NeerEvent.TriggerUserEvent(UserEvent.UpdateUserName(name)))
                     }
                 }
 
@@ -120,35 +117,35 @@ fun SettingsScreen(
 
                 Gender(userGender = userDetails.gender.genderValue) { gender ->
                     Timber.d("user updated gender")
-                    sharedViewModel.handleUserEvent(UserEvent.UpdateUserGender(gender))
+                    neerEventListener(NeerEvent.TriggerUserEvent(UserEvent.UpdateUserGender(gender)))
                 }
 
                 HorizontalDivider()
 
                 Height(userHeight = userDetails.height) { height ->
                     Timber.d("User updated height")
-                    sharedViewModel.handleUserEvent(UserEvent.UpdateUserHeight(height = height))
+                    neerEventListener(NeerEvent.TriggerUserEvent(UserEvent.UpdateUserHeight(height = height)))
                 }
 
                 HorizontalDivider()
 
                 Weight(userWeight = userDetails.weight) { weight ->
                     Timber.d("User updated weight")
-                    sharedViewModel.handleUserEvent(UserEvent.UpdateUserWeight(weight))
+                    neerEventListener(NeerEvent.TriggerUserEvent(UserEvent.UpdateUserWeight(weight)))
                 }
 
                 HorizontalDivider()
 
                 Units(userSelectedUnits = userDetails.unit.unitValue) {units->
                     Timber.d("User updated weight")
-                    sharedViewModel.handleUserEvent(UserEvent.UpdateUserUnits(units))
+                    neerEventListener(NeerEvent.TriggerUserEvent(UserEvent.UpdateUserUnits(units)))
                 }
 
                 SectionSpacer(modifier = Modifier.fillMaxWidth())
 
                 userDetails.wakeUpTime?.let {
                     WakeUpTime(userWakeTime = it) { time->
-                        sharedViewModel.handleUserEvent(UserEvent.UpdateUserWakeUpTime(time))
+                        neerEventListener(NeerEvent.TriggerUserEvent(UserEvent.UpdateUserWakeUpTime(time)))
                     }
                 }
 
@@ -156,7 +153,7 @@ fun SettingsScreen(
 
                 userDetails.bedTime?.let {
                     BedTime(userBedTime = it) { time->
-                        sharedViewModel.handleUserEvent(UserEvent.UpdateUserSleepTime(time))
+                        neerEventListener(NeerEvent.TriggerUserEvent(UserEvent.UpdateUserSleepTime(time)))
                     }
                 }
 
@@ -177,5 +174,11 @@ fun SettingsScreen(
 
         }
     }
+}
 
+
+@Composable
+@Preview(showBackground = true)
+fun PreviewSettingsScreen(){
+    SettingsScreen(userDetails = User("Ashish"), neerEventListener = {}, onBack = { /*TODO*/ }) {}
 }

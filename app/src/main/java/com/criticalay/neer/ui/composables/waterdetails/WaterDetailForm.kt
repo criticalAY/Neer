@@ -60,6 +60,7 @@ import com.criticalay.neer.R
 import com.criticalay.neer.alarm.data.AlarmItem
 import com.criticalay.neer.alarm.data.NeerAlarmScheduler
 import com.criticalay.neer.data.event.BeverageEvent
+import com.criticalay.neer.data.event.NeerEvent
 import com.criticalay.neer.data.model.Beverage
 import com.criticalay.neer.ui.composables.notification.NotificationDialog
 import com.criticalay.neer.ui.composables.userdetails.DetailTextField
@@ -72,7 +73,7 @@ import java.time.LocalDateTime
 @Composable
 fun WaterDetailForm(
     onProceed: () -> Unit,
-    beverageEventListener: (neerEvent: BeverageEvent) -> Unit
+    neerEventListener: (neerEvent: NeerEvent) -> Unit,
 ) {
     val context = LocalContext.current
     var waterIntakeAmount by remember {
@@ -109,10 +110,20 @@ fun WaterDetailForm(
                     notificationTriggered = true
                 }
             }
+        }else{
+            Timber.d("Creating notification")
+            val scheduler = NeerAlarmScheduler(context = context)
+            val alarmItem = AlarmItem(
+                LocalDateTime.now().plusHours(1),
+                1.0,
+                context.getString(R.string.notification_title),
+                context.getString(R.string.notification_message)
+            )
+            scheduler.schedule(alarmItem)
+            notificationTriggered = true
         }
-
-
         PreferencesManager(context).saveNotificationPreference(notificationTriggered)
+
         Column(
             modifier = Modifier
                 .padding(it)
@@ -185,13 +196,13 @@ fun WaterDetailForm(
                         .align(Alignment.CenterHorizontally),
                     enabled = submitButtonEnabled,
                     onClick = {
-                        beverageEventListener(BeverageEvent.AddBeverage(
+                        neerEventListener(NeerEvent.TriggerBeverageEvent(BeverageEvent.AddBeverage(
                             Beverage(
                                 userId = USER_ID,
                                 beverageName = "Water",
                                 totalIntakeAmount = waterIntakeAmount.toInt()
                             )
-                        ))
+                        )))
                         onProceed()
                     }) {
                     Text(text = stringResource(id = R.string.proceed))
@@ -209,7 +220,5 @@ fun WaterDetailForm(
 @Preview(showBackground = true)
 @Composable
 fun PreviewWaterDetailForm() {
-    WaterDetailForm(onProceed = {  }) {
-
-    }
+    WaterDetailForm(onProceed = {  }, neerEventListener = {})
 }

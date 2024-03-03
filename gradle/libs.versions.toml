@@ -1,6 +1,6 @@
 [versions]
 accompanistPermissions = "0.35.0-alpha"
-agp = "8.4.0-alpha11"
+agp = "8.4.0-alpha12"
 datastorePreferences = "1.0.0"
 desugar_jdk_libs_nio = "2.0.4"
 hiltAndroid = "2.50"

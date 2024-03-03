@@ -41,28 +41,27 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.criticalay.neer.R
 import com.criticalay.neer.data.event.BeverageEvent
 import com.criticalay.neer.data.event.IntakeEvent
+import com.criticalay.neer.data.event.NeerEvent
 import com.criticalay.neer.data.model.Intake
 import com.criticalay.neer.ui.composables.home.alertdialog.SelectWaterAmountDialog
 import com.criticalay.neer.ui.composables.home.water.RecordList
 import com.criticalay.neer.ui.composables.progressbar.CustomCircularProgressIndicator
 import com.criticalay.neer.ui.theme.Light_blue
 import com.criticalay.neer.ui.theme.Progress_Blue
-import com.criticalay.neer.ui.viewmodel.SharedViewModel
 import com.criticalay.neer.utils.Constants.BEVERAGE_ID
 import com.criticalay.neer.utils.Constants.USER_ID
 import com.criticalay.neer.utils.PreferencesManager
@@ -74,7 +73,10 @@ import java.time.LocalTime
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(
-    sharedViewModel: SharedViewModel,
+    neerEventListener: (neerEvent: NeerEvent) -> Unit,
+    todayIntake: Int,
+    targetIntake: Int,
+    intakeList: List<Intake>,
     navigateToSettings: () -> Unit,
     navigateToNotifications: () -> Unit
 ) {
@@ -95,9 +97,11 @@ fun Home(
                 },
                 navigationIcon = {
                     IconButton(onClick = { navigateToNotifications() }) {
-                        Icon(imageVector = Icons.Rounded.NotificationsActive, contentDescription = stringResource(
-                            R.string.notification
-                        )
+                        Icon(
+                            imageVector = Icons.Rounded.NotificationsActive,
+                            contentDescription = stringResource(
+                                R.string.notification
+                            )
                         )
 
                     }
@@ -127,24 +131,24 @@ fun Home(
                     val startOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MIN)
                     val startOfNextDay =
                         LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.MIN)
-                    sharedViewModel.handleIntakeEvent(
-                        IntakeEvent.GetTodayTotalIntake(
-                            startDay = startOfDay,
-                            endDay = startOfNextDay
+                    neerEventListener(
+                        NeerEvent.TriggerIntakeEvent(
+                            IntakeEvent.GetTodayTotalIntake(
+                                startDay = startOfDay,
+                                endDay = startOfNextDay
+                            )
                         )
                     )
-                    sharedViewModel.handleBeverageEvent(BeverageEvent.GetTargetAmount)
+                    neerEventListener(NeerEvent.TriggerBeverageEvent(BeverageEvent.GetTargetAmount))
                 }
-                val todayTotalIntakes = sharedViewModel.todayTotalIntake.collectAsState().value
-                val targetIntakeAmount = sharedViewModel.targetIntakeAmount.collectAsState().value
-                Timber.d("Intake total", todayTotalIntakes)
-                Timber.i(todayTotalIntakes.toString())
-                Timber.i(targetIntakeAmount.toString())
+                Timber.d("Intake total", todayIntake)
+                Timber.i(todayIntake.toString())
+                Timber.i(todayIntake.toString())
 
                 CustomCircularProgressIndicator(
                     modifier = Modifier.padding(50.dp),
-                    initialValue = todayTotalIntakes,
-                    maxValue = targetIntakeAmount,
+                    initialValue = todayIntake,
+                    maxValue = targetIntake,
                     primaryColor = Progress_Blue,
                     secondaryColor = Light_blue,
                     onPositionChange = {}
@@ -163,13 +167,15 @@ fun Home(
 
                 Button(
                     onClick = {
-                        sharedViewModel.handleIntakeEvent(
-                            IntakeEvent.AddIntake(
-                                Intake(
-                                    USER_ID,
-                                    BEVERAGE_ID,
-                                    PreferencesManager(context = context).getWaterAmount(),
-                                    LocalDateTime.now()
+                        neerEventListener(
+                            NeerEvent.TriggerIntakeEvent(
+                                IntakeEvent.AddIntake(
+                                    Intake(
+                                        USER_ID,
+                                        BEVERAGE_ID,
+                                        PreferencesManager(context = context).getWaterAmount(),
+                                        LocalDateTime.now()
+                                    )
                                 )
                             )
                         )
@@ -212,8 +218,8 @@ fun Home(
 
             RecordList(
                 modifier = Modifier.padding(8.dp),
-                sharedViewModel = sharedViewModel,
-                intakeEventListener = sharedViewModel::handleIntakeEvent
+                todayAllIntakes = intakeList,
+                neerEventListener = neerEventListener
             )
 
         }
@@ -245,4 +251,17 @@ private fun ChangeIntakeAmountDialog(modifier: Modifier = Modifier) {
         }, onDismissRequest = { selectedValue ->
             PreferencesManager(context = context).setWaterAmount(selectedValue)
         }, currentValue = PreferencesManager(context = context).getWaterAmount())
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewHome(){
+    Home(
+        neerEventListener = {},
+        todayIntake = 500,
+        targetIntake = 5000,
+        intakeList = emptyList(),
+        navigateToSettings = { /*TODO*/ }) {
+
+    }
 }
