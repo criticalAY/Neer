@@ -2,7 +2,7 @@
 The Water Reminder App is a simple application designed to help users stay hydrated by reminding them to drink water regularly throughout the day. 
 It allows users to set their daily water intake goals and track their progress towards achieving them.
 
-![image](https://github.com/criticalAY/Neer/assets/48384865/05efbcf9-4ee9-4e54-8ab5-71df16ffe680) ![image](https://github.com/criticalAY/Neer/assets/48384865/ff549dc5-0212-429f-8065-f99b7e3fbdfa)
+![Screenshot 2024-03-03 230037](https://github.com/criticalAY/Neer/assets/48384865/5f331576-cdfc-4eba-a32a-e9aa5ff4da6b)
 
 ## Features
 * Water Intake Reminder: Receive timely notifications reminding you to drink water regularly.
