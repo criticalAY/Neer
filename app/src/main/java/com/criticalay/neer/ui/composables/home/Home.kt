@@ -16,12 +16,14 @@
 
 package com.criticalay.neer.ui.composables.home
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -45,6 +47,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -111,6 +114,8 @@ fun Home(
     ) {
         Column(modifier = Modifier.padding(it)) {
             val context = LocalContext.current
+            val isPortrait = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
+
 
             HorizontalDivider()
 
@@ -122,10 +127,12 @@ fun Home(
                     .align(alignment = Alignment.CenterHorizontally)
                     .padding(8.dp)
             )
+
+            if (isPortrait) {
             Box(
                 modifier = Modifier
                     .fillMaxHeight(0.4f)
-                    .padding(10.dp)
+                    .padding(4.dp)
             ) {
                 LaunchedEffect(Unit) {
                     val startOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MIN)
@@ -145,20 +152,32 @@ fun Home(
                 Timber.i(todayIntake.toString())
                 Timber.i(todayIntake.toString())
 
-                CustomCircularProgressIndicator(
-                    modifier = Modifier.padding(50.dp),
-                    initialValue = todayIntake,
-                    maxValue = targetIntake,
-                    primaryColor = Progress_Blue,
-                    secondaryColor = Light_blue,
-                    onPositionChange = {}
-                )
+                    CustomCircularProgressIndicator(
+                        modifier = Modifier.padding(25.dp),
+                        initialValue = todayIntake,
+                        maxValue = targetIntake,
+                        primaryColor = Progress_Blue,
+                        secondaryColor = Light_blue,
+                        onPositionChange = {}
+                    )
 
-                ChangeIntakeAmountDialog(
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .padding(10.dp)
-                )
+
+                    ChangeIntakeAmountDialog(
+                        modifier = Modifier
+                            .align(Alignment.CenterEnd)
+                            .padding(10.dp)
+                    )
+                }
+            }else{
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        fontSize = 18.sp,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        text = "$todayIntake/$targetIntake ml")
+                }
             }
 
             Row(

@@ -56,9 +56,6 @@ fun Navigation(
         userDetailsFilled -> Destination.WaterDetails.path
         else -> Destination.UserDetails.path
     }
-
-    val userDetails = sharedViewModel.userDetails.collectAsState().value
-
     startDestination = initialDestination
 
     NavHost(
@@ -70,7 +67,11 @@ fun Navigation(
             UserDetailForm(neerEventListener = sharedViewModel::handleEvent,
                 onProceed = {
                     preferencesManager.saveUserDetails()
-                    navController.navigate(Destination.WaterDetails.path)
+                    navController.navigate(Destination.WaterDetails.path){
+                        popUpTo(route = Destination.UserDetails.path){
+                            inclusive= true
+                        }
+                    }
                 })
         }
 
@@ -78,7 +79,11 @@ fun Navigation(
             WaterDetailForm(neerEventListener = sharedViewModel::handleEvent,
                 onProceed = {
                     preferencesManager.saveWaterDetails()
-                    navController.navigate(Destination.HomeScreen.path)
+                    navController.navigate(Destination.HomeScreen.path) {
+                        popUpTo(route = Destination.WaterDetails.path){
+                            inclusive= true
+                        }
+                    }
                 })
 
         }
@@ -137,22 +142,5 @@ fun Navigation(
                 }
             )
         }
-
-
-//        composable(route = Destination.Settings.path) {
-//            Settings {
-//                navController.navigate(Destination.Home.path) {
-//                    popUpTo(navController.graph.startDestinationId) {
-//                        inclusive = false
-//                    }
-//                    launchSingleTop = true
-//                }
-//            }
-//        }
-//        composable(route = Destination.Home.path) {
-//            HomeScreen {
-//                navController.navigate(Destination.Settings.path)
-//            }
-//        }
     }
 }

@@ -28,14 +28,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.sin
 
 @Composable
 fun CustomCircularProgressIndicator(
@@ -63,7 +58,7 @@ fun CustomCircularProgressIndicator(
             val height = size.height
             val circleThickness = width / 20f
 
-            val cRadius = width/2.5f
+            val circleRadius = minOf(size.height ,size.width) / 2f
             circleCenter = Offset(x = width/2f, y = height/2f)
 
 
@@ -74,7 +69,7 @@ fun CustomCircularProgressIndicator(
                         secondaryColor.copy(0.25f)
                     )
                 ),
-                radius = cRadius,
+                radius = circleRadius,
                 center = circleCenter
             )
 
@@ -84,7 +79,7 @@ fun CustomCircularProgressIndicator(
                     width = circleThickness
                 ),
                 color = secondaryColor,
-                radius = cRadius,
+                radius = circleRadius,
                 center = circleCenter
             )
 
@@ -98,12 +93,12 @@ fun CustomCircularProgressIndicator(
                 ),
                 useCenter = false,
                 size = Size(
-                    width = cRadius * 2f,
-                    height = cRadius * 2f
+                    width = circleRadius * 2f,
+                    height = circleRadius * 2f
                 ),
                 topLeft = Offset(
-                    (width - cRadius * 2f)/2f,
-                    (height - cRadius * 2f)/2f
+                    (width - circleRadius * 2f)/2f,
+                    (height - circleRadius * 2f)/2f
                 )
 
             )
@@ -121,7 +116,7 @@ fun CustomCircularProgressIndicator(
                 val textLines = text.split("\n")
                 val lineHeight = textPaint.fontSpacing
 
-                var yPosition = circleCenter.y + 45.dp.toPx() / 3f
+                var yPosition = circleCenter.y
                 textLines.forEach { line ->
                     drawText(line, circleCenter.x, yPosition, textPaint)
                     yPosition += lineHeight
