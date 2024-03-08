@@ -22,12 +22,12 @@ import androidx.compose.ui.graphics.Color
 // custom color
 val Light_blue = Color(0xFFA7C7E7)
 val Progress_Blue = Color(0xFF00BFFF)
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
 
 
+val BluePrimary = Color(0xFF00BFFF)
+val BlueSecondary = Color(0xFF007399)
+val BlueTertiary = Color(0xFF80DFFF)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+val DarkBluePrimary= Color(0xFF0099CC)
+val DarkBlueTertiary =Color(0xFF4695AF)
+val DarkBlueSecondary = Color(0xFF4E6472)

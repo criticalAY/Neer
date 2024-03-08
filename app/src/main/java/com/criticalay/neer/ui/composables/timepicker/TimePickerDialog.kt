@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
@@ -52,7 +53,7 @@ fun TimeDialog(
         ) {
             Column(
                 modifier = Modifier
-                    .background(color = Color.LightGray)
+                    .background(color = MaterialTheme.colorScheme.background)
                     .padding(top = 28.dp, start = 20.dp, end = 20.dp, bottom = 12.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
