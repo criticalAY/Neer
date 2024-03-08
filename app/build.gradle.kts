@@ -52,8 +52,8 @@ android {
         //
         // This ensures the correct ordering between the various types of releases (dev < alpha < beta < release) which is
         // needed for upgrades to be offered correctly.
-        versionCode = 10100300
-        versionName = "1.01"
+        versionCode = 10200101
+        versionName = "1.02alpha1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
