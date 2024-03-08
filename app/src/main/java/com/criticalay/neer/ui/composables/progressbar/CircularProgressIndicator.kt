@@ -31,6 +31,8 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.criticalay.neer.data.model.Units
+import com.criticalay.neer.utils.Converters
 
 @Composable
 fun CustomCircularProgressIndicator(
@@ -38,6 +40,7 @@ fun CustomCircularProgressIndicator(
     initialValue:Int,
     primaryColor: Color,
     secondaryColor:Color,
+    selectedUnits: Units,
     minValue:Int = 0,
     maxValue:Int = 100,
     onPositionChange:(Int)->Unit
@@ -105,7 +108,7 @@ fun CustomCircularProgressIndicator(
 
 
             drawContext.canvas.nativeCanvas.apply {
-                val text = "$initialValue/\n${maxValue}ml"
+                val text = "$initialValue/\n${maxValue} ${Converters.getUnitName(selectedUnits,1)}"
                 val textPaint = Paint().apply {
                     textSize = 28.sp.toPx()
                     textAlign = Paint.Align.CENTER
@@ -140,6 +143,7 @@ fun Preview() {
         maxValue = 200,
         primaryColor = Color.Blue,
         secondaryColor = Color.LightGray,
+        selectedUnits = Units.KG_ML,
         onPositionChange = {
 
         }

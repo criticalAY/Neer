@@ -74,6 +74,12 @@
     </string>
     <string name="total_daily_water_intake">Enter the total daily water intake amount</string>
     <string name="height_value">%s cm</string>
+    <string name="change_notification_interval">Change notification interval</string>
+    <string name="hrs">%s Hrs</string>
+    <string name="notification_interval">Notification interval</string>
+    <string name="custom_interval_message">Customize your water intake reminder interval! You can adjust it to suit your needs.</string>
+    <string name="onbaording_meesage">Let\'s kickstart your healthy habit with personalized water reminders. Set your ideal reminder interval and let\'s stay hydrated together!</string>
+    <string name="onboarding_title">Welcome to your hydration journey!</string>
     <string-array name="weighing_values">
         <item>Kg</item>
         <item>Lbs</item>

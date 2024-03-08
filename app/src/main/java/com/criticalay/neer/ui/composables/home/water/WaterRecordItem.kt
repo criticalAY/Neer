@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.criticalay.neer.R
 import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.ui.res.stringResource
 
 @Composable
@@ -55,7 +56,7 @@ fun WaterRecordItem(
     waterIntakeAmount: String
 ) {
     var expanded by remember { mutableStateOf(false) }
-    Card {
+    OutlinedCard {
         Row(modifier = modifier
             .fillMaxWidth()
             .padding(8.dp), verticalAlignment = Alignment.CenterVertically) {

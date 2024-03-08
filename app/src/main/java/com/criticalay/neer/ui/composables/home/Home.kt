@@ -59,7 +59,9 @@ import com.criticalay.neer.R
 import com.criticalay.neer.data.event.BeverageEvent
 import com.criticalay.neer.data.event.IntakeEvent
 import com.criticalay.neer.data.event.NeerEvent
+import com.criticalay.neer.data.event.UserEvent
 import com.criticalay.neer.data.model.Intake
+import com.criticalay.neer.data.model.User
 import com.criticalay.neer.ui.composables.home.alertdialog.SelectWaterAmountDialog
 import com.criticalay.neer.ui.composables.home.water.RecordList
 import com.criticalay.neer.ui.composables.progressbar.CustomCircularProgressIndicator
@@ -79,6 +81,7 @@ fun Home(
     neerEventListener: (neerEvent: NeerEvent) -> Unit,
     todayIntake: Int,
     targetIntake: Int,
+    userDetails : User,
     intakeList: List<Intake>,
     navigateToSettings: () -> Unit,
     navigateToNotifications: () -> Unit
@@ -146,17 +149,17 @@ fun Home(
                             )
                         )
                     )
+                    neerEventListener(NeerEvent.TriggerUserEvent(UserEvent.GetUserDetails))
                     neerEventListener(NeerEvent.TriggerBeverageEvent(BeverageEvent.GetTargetAmount))
                 }
-                Timber.d("Intake total", todayIntake)
-                Timber.i(todayIntake.toString())
-                Timber.i(todayIntake.toString())
 
+                Timber.d("Intake total %s", todayIntake)
                     CustomCircularProgressIndicator(
                         modifier = Modifier.padding(25.dp),
                         initialValue = todayIntake,
                         maxValue = targetIntake,
                         primaryColor = Progress_Blue,
+                        selectedUnits = userDetails.unit,
                         secondaryColor = Light_blue,
                         onPositionChange = {}
                     )
@@ -236,6 +239,7 @@ fun Home(
             RecordList(
                 modifier = Modifier.padding(8.dp),
                 todayAllIntakes = intakeList,
+                selectedUnits = userDetails.unit,
                 neerEventListener = neerEventListener
             )
 
@@ -278,6 +282,7 @@ fun PreviewHome(){
         todayIntake = 500,
         targetIntake = 5000,
         intakeList = emptyList(),
+        userDetails = User(),
         navigateToSettings = { /*TODO*/ }) {
 
     }

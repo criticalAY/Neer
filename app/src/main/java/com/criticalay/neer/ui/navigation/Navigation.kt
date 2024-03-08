@@ -30,11 +30,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.NavHost
 import com.criticalay.neer.ui.composables.home.Home
 import com.criticalay.neer.ui.composables.notification.NotificationScreen
+import com.criticalay.neer.ui.composables.onboarding.OnboardingScreen
 import com.criticalay.neer.ui.composables.privacy.PrivacyScreen
 import com.criticalay.neer.ui.composables.settings.SettingsScreen
 import com.criticalay.neer.ui.composables.userdetails.UserDetailForm
 import com.criticalay.neer.ui.composables.waterdetails.WaterDetailForm
 import com.criticalay.neer.ui.viewmodel.SharedViewModel
+import com.criticalay.neer.utils.AppUtils.isFreshInstall
 import com.criticalay.neer.utils.PreferencesManager
 
 @Composable
@@ -45,16 +47,30 @@ fun Navigation(
 ) {
     val context = LocalContext.current
     val preferencesManager = remember { PreferencesManager(context) }
-    var startDestination by rememberSaveable { mutableStateOf(Destination.UserDetails.path) }
+    var startDestination by rememberSaveable { mutableStateOf(Destination.Onboarding.path) }
 
     val userDetailsFilled = preferencesManager.isUserDetailsFilled()
     val waterDetailsFilled = preferencesManager.isWaterDetailsFilled()
+
+    val isFirstLaunch = preferencesManager.isFirstLaunch()
+
+    val userOnboarded = if (isFirstLaunch) {
+        val isFreshInstall = context.isFreshInstall
+        val onboarded = preferencesManager.isOnboarded(!isFreshInstall)
+        preferencesManager.saveFirstLaunchStatus(false)
+
+        onboarded
+    } else {
+        false
+    }
+
 
     val initialDestination = when {
         userDetailsFilled && waterDetailsFilled -> Destination.HomeScreen.path
         waterDetailsFilled -> Destination.HomeScreen.path
         userDetailsFilled -> Destination.WaterDetails.path
-        else -> Destination.UserDetails.path
+        userOnboarded -> Destination.UserDetails.path
+        else -> Destination.Onboarding.path
     }
     startDestination = initialDestination
 
@@ -63,6 +79,17 @@ fun Navigation(
         modifier = modifier,
         startDestination = startDestination
     ) {
+        composable(route = Destination.Onboarding.path) {
+            OnboardingScreen(){
+                preferencesManager.saveOnboarding()
+                navController.navigate(Destination.UserDetails.path){
+                    popUpTo(route = Destination.Onboarding.path){
+                        inclusive= true
+                    }
+                }
+            }
+        }
+
         composable(route = Destination.UserDetails.path) {
             UserDetailForm(neerEventListener = sharedViewModel::handleEvent,
                 onProceed = {
@@ -96,6 +123,7 @@ fun Navigation(
                 todayIntake = sharedViewModel.todayTotalIntake.collectAsState().value,
                 targetIntake = sharedViewModel.targetIntakeAmount.collectAsState().value,
                 intakeList = sharedViewModel.todayAllIntakes.collectAsState().value,
+                userDetails = sharedViewModel.userDetails.collectAsState().value,
                 navigateToSettings = {
                     navController.navigate(Destination.Settings.path)
                 },

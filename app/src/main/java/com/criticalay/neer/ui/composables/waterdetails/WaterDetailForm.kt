@@ -63,7 +63,7 @@ import com.criticalay.neer.data.event.BeverageEvent
 import com.criticalay.neer.data.event.NeerEvent
 import com.criticalay.neer.data.model.Beverage
 import com.criticalay.neer.data.model.User
-import com.criticalay.neer.ui.composables.notification.NotificationDialog
+import com.criticalay.neer.ui.composables.notification.dialog.NotificationDialog
 import com.criticalay.neer.ui.composables.userdetails.DetailTextField
 import com.criticalay.neer.utils.Constants.USER_ID
 import com.criticalay.neer.utils.Converters
@@ -98,6 +98,9 @@ fun WaterDetailForm(
             mutableStateOf(false)
         }
 
+        val notificationInterval =1.0
+        PreferencesManager(context).setNotificationInterval(notificationInterval)
+
         if (!notificationTriggered && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             NotificationDialog { value ->
                 if (value) {
@@ -105,7 +108,7 @@ fun WaterDetailForm(
                     val scheduler = NeerAlarmScheduler(context = context)
                     val alarmItem = AlarmItem(
                         LocalDateTime.now().plusHours(1),
-                        1.0,
+                        notificationInterval,
                         context.getString(R.string.notification_title),
                         context.getString(R.string.notification_message)
                     )

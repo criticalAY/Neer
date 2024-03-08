@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.criticalay.neer.ui.composables.notification
+package com.criticalay.neer.ui.composables.notification.dialog
 
 import android.Manifest
 import android.os.Build

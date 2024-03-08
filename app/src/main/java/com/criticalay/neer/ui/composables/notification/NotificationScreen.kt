@@ -24,6 +24,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MediumTopAppBar
@@ -45,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import com.criticalay.neer.R
 import com.criticalay.neer.alarm.data.AlarmItem
 import com.criticalay.neer.alarm.data.NeerAlarmScheduler
+import com.criticalay.neer.ui.composables.notification.dialog.AlertDialogNotification
 import com.criticalay.neer.utils.PreferencesManager
 import timber.log.Timber
 import java.time.LocalDateTime
@@ -102,8 +104,9 @@ fun NotificationScreen(
                         PreferencesManager(context).saveNotificationPreference(true)
                         val scheduler = NeerAlarmScheduler(context = context)
                         val alarmItem = AlarmItem(
-                            LocalDateTime.now().plusHours(1),
-                            1.0,
+                            LocalDateTime.now().plusMinutes(30),
+                            PreferencesManager(context = context)
+                                .getNotificationInterval(),
                             context.getString(R.string.notification_title),
                             context.getString(R.string.notification_message)
                         )
@@ -112,6 +115,28 @@ fun NotificationScreen(
                     }
                 }
             )
+
+            HorizontalDivider()
+
+            NotificationIntervalSetting(
+                notificationInterval = PreferencesManager(context = context)
+                    .getNotificationInterval()
+            ) { interval ->
+                if (interval != PreferencesManager(context = context).getNotificationInterval()) {
+                    val scheduler = NeerAlarmScheduler(context = context)
+                    scheduler.cancel()
+                    PreferencesManager(context = context).setNotificationInterval(interval)
+                    val alarmItem = AlarmItem(
+                        LocalDateTime.now().plusMinutes(30),
+                        interval,
+                        context.getString(R.string.notification_title),
+                        context.getString(R.string.notification_message)
+                    )
+                    scheduler.schedule(alarmItem)
+
+
+                }
+            }
 
             if (showDialog) {
                 AlertDialogNotification(

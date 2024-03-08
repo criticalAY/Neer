@@ -44,8 +44,10 @@ import com.criticalay.neer.R
 import com.criticalay.neer.data.event.IntakeEvent
 import com.criticalay.neer.data.event.NeerEvent
 import com.criticalay.neer.data.model.Intake
+import com.criticalay.neer.data.model.Units
 import com.criticalay.neer.ui.composables.home.alertdialog.AmountEditDialog
 import com.criticalay.neer.ui.viewmodel.SharedViewModel
+import com.criticalay.neer.utils.Converters
 import com.criticalay.neer.utils.TimeUtils.formatLocalDateTimeToTime
 import timber.log.Timber
 import java.time.LocalDate
@@ -58,6 +60,7 @@ import java.util.EventListener
 fun RecordList(
     modifier: Modifier = Modifier,
     todayAllIntakes: List<Intake>,
+    selectedUnits: Units,
     neerEventListener: (neerEvent: NeerEvent) -> Unit
 ) {
     LaunchedEffect(Unit) {
@@ -117,7 +120,7 @@ fun RecordList(
 
                     },
                     waterIntakeTime = time,
-                    waterIntakeAmount = "$intakeAmount ml"
+                    waterIntakeAmount = "$intakeAmount ${Converters.getUnitName(selectedUnits,1)}"
                 )
             }
         }
