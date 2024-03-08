@@ -30,7 +30,29 @@ android {
         applicationId = "com.criticalay.neer"
         minSdk = 25
         targetSdk = 34
-        versionCode = 1010000
+
+        // The version number is of the form:
+        // <major>.<minor>.<maintenance>[dev|alpha<build>|beta<build>|]
+        // The <build> is only present for alpha and beta releases (e.g., 2.0.4alpha2 or 2.0.4beta4), developer builds do
+        // not have a build number (e.g., 2.0.4dev) and official releases only have three components (e.g., 2.0.4).
+        //
+        // The version code is derived from the version name as follows:
+        // AbbCCtDD
+        // A: 1-digit decimal number representing the major version
+        // bb: 2-digit decimal number representing the minor version
+        // CC: 2-digit decimal number representing the maintenance version
+        // t: 1-digit decimal number representing the type of the build
+        // 0: developer build
+        // 1: alpha release
+        // 2: beta release
+        // 3: public release
+        // DD: 2-digit decimal number representing the build
+        // 00 for internal builds and public releases
+        // alpha/beta build number for alpha/beta releases
+        //
+        // This ensures the correct ordering between the various types of releases (dev < alpha < beta < release) which is
+        // needed for upgrades to be offered correctly.
+        versionCode = 10100300
         versionName = "1.01"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
