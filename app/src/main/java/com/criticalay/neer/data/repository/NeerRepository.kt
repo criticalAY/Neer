@@ -87,7 +87,7 @@ class NeerRepository @Inject constructor(
         beverageDao.insertBeverage(beverage = beverage)
     }
 
-    suspend fun getTargetAmount(): Int{
+    fun getTargetAmount(): Flow<Int>{
         return beverageDao.getTotalIntakeAmount()
     }
 

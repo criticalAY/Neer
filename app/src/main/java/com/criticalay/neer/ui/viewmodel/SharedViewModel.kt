@@ -66,7 +66,10 @@ class SharedViewModel @Inject constructor(
 
                     BeverageEvent.GetTargetAmount -> {
                         viewModelScope.launch {
-                            _targetIntakeAmount.value = repository.getTargetAmount()
+                            repository.getTargetAmount().collect{targetIntakeAmount ->
+                                _targetIntakeAmount.value = targetIntakeAmount
+
+                            }
                         }
                     }
 

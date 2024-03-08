@@ -32,7 +32,7 @@ interface BeverageDao {
     suspend fun insertBeverage(beverage: Beverage)
 
     @Query("SELECT totalIntakeAmount FROM $BEVERAGE_DATABASE_TABLE")
-    suspend fun getTotalIntakeAmount(): Int
+    fun getTotalIntakeAmount(): Flow<Int>
 
     @Query("UPDATE $BEVERAGE_DATABASE_TABLE SET totalIntakeAmount = :newTotalIntakeAmount WHERE beverageId = $BEVERAGE_ID")
     suspend fun updateTotalIntakeAmount(newTotalIntakeAmount: Int)
