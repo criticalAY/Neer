@@ -4,6 +4,16 @@ It allows users to set their daily water intake goals and track their progress t
 
 ![Screenshot 2024-03-03 230037](https://github.com/criticalAY/Neer/assets/48384865/5f331576-cdfc-4eba-a32a-e9aa5ff4da6b)
 
+Install
+---------
+<div style="display:flex;">
+
+<a href='https://play.google.com/store/apps/details?id=com.criticalay.neer&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'>
+<img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/>
+</a>
+
+</div>
+
 ## Features
 * Water Intake Reminder: Receive timely notifications reminding you to drink water regularly.
 * Customizable Goals: Set your daily water intake goals based on your preferences and needs.
