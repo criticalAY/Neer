@@ -44,4 +44,14 @@ object Converters {
     fun toTime(timeStr: String?): LocalTime? {
         return timeStr?.let { LocalTime.parse(it) }
     }
+
+    interface UnitProvider {
+        val unitValue: String
+    }
+
+    inline fun <reified T> getUnitName(unit: T, index: Int): String where T : Enum<T>, T : UnitProvider {
+        val unitValue = (unit as UnitProvider).unitValue
+        return unitValue.split("/")[index]
+    }
+
 }

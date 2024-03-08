@@ -16,7 +16,9 @@
 
 package com.criticalay.neer.data.model
 
-enum class Units(val unitValue: String) {
+import com.criticalay.neer.utils.Converters
+
+enum class Units(override val unitValue: String): Converters.UnitProvider {
     KG_ML("kg/ml"),
     LBS_OZ("lbs/oz")
 }

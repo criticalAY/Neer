@@ -76,7 +76,7 @@ fun Height(
 
             Text(
                 fontSize = 18.sp,
-                text = userHeight.toString()
+                text = stringResource(R.string.height_value, userHeight)
             )
         }
     }

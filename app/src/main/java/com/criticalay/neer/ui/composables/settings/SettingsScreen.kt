@@ -132,14 +132,14 @@ fun SettingsScreen(
 
                 HorizontalDivider()
 
-                Weight(userWeight = userDetails.weight) { weight ->
+                Weight(userWeight = userDetails.weight, selectedUnits = userDetails.unit) { weight ->
                     Timber.d("User updated weight")
                     neerEventListener(NeerEvent.TriggerUserEvent(UserEvent.UpdateUserWeight(weight)))
                 }
 
                 HorizontalDivider()
 
-                TargetAmount(targetAmount = waterDrinkTarget) {newTarget->
+                TargetAmount(targetAmount = waterDrinkTarget, selectedUnits = userDetails.unit ) {newTarget->
                     Timber.d("User updated drink target")
                     neerEventListener(NeerEvent.TriggerBeverageEvent(BeverageEvent.UpdateTarget(newTarget)))
 

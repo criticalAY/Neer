@@ -52,6 +52,7 @@ import com.criticalay.neer.data.model.User
 import com.criticalay.neer.ui.composables.SectionSpacer
 import com.criticalay.neer.ui.composables.userdetails.time.SleepTimePicker
 import com.criticalay.neer.ui.composables.userdetails.time.WakeUpTimePicker
+import com.criticalay.neer.utils.Converters.getUnitName
 import timber.log.Timber
 import java.time.LocalTime
 
@@ -102,6 +103,8 @@ fun UserDetailForm(
             var userSelectedUnit by remember {
                 mutableStateOf(Units.KG_ML)
             }
+
+            val weightUnit = getUnitName(userSelectedUnit, 0)
 
             Column(modifier = Modifier.padding(8.dp)) {
                 DetailTextField(
@@ -173,8 +176,8 @@ fun UserDetailForm(
                             userWeight = "" // Clear the field if the input is empty
                         }
                     },
-                    label = "Weight",
-                    placeholder = "Enter your weight",
+                    label = "Weight ($weightUnit)",
+                    placeholder = "Enter your weight in $weightUnit",
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Outlined.Person,

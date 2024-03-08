@@ -34,8 +34,8 @@
     <string name="gender">Gender</string>
     <string name="units">Units</string>
     <string name="proceed">Proceed</string>
-    <string name="water_amount">Water amount</string>
-    <string name="enter_your_water_intake">Enter your water intake</string>
+    <string name="water_amount">Water amount(%s)</string>
+    <string name="enter_your_water_intake">Enter your water intake in %s</string>
     <string name="done">Done</string>
     <string name="close">Close</string>
     <string name="change_the_water_intake_amount">Change the water intake amount</string>
@@ -64,10 +64,22 @@
     <string name="setting_enable_notifications">Enable Notifications</string>
     <string name="notification_disable_message">Turning off notifications will prevent reminders from appearing. Are you sure you want to proceed?</string>
     <string name="disable_notifications">Disable Notifications</string>
-    <string name="change_your_height">Change your height</string>
+    <string name="change_your_height">Change your height(cm)</string>
     <string name="change_your_weight">Change your weight</string>
     <string name="privacy">Privacy</string>
     <string name="privacy_policy_message">Our privacy policy reflects our commitment to transparency and respect for your data.\nWe do not collect any personal information from our users, ensuring your privacy remains paramount. You have full control over your data, and we uphold strict security measures to safeguard it. Your trust is our priority.</string>
     <string name="app_privacy_policy">Neer App Privacy Policy</string>
     <string name="change_your_drink_target">Change your drink target</string>
+    <string name="unit_values">
+    </string>
+    <string name="total_daily_water_intake">Enter the total daily water intake amount</string>
+    <string name="height_value">%s cm</string>
+    <string-array name="weighing_values">
+        <item>Kg</item>
+        <item>Lbs</item>
+    </string-array>
+    <string-array name="measurement_values">
+        <item>ml</item>
+        <item>oz</item>
+    </string-array>
 </resources>

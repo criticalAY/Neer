@@ -62,9 +62,11 @@ import com.criticalay.neer.alarm.data.NeerAlarmScheduler
 import com.criticalay.neer.data.event.BeverageEvent
 import com.criticalay.neer.data.event.NeerEvent
 import com.criticalay.neer.data.model.Beverage
+import com.criticalay.neer.data.model.User
 import com.criticalay.neer.ui.composables.notification.NotificationDialog
 import com.criticalay.neer.ui.composables.userdetails.DetailTextField
 import com.criticalay.neer.utils.Constants.USER_ID
+import com.criticalay.neer.utils.Converters
 import com.criticalay.neer.utils.PreferencesManager
 import timber.log.Timber
 import java.time.LocalDateTime
@@ -73,6 +75,7 @@ import java.time.LocalDateTime
 @Composable
 fun WaterDetailForm(
     onProceed: () -> Unit,
+    userDetails: User,
     neerEventListener: (neerEvent: NeerEvent) -> Unit,
 ) {
     val context = LocalContext.current
@@ -150,7 +153,7 @@ fun WaterDetailForm(
                 Text(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     fontSize = 18.sp,
-                    text = "Enter the total daily water intake amount"
+                    text = stringResource(R.string.total_daily_water_intake)
                 )
 
                 DetailTextField(
@@ -165,8 +168,15 @@ fun WaterDetailForm(
                             waterIntakeAmount = ""
                         }
                     },
-                    label = stringResource(R.string.water_amount),
-                    placeholder = stringResource(R.string.enter_your_water_intake),
+                    label = stringResource(R.string.water_amount, Converters.getUnitName(
+                        userDetails.unit,
+                        1
+                    )),
+                    placeholder = stringResource(R.string.enter_your_water_intake,
+                        Converters.getUnitName(
+                            userDetails.unit,
+                        1
+                    )),
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Outlined.Person,
@@ -220,5 +230,5 @@ fun WaterDetailForm(
 @Preview(showBackground = true)
 @Composable
 fun PreviewWaterDetailForm() {
-    WaterDetailForm(onProceed = {  }, neerEventListener = {})
+    WaterDetailForm(onProceed = {  }, neerEventListener = {}, userDetails = User())
 }

@@ -56,10 +56,6 @@ class SharedViewModel @Inject constructor(
                 }
             }
 
-            NeerEvent.Notification -> {
-                // TODO: add notification system
-            }
-
             is NeerEvent.TriggerBeverageEvent -> {
                 when (neerEvent.beverageEvent) {
                     is BeverageEvent.AddBeverage -> {

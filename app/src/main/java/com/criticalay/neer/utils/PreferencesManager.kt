@@ -18,6 +18,7 @@ package com.criticalay.neer.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.criticalay.neer.data.model.Units
 
 class PreferencesManager(context: Context) {
 

@@ -47,12 +47,15 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.window.Dialog
 import com.criticalay.neer.R
+import com.criticalay.neer.data.model.Units
 import com.criticalay.neer.ui.composables.userdetails.DetailTextField
+import com.criticalay.neer.utils.Converters
 
 @Composable
 fun Weight(
     modifier: Modifier = Modifier,
     userWeight:Double,
+    selectedUnits: Units,
     newWeight: (weight:Double) -> Unit
 ) {
     var showDialog by remember {
@@ -76,7 +79,7 @@ fun Weight(
 
             Text(
                 fontSize = 18.sp,
-                text = userWeight.toString()
+                text = "$userWeight ${Converters.getUnitName(selectedUnits, 0)}"
             )
         }
     }

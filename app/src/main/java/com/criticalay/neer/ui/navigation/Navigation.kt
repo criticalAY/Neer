@@ -84,7 +84,9 @@ fun Navigation(
                             inclusive= true
                         }
                     }
-                })
+                },
+                userDetails = sharedViewModel.userDetails.collectAsState().value
+                )
 
         }
 

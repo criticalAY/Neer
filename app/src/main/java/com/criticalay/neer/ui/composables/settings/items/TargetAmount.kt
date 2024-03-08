@@ -46,13 +46,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.criticalay.neer.R
+import com.criticalay.neer.data.model.Units
 import com.criticalay.neer.ui.composables.settings.SettingItem
 import com.criticalay.neer.ui.composables.userdetails.DetailTextField
+import com.criticalay.neer.utils.Converters
 
 @Composable
 fun TargetAmount(
     modifier: Modifier = Modifier,
     targetAmount:Int,
+    selectedUnits: Units,
     newTargetAmount: (value:Int) -> Unit
 ) {
     var showDialog by remember {
@@ -76,7 +79,7 @@ fun TargetAmount(
 
             Text(
                 fontSize = 18.sp,
-                text = targetAmount.toString()
+                text = "$targetAmount ${Converters.getUnitName(selectedUnits,1)}"
             )
         }
     }
