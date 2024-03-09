@@ -70,6 +70,7 @@ import com.criticalay.neer.ui.theme.Progress_Blue
 import com.criticalay.neer.utils.Constants.BEVERAGE_ID
 import com.criticalay.neer.utils.Constants.USER_ID
 import com.criticalay.neer.utils.PreferencesManager
+import com.criticalay.neer.utils.SleepCycle
 import timber.log.Timber
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -151,6 +152,13 @@ fun Home(
                     )
                     neerEventListener(NeerEvent.TriggerUserEvent(UserEvent.GetUserDetails))
                     neerEventListener(NeerEvent.TriggerBeverageEvent(BeverageEvent.GetTargetAmount))
+
+                    userDetails.bedTime?.let { time ->
+                        PreferencesManager(context).saveSleepCycleTime(SleepCycle.SLEEP_TIME, time)
+                    }
+                    userDetails.wakeUpTime?.let { time ->
+                        PreferencesManager(context).saveSleepCycleTime(SleepCycle.WAKE_TIME, time)
+                    }
                 }
 
                 Timber.d("Intake total %s", todayIntake)

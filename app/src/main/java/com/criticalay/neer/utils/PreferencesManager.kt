@@ -19,9 +19,9 @@ package com.criticalay.neer.utils
 import android.content.Context
 import android.content.SharedPreferences
 import com.criticalay.neer.data.model.Units
+import java.time.LocalTime
 
 class PreferencesManager(context: Context) {
-
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences("NeerPrefs", Context.MODE_PRIVATE)
 
@@ -43,6 +43,21 @@ class PreferencesManager(context: Context) {
 
     fun isOnboarded(defaultValue:Boolean): Boolean {
         return sharedPreferences.getBoolean("onboarded", defaultValue)
+    }
+
+    fun saveSleepCycleTime(key: SleepCycle, localTime: LocalTime) {
+        val editor = sharedPreferences.edit()
+        editor.putString(key.value, localTime.toString())
+        editor.apply()
+    }
+
+    fun getSleepCycleTime(key: SleepCycle): LocalTime {
+        val timeString = sharedPreferences.getString(key.value, null)
+        return if (timeString != null) {
+            LocalTime.parse(timeString)
+        } else {
+            LocalTime.now()
+        }
     }
 
     fun saveWaterDetails() {
@@ -101,4 +116,9 @@ class PreferencesManager(context: Context) {
     private fun SharedPreferences.getDouble(key: String, default: Double) =
         java.lang.Double.longBitsToDouble(getLong(key, java.lang.Double.doubleToRawLongBits(default)))
 
+}
+
+enum class SleepCycle(val value : String) {
+    SLEEP_TIME("sleep_time"),
+    WAKE_TIME("wake_time")
 }

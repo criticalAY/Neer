@@ -24,7 +24,10 @@ import androidx.core.app.NotificationCompat
 import com.criticalay.neer.NeerActivity
 import com.criticalay.neer.R
 import com.criticalay.neer.utils.Constants.WATER_REMINDER_CHANNEL_ID
+import com.criticalay.neer.utils.PreferencesManager
+import com.criticalay.neer.utils.SleepCycle
 import timber.log.Timber
+import java.time.LocalTime
 
 class NeerNotificationService(
     private val context: Context
@@ -33,6 +36,13 @@ class NeerNotificationService(
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     override fun showNotification(notificationItem: NotificationItem) {
+        val currentTime = LocalTime.now()
+        val userSleepTime =  PreferencesManager(context).getSleepCycleTime(SleepCycle.SLEEP_TIME)
+        val userWakeTime = PreferencesManager(context).getSleepCycleTime(SleepCycle.WAKE_TIME)
+        if (currentTime in userSleepTime..userWakeTime) {
+            return
+        }
+
         Timber.d("Showing notification")
         val activityIntent = Intent(context, NeerActivity::class.java)
         val activityPendingIntent = PendingIntent.getActivity(
@@ -58,5 +68,4 @@ class NeerNotificationService(
 
         notificationManager.notify(1, notification)
     }
-
 }
