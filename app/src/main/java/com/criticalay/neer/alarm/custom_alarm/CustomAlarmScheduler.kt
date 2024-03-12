@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package com.criticalay.neer.alarm
+package com.criticalay.neer.alarm.custom_alarm
 
-import android.content.Context
-
-class NeerAlarmManager(val context: Context) {
+class CustomAlarmScheduler {
 }

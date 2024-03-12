@@ -57,8 +57,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.text.isDigitsOnly
 import com.criticalay.neer.R
-import com.criticalay.neer.alarm.data.AlarmItem
-import com.criticalay.neer.alarm.data.NeerAlarmScheduler
+import com.criticalay.neer.alarm.default_alarm.data.AlarmItem
+import com.criticalay.neer.alarm.default_alarm.data.NeerAlarmScheduler
 import com.criticalay.neer.data.event.BeverageEvent
 import com.criticalay.neer.data.event.NeerEvent
 import com.criticalay.neer.data.model.Beverage

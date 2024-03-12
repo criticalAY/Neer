@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.criticalay.neer.alarm.data
+package com.criticalay.neer.alarm.default_alarm.data
 
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import com.criticalay.neer.alarm.AlarmReceiver
-import com.criticalay.neer.alarm.AlarmScheduler
+import com.criticalay.neer.alarm.default_alarm.AlarmReceiver
+import com.criticalay.neer.alarm.default_alarm.AlarmScheduler
 import timber.log.Timber
 import java.time.ZoneId
 
@@ -39,10 +39,11 @@ class NeerAlarmScheduler(
         }
 
         if (item.interval!=null){
+            Timber.d("NeerAlarmScheduler interval received is %.2f", item.interval)
         alarmManager.setInexactRepeating(
             AlarmManager.RTC_WAKEUP,
             item.time.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
-            item.interval.toLong() * 60 * 60 * 1000,
+            (item.interval * 60 * 60 * 1000).toLong(),
             PendingIntent.getBroadcast(
                 context,
                 101,

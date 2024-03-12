@@ -39,7 +39,7 @@ class NeerNotificationService(
         val currentTime = LocalTime.now()
         val userSleepTime =  PreferencesManager(context).getSleepCycleTime(SleepCycle.SLEEP_TIME)
         val userWakeTime = PreferencesManager(context).getSleepCycleTime(SleepCycle.WAKE_TIME)
-        if (currentTime in userSleepTime..userWakeTime) {
+        if (currentTime.isAfter(userSleepTime) && currentTime.isBefore(userWakeTime)) {
             return
         }
 

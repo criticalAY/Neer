@@ -43,7 +43,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".alarm.AlarmReceiver"/>
+        <receiver android:name=".alarm.default_alarm.AlarmReceiver"/>
         <receiver android:name=".notification.WaterNotificationReceiver"/>
     </application>
 

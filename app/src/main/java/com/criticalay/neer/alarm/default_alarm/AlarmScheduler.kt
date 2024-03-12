@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.criticalay.neer.alarm
+package com.criticalay.neer.alarm.default_alarm
 
-import com.criticalay.neer.alarm.data.AlarmItem
+import com.criticalay.neer.alarm.default_alarm.data.AlarmItem
 
 interface AlarmScheduler {
     fun schedule(item: AlarmItem)

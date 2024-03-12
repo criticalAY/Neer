@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.criticalay.neer.alarm
+package com.criticalay.neer.alarm.default_alarm
 
 import android.content.BroadcastReceiver
 import android.content.Context

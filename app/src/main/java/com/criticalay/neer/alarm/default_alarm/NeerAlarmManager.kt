@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-package com.criticalay.neer.alarm.data
+package com.criticalay.neer.alarm.default_alarm
 
-import java.time.LocalDateTime
+import android.content.Context
 
-data class AlarmItem (
-    val time: LocalDateTime,
-    val interval:Double? = null,
-    val title:String,
-    val message:String,
-)
+class NeerAlarmManager(val context: Context) {
+}

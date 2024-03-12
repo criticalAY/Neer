@@ -44,8 +44,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.criticalay.neer.R
-import com.criticalay.neer.alarm.data.AlarmItem
-import com.criticalay.neer.alarm.data.NeerAlarmScheduler
+import com.criticalay.neer.alarm.default_alarm.data.AlarmItem
+import com.criticalay.neer.alarm.default_alarm.data.NeerAlarmScheduler
 import com.criticalay.neer.ui.composables.notification.dialog.AlertDialogNotification
 import com.criticalay.neer.utils.PreferencesManager
 import timber.log.Timber
@@ -62,8 +62,12 @@ fun NotificationScreen(
     var switchState by remember {
         mutableStateOf(PreferencesManager(context).getNotificationPreference())
     }
-    // State for showing/hiding the alert dialog
     var showDialog by remember { mutableStateOf(false) }
+    var intervalTime by remember {
+        mutableStateOf(PreferencesManager(context = context)
+            .getNotificationInterval())
+    }
+
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -119,12 +123,12 @@ fun NotificationScreen(
             HorizontalDivider()
 
             NotificationIntervalSetting(
-                notificationInterval = PreferencesManager(context = context)
-                    .getNotificationInterval()
+                notificationInterval = intervalTime
             ) { interval ->
-                if (interval != PreferencesManager(context = context).getNotificationInterval()) {
+                    Timber.d("New interval is %.2f", interval)
                     val scheduler = NeerAlarmScheduler(context = context)
                     scheduler.cancel()
+                    intervalTime = interval
                     PreferencesManager(context = context).setNotificationInterval(interval)
                     val alarmItem = AlarmItem(
                         LocalDateTime.now().plusMinutes(30),
@@ -133,9 +137,6 @@ fun NotificationScreen(
                         context.getString(R.string.notification_message)
                     )
                     scheduler.schedule(alarmItem)
-
-
-                }
             }
 
             if (showDialog) {

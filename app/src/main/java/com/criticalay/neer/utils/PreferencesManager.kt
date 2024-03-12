@@ -107,7 +107,7 @@ class PreferencesManager(context: Context) {
     }
 
     fun getNotificationInterval():Double{
-        return sharedPreferences.getDouble("notification_Interval",1.0)
+        return sharedPreferences.getDouble("notification_interval",1.0)
     }
 
     private fun SharedPreferences.Editor.putDouble(key: String, double: Double) =
