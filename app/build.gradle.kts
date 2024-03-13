@@ -52,8 +52,8 @@ android {
         //
         // This ensures the correct ordering between the various types of releases (dev < alpha < beta < release) which is
         // needed for upgrades to be offered correctly.
-        versionCode = 10200101
-        versionName = "1.02alpha1"
+        versionCode = 10200202
+        versionName = "1.02alpha2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -68,6 +68,11 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+        debug {
+            versionNameSuffix = "-debug"
+            isDebuggable = true
+            applicationIdSuffix = ".debug"
         }
     }
     compileOptions {
