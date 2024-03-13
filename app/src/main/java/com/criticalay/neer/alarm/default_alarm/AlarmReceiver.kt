@@ -21,7 +21,12 @@ import android.content.Context
 import android.content.Intent
 import com.criticalay.neer.notification.NeerNotificationService
 import com.criticalay.neer.notification.NotificationItem
+import com.criticalay.neer.utils.PreferencesManager
+import com.criticalay.neer.utils.SleepCycle
 import timber.log.Timber
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 
 class AlarmReceiver:BroadcastReceiver() {
 
@@ -36,6 +41,15 @@ class AlarmReceiver:BroadcastReceiver() {
                 title = title,
                 message = message
             )
+            val currentTime = LocalTime.now(ZoneId.systemDefault()).truncatedTo(ChronoUnit.MINUTES)
+            val userSleepTime =  PreferencesManager(context).getSleepCycleTime(SleepCycle.SLEEP_TIME)
+            val userWakeTime = PreferencesManager(context).getSleepCycleTime(SleepCycle.WAKE_TIME)
+
+            if (currentTime.isAfter(userSleepTime) || currentTime.isBefore(userWakeTime)) {
+                Timber.d("Skipping notification")
+                return
+            }
+
             val notificationService = NeerNotificationService(context)
             notificationService.showNotification(notificationItem)
         }
