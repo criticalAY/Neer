@@ -52,7 +52,7 @@ android {
         //
         // This ensures the correct ordering between the various types of releases (dev < alpha < beta < release) which is
         // needed for upgrades to be offered correctly.
-        versionCode = 10200202
+        versionCode = 10200102
         versionName = "1.02alpha2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
