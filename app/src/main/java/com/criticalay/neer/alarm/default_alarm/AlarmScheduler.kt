@@ -19,6 +19,9 @@ package com.criticalay.neer.alarm.default_alarm
 import com.criticalay.neer.alarm.default_alarm.data.AlarmItem
 
 interface AlarmScheduler {
-    fun schedule(item: AlarmItem)
+    fun scheduleRegular(item: AlarmItem)
+    fun scheduleOneTime(item: AlarmItem)
+    fun scheduleRepeating(item: AlarmItem)
     fun cancel()
+    fun cancelCustomAlarm(alarmId: Long)
 }

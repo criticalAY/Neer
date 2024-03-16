@@ -31,27 +31,65 @@ class NeerAlarmScheduler(
 
     private val alarmManager = context.getSystemService(AlarmManager::class.java)
 
-    override fun schedule(item: AlarmItem) {
+    override fun scheduleRegular(item: AlarmItem) {
         Timber.d("Scheduling alarm")
         val intent = Intent(context, AlarmReceiver::class.java).apply {
-            putExtra("NOTIFICATION_TITLE", item.title)
-            putExtra("NOTIFICATION_MESSAGE", item.message)
+            putExtra("NOTIFICATION_TYPE", "regular")
         }
 
-        if (item.interval!=null){
+        if (item.interval != null) {
             Timber.d("NeerAlarmScheduler interval received is %.2f", item.interval)
-        alarmManager.setInexactRepeating(
+            alarmManager.setInexactRepeating(
+                AlarmManager.RTC_WAKEUP,
+                item.time.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
+                (item.interval * 60 * 60 * 1000).toLong(),
+                PendingIntent.getBroadcast(
+                    context,
+                    101,
+                    intent,
+                    PendingIntent.FLAG_IMMUTABLE
+                )
+            )
+        }
+    }
+
+    override fun scheduleOneTime(item: AlarmItem) {
+        Timber.d("Scheduling custom alarm one time repeat")
+        val intent = Intent(context, AlarmReceiver::class.java).apply {
+            putExtra("NOTIFICATION_TYPE", "custom")
+            putExtra("ALARM_ID", item.alarmId)
+        }
+        Timber.d("alarm id recieved : %d", item.alarmId)
+
+        alarmManager.set(
             AlarmManager.RTC_WAKEUP,
             item.time.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
-            (item.interval * 60 * 60 * 1000).toLong(),
             PendingIntent.getBroadcast(
                 context,
-                101,
+                item.alarmId.toInt(),
                 intent,
                 PendingIntent.FLAG_IMMUTABLE
             )
         )
-            }
+    }
+
+    override fun scheduleRepeating(item: AlarmItem) {
+        Timber.d("Scheduling custom alarm daily repeat")
+        val intent = Intent(context, AlarmReceiver::class.java).apply {
+            putExtra("NOTIFICATION_TYPE", "custom")
+        }
+            Timber.d("NeerAlarmScheduler interval received is %.2f", item.interval)
+            alarmManager.setInexactRepeating(
+                AlarmManager.RTC_WAKEUP,
+                item.time.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
+                (24 * 60 * 60 * 1000).toLong(),
+                PendingIntent.getBroadcast(
+                    context,
+                    item.alarmId.toInt(),
+                    intent,
+                    PendingIntent.FLAG_IMMUTABLE
+                )
+            )
     }
 
     override fun cancel() {
@@ -66,5 +104,19 @@ class NeerAlarmScheduler(
         )
         Timber.d("Successfully cancelled alarm")
     }
+
+    override fun cancelCustomAlarm(alarmId: Long) {
+        Timber.d("Cancelling custom alarm")
+        alarmManager.cancel(
+            PendingIntent.getBroadcast(
+                context,
+                alarmId.toInt(),
+                Intent(context, AlarmReceiver::class.java),
+                PendingIntent.FLAG_IMMUTABLE
+            )
+        )
+        Timber.d("Successfully cancelled custom alarm")
+    }
+
 
 }

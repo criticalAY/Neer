@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 // custom color
 val Light_blue = Color(0xFFA7C7E7)
 val Progress_Blue = Color(0xFF00BFFF)
+val GrayWhite = Color(0xFFF0F0F0)
 
 
 val BluePrimary = Color(0xFF00BFFF)

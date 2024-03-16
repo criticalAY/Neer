@@ -18,9 +18,11 @@ package com.criticalay.neer.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.criticalay.neer.alarm.default_alarm.data.AlarmItem
 import com.criticalay.neer.data.event.BeverageEvent
 import com.criticalay.neer.data.event.IntakeEvent
 import com.criticalay.neer.data.event.NeerEvent
+import com.criticalay.neer.data.event.NotificationEvent
 import com.criticalay.neer.data.event.UserEvent
 import com.criticalay.neer.data.model.Intake
 import com.criticalay.neer.data.model.User
@@ -47,6 +49,9 @@ class SharedViewModel @Inject constructor(
 
     private val _userDetails = MutableStateFlow(User())
     val userDetails : StateFlow<User> = _userDetails
+
+    private val _allNotifications = MutableStateFlow<List<AlarmItem>>(emptyList())
+    val allNotifications: StateFlow<List<AlarmItem>> = _allNotifications
 
     fun handleEvent(neerEvent: NeerEvent) {
         when (neerEvent) {
@@ -172,6 +177,40 @@ class SharedViewModel @Inject constructor(
                     is UserEvent.UpdateUserWeight -> {
                         viewModelScope.launch {
                             repository.updateUserWeight(neerEvent.userEvent.weight)
+                        }
+                    }
+                }
+            }
+
+            is NeerEvent.TriggerNotificationEvent -> {
+                when(neerEvent.notificationEvent){
+                    is NotificationEvent.DeleteNotification -> {
+                        viewModelScope.launch {
+                            repository.deleteAlarm(neerEvent.notificationEvent.notification)
+                        }
+                    }
+                    NotificationEvent.GetAllScheduledNotifications -> {
+                        viewModelScope.launch {
+                            repository.getAllAlarms()?.collect{alarms ->
+                                _allNotifications.value = alarms
+
+                            }
+                        }
+                    }
+                    is NotificationEvent.SaveNotification -> {
+                        viewModelScope.launch {
+                            repository.createAlarm(neerEvent.notificationEvent.notification)
+                        }
+                    }
+                    is NotificationEvent.UpdateNotification -> {
+                        viewModelScope.launch {
+                            repository.updateAlarm(neerEvent.notificationEvent.notification)
+                        }
+                    }
+
+                    is NotificationEvent.ToggleNotificationState -> {
+                        viewModelScope.launch {
+                            repository.toggleAlarm(neerEvent.notificationEvent.alarmId, neerEvent.notificationEvent.state)
                         }
                     }
                 }

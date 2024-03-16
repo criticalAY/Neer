@@ -19,6 +19,8 @@ package com.criticalay.neer.data
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.criticalay.neer.alarm.default_alarm.data.AlarmDao
+import com.criticalay.neer.alarm.default_alarm.data.AlarmItem
 import com.criticalay.neer.data.dao.BeverageDao
 import com.criticalay.neer.data.dao.IntakeDao
 import com.criticalay.neer.data.dao.UserDao
@@ -27,10 +29,11 @@ import com.criticalay.neer.data.model.Intake
 import com.criticalay.neer.data.model.User
 import com.criticalay.neer.utils.Converters
 
-@Database(entities = [Beverage::class, User::class, Intake::class], version = 1, exportSchema = true)
+@Database(entities = [Beverage::class, User::class, Intake::class, AlarmItem::class], version = 1, exportSchema = true)
 @TypeConverters(Converters::class)
 abstract class NeerDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun intakeDao() : IntakeDao
     abstract fun beverageDao() : BeverageDao
+    abstract fun alarmDao(): AlarmDao
 }

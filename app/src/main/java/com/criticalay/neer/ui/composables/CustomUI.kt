@@ -18,24 +18,55 @@ package com.criticalay.neer.ui.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun SectionSpacer(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+     title:String? = null
 ){
-    Box(
-        modifier = modifier
-            .height(50.dp)
-            .alpha(0.12f)
-            .background(color = MaterialTheme.colorScheme.onSurface)
+    Box{
+        Box(
+            modifier = modifier
+                .height(50.dp)
+                .alpha(0.04f)
+                .background(color = MaterialTheme.colorScheme.onSurface)
 
-    ){
+        )
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(bottom = 8.dp) // Adjust the padding as needed
+        ) {
+            title?.let {
+                Text(
+                    modifier = Modifier.padding(start = 6.dp),
+                    text = it,
+                    style = MaterialTheme.typography.bodySmall,
+                    fontSize = 14.sp
+                )
+            }
+        }
 
     }
+
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewSS(){
+    SectionSpacer(modifier = Modifier.fillMaxWidth())
 }

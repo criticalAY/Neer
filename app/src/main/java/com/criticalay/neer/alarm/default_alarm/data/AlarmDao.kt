@@ -16,19 +16,30 @@
 
 package com.criticalay.neer.alarm.default_alarm.data
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
 import com.criticalay.neer.utils.Constants.ALARM_DATABASE_TABLE
-import java.time.LocalDateTime
+import kotlinx.coroutines.flow.Flow
 
-@Entity(tableName = ALARM_DATABASE_TABLE)
-data class AlarmItem (
-    val time: LocalDateTime,
-    val interval:Double? = null,
-    val title:String,
-    val message:String,
-    val repeating: Boolean = false,
-    val alarmState: Boolean = true,
-    @PrimaryKey(autoGenerate = true)
-    val alarmId:Long = 0L
-)
+@Dao
+interface AlarmDao {
+
+    @Query("SELECT * FROM $ALARM_DATABASE_TABLE")
+    fun getAllAlarms(): Flow<List<AlarmItem>>?
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertAlarm(alarmItem: AlarmItem)
+
+    @Update
+    suspend fun updateAlarm(alarmItem: AlarmItem)
+
+    @Delete
+    suspend fun deleteAlarm(alarmItem: AlarmItem)
+
+    @Query("UPDATE $ALARM_DATABASE_TABLE SET alarmState = :state WHERE alarmId = :alarmId")
+    suspend fun toggleAlarmState(alarmId: Long, state: Boolean)
+}

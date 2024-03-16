@@ -52,4 +52,8 @@ object DatabaseModule {
     @Singleton
     fun provideIntakeDao(database: NeerDatabase) = database.intakeDao()
 
+    @Provides
+    @Singleton
+    fun provideAlarmDao(database: NeerDatabase) = database.alarmDao()
+
 }

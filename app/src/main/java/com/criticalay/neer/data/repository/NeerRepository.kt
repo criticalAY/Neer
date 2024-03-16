@@ -16,6 +16,8 @@
 
 package com.criticalay.neer.data.repository
 
+import com.criticalay.neer.alarm.default_alarm.data.AlarmDao
+import com.criticalay.neer.alarm.default_alarm.data.AlarmItem
 import com.criticalay.neer.data.dao.BeverageDao
 import com.criticalay.neer.data.dao.IntakeDao
 import com.criticalay.neer.data.dao.UserDao
@@ -34,7 +36,8 @@ import javax.inject.Inject
 class NeerRepository @Inject constructor(
     private val userDao: UserDao,
     private val intakeDao: IntakeDao,
-    private val beverageDao: BeverageDao
+    private val beverageDao: BeverageDao,
+    private val alarmDao: AlarmDao
 ) {
     // ---- User ---- //
     fun getUserDetails(): Flow<User>{
@@ -129,6 +132,27 @@ class NeerRepository @Inject constructor(
         return intakeDao.getTotalWaterIntakeForToday(waterBeverageId = waterBeverageId,
             startDate = startDay,
             endDate = endDay)
+    }
+
+    // ---- Alarm ---- //
+    suspend fun createAlarm(alarm : AlarmItem){
+        return alarmDao.insertAlarm(alarmItem = alarm)
+    }
+
+    fun getAllAlarms(): Flow<List<AlarmItem>>? {
+        return alarmDao.getAllAlarms()
+    }
+
+    suspend fun deleteAlarm(alarm : AlarmItem){
+        return alarmDao.deleteAlarm(alarm)
+    }
+
+    suspend fun updateAlarm(alarm: AlarmItem){
+        return alarmDao.updateAlarm(alarm)
+    }
+
+    suspend fun toggleAlarm(alarmId:Long, state:Boolean){
+        return alarmDao.toggleAlarmState(alarmId = alarmId, state = state)
     }
 
 }

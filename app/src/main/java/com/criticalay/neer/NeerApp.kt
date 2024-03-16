@@ -22,6 +22,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import com.criticalay.neer.utils.Constants.CUSTOM_REMINDER_CHANNEL_ID
 import com.criticalay.neer.utils.Constants.WATER_REMINDER_CHANNEL_ID
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
@@ -35,6 +36,7 @@ class NeerApp:Application() {
             plant(Timber.DebugTree())
         }
         createNotificationChannel()
+        createCustomNotificationChannel()
     }
 
     private fun createNotificationChannel() {
@@ -48,6 +50,19 @@ class NeerApp:Application() {
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
 
+        }
+    }
+
+    private fun createCustomNotificationChannel(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            val channel = NotificationChannel(
+                CUSTOM_REMINDER_CHANNEL_ID,
+                getString(R.string.custom_reminders),
+                NotificationManager.IMPORTANCE_HIGH
+            )
+            channel.description = getString(R.string.notification_description)
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
         }
     }
 }

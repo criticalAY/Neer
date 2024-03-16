@@ -141,7 +141,9 @@ fun Navigation(
                             inclusive=true
                         }
                     }
-                }
+                },
+                notificationList = sharedViewModel.allNotifications.collectAsState().value,
+                neerEventListener = sharedViewModel::handleEvent
             )
         }
 

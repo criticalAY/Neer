@@ -80,6 +80,8 @@
     <string name="custom_interval_message">Customize your water intake reminder interval! You can adjust it to suit your needs.</string>
     <string name="onbaording_meesage">Let\'s kickstart your healthy habit with personalized water reminders. Set your ideal reminder interval and let\'s stay hydrated together!</string>
     <string name="onboarding_title">Welcome to your hydration journey!</string>
+    <string name="custom_reminders">Custom reminders</string>
+    <string name="edit_notification">Edit notification</string>
     <string-array name="weighing_values">
         <item>Kg</item>
         <item>Lbs</item>
@@ -87,5 +89,50 @@
     <string-array name="measurement_values">
         <item>ml</item>
         <item>oz</item>
+    </string-array>
+
+    <string-array name="water_reminder_titles">
+        <item>Stay Hydrated</item>
+        <item>Hydration Alert</item>
+        <item>Drink Up!</item>
+        <item>Water Time</item>
+        <item>Stay Refreshed</item>
+        <item>Thirst Reminder</item>
+        <item>Keep Hydrated</item>
+        <item>Refresh Yourself</item>
+        <item>Water Break</item>
+        <item>Hydrate Now</item>
+        <item>Fluid Reminder</item>
+        <item>Stay Watered</item>
+        <item>H2O Alarm</item>
+        <item>Hydrate Alert</item>
+        <item>Water Reminder</item>
+        <item>Thirst Quencher</item>
+        <item>Hydration Time</item>
+        <item>Refreshment Call</item>
+        <item>Fluid Time</item>
+        <item>Stay Fresh</item>
+    </string-array>
+    <string-array name="water_reminder_messages">
+        <item>Stay hydrated, stay healthy!</item>
+        <item>Keep calm and drink water.</item>
+        <item>One sip at a time.</item>
+        <item>Water: the elixir of life!</item>
+        <item>Don\'t forget to hydrate!</item>
+        <item>Hydrate or regret it later.</item>
+        <item>Water is your best friend.</item>
+        <item>Stay hydrated, feel great!</item>
+        <item>Keep drinking, keep shining.</item>
+        <item>Drink water, it\s good for you!</item>
+        <item>Stay refreshed, stay focused.</item>
+        <item>Water - nature\s gift to you.</item>
+        <item>Hydration is key!</item>
+        <item>Keep calm and sip on.</item>
+        <item>Every drop counts.</item>
+        <item>Drink more water, thank yourself later.</item>
+        <item>Hydration station coming up!</item>
+        <item>Water is the source of life.</item>
+        <item>Stay hydrated, stay strong!</item>
+        <item>Keep those water bottles handy!</item>
     </string-array>
 </resources>

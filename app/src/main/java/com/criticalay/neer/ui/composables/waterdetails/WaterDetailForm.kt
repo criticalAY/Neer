@@ -65,6 +65,7 @@ import com.criticalay.neer.data.model.Beverage
 import com.criticalay.neer.data.model.User
 import com.criticalay.neer.ui.composables.notification.dialog.NotificationDialog
 import com.criticalay.neer.ui.composables.userdetails.DetailTextField
+import com.criticalay.neer.utils.AppUtils
 import com.criticalay.neer.utils.Constants.USER_ID
 import com.criticalay.neer.utils.Converters
 import com.criticalay.neer.utils.PreferencesManager
@@ -109,10 +110,10 @@ fun WaterDetailForm(
                     val alarmItem = AlarmItem(
                         LocalDateTime.now().plusHours(1),
                         notificationInterval,
-                        context.getString(R.string.notification_title),
-                        context.getString(R.string.notification_message)
+                        AppUtils.getRandomTitle(context),
+                        AppUtils.getRandomMessage(context)
                     )
-                    scheduler.schedule(alarmItem)
+                    scheduler.scheduleRegular(alarmItem)
                     notificationTriggered = true
                 }
             }
@@ -122,10 +123,10 @@ fun WaterDetailForm(
             val alarmItem = AlarmItem(
                 LocalDateTime.now().plusHours(1),
                 1.0,
-                context.getString(R.string.notification_title),
-                context.getString(R.string.notification_message)
+                AppUtils.getRandomTitle(context),
+                AppUtils.getRandomMessage(context)
             )
-            scheduler.schedule(alarmItem)
+            scheduler.scheduleRegular(alarmItem)
             notificationTriggered = true
         }
         PreferencesManager(context).saveNotificationPreference(notificationTriggered)

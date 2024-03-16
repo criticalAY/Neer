@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package com.criticalay.neer.alarm.default_alarm.data
+package com.criticalay.neer.data.event
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import com.criticalay.neer.utils.Constants.ALARM_DATABASE_TABLE
-import java.time.LocalDateTime
+import com.criticalay.neer.alarm.default_alarm.data.AlarmItem
 
-@Entity(tableName = ALARM_DATABASE_TABLE)
-data class AlarmItem (
-    val time: LocalDateTime,
-    val interval:Double? = null,
-    val title:String,
-    val message:String,
-    val repeating: Boolean = false,
-    val alarmState: Boolean = true,
-    @PrimaryKey(autoGenerate = true)
-    val alarmId:Long = 0L
-)
+sealed class NotificationEvent {
+    data class SaveNotification(val notification: AlarmItem): NotificationEvent()
+
+    data class UpdateNotification(val notification: AlarmItem): NotificationEvent()
+
+    data class DeleteNotification(val notification: AlarmItem): NotificationEvent()
+
+    data object GetAllScheduledNotifications: NotificationEvent()
+
+    data class ToggleNotificationState(val alarmId:Long, val state:Boolean): NotificationEvent()
+}
