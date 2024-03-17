@@ -38,7 +38,7 @@ object DatabaseModule {
             context = context,
             NeerDatabase::class.java,
             NEER_DATABASE_NAME
-        ).build()
+        ).addMigrations(NeerDatabase.MIGRATION_1_2).build()
 
     @Provides
     @Singleton
