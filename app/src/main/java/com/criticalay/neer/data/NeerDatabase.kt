@@ -16,13 +16,9 @@
 
 package com.criticalay.neer.data
 
-import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import androidx.room.migration.AutoMigrationSpec
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.criticalay.neer.alarm.default_alarm.data.AlarmDao
 import com.criticalay.neer.alarm.default_alarm.data.AlarmItem
 import com.criticalay.neer.data.dao.BeverageDao
@@ -31,43 +27,13 @@ import com.criticalay.neer.data.dao.UserDao
 import com.criticalay.neer.data.model.Beverage
 import com.criticalay.neer.data.model.Intake
 import com.criticalay.neer.data.model.User
-import com.criticalay.neer.utils.Constants.ALARM_DATABASE_TABLE
 import com.criticalay.neer.utils.Converters
 
-@Database(entities = [
-    Beverage::class,
-    User::class,
-    Intake::class,
-    AlarmItem::class],
-    version = 2, exportSchema = true)
+@Database(entities = [Beverage::class, User::class, Intake::class, AlarmItem::class], version = 1, exportSchema = true)
 @TypeConverters(Converters::class)
 abstract class NeerDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun intakeDao() : IntakeDao
     abstract fun beverageDao() : BeverageDao
     abstract fun alarmDao(): AlarmDao
-
-    companion object {
-        val MIGRATION_1_2 = object : Migration(1, 2) {
-            override fun migrate(db: SupportSQLiteDatabase) {
-                // Migration code goes here
-                // Example:
-                // database.execSQL("ALTER TABLE users ADD COLUMN age INTEGER")
-                db.execSQL("DROP TABLE IF EXISTS $ALARM_DATABASE_TABLE")
-
-                // Create the new table for AlarmItem with the corrected structure
-                db.execSQL(
-                    "CREATE TABLE IF NOT EXISTS $ALARM_DATABASE_TABLE (" +
-                            "alarmId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                            "time INTEGER NOT NULL," + // Corrected to INTEGER
-                            "interval REAL," +
-                            "title TEXT NOT NULL," +
-                            "message TEXT NOT NULL," +
-                            "repeating INTEGER NOT NULL DEFAULT 0," +
-                            "alarmState INTEGER NOT NULL DEFAULT 1)"
-                )
-            }
-        }
-
-    }
 }
