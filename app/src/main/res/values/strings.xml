@@ -82,6 +82,10 @@
     <string name="onboarding_title">Welcome to your hydration journey!</string>
     <string name="custom_reminders">Custom reminders</string>
     <string name="edit_notification">Edit notification</string>
+    <string name="personal">Personal</string>
+    <string name="sleep_cycle">Sleep cycle</string>
+    <string name="others">Others</string>
+    <string name="support">Support</string>
     <string-array name="weighing_values">
         <item>Kg</item>
         <item>Lbs</item>

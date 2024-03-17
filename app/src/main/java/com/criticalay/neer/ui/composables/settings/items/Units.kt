@@ -21,8 +21,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.BubbleChart
+import androidx.compose.material.icons.rounded.Support
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -57,9 +61,14 @@ fun Units(
                     .padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                Icon(
+                    modifier = Modifier.padding(end = 5.dp),
+                    imageVector = Icons.Rounded.BubbleChart,
+                    contentDescription = null
+                )
                 Text(
                     modifier = Modifier
-                        .weight(1f),
+                        .weight(1f).padding(start = 5.dp),
                     fontSize = 18.sp,
                     text = stringResource(R.string.units)
                 )

@@ -28,6 +28,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.rounded.Support
+import androidx.compose.material.icons.rounded.Wc
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -72,8 +74,14 @@ fun Gender(
                     .padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                Icon(
+                    modifier = Modifier.padding(end = 5.dp),
+                    imageVector = Icons.Rounded.Wc,
+                    contentDescription = null
+                )
                 Text(
                     modifier = Modifier
+                        .padding(start = 5.dp)
                         .weight(1f),
                     fontSize = 18.sp,
                     text = stringResource(R.string.gender)

@@ -17,6 +17,7 @@
 package com.criticalay.neer.ui.composables.settings
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -24,19 +25,27 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MediumTopAppBar
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
@@ -57,11 +66,13 @@ import com.criticalay.neer.ui.composables.settings.items.Gender
 import com.criticalay.neer.ui.composables.settings.items.Height
 import com.criticalay.neer.ui.composables.settings.items.NameDisplay
 import com.criticalay.neer.ui.composables.settings.items.PrivacyPolicy
+import com.criticalay.neer.ui.composables.settings.items.Support
 import com.criticalay.neer.ui.composables.settings.items.TargetAmount
 import com.criticalay.neer.ui.composables.settings.items.Units
 import com.criticalay.neer.ui.composables.settings.items.WakeUpTime
 import com.criticalay.neer.ui.composables.settings.items.Weight
 import com.criticalay.neer.ui.viewmodel.SharedViewModel
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -109,6 +120,10 @@ fun SettingsScreen(
             }
 
             Column {
+                SectionSpacer(
+                    modifier = Modifier.fillMaxWidth(),
+                     title = stringResource(R.string.personal)
+                )
                 userDetails.name?.let {
                     NameDisplay(userName = it) { name ->
                         Timber.d("User updated name")
@@ -152,7 +167,10 @@ fun SettingsScreen(
                     neerEventListener(NeerEvent.TriggerUserEvent(UserEvent.UpdateUserUnits(units)))
                 }
 
-                SectionSpacer(modifier = Modifier.fillMaxWidth())
+                SectionSpacer(
+                    modifier = Modifier.fillMaxWidth(),
+                    title = stringResource(R.string.sleep_cycle)
+                )
 
                 userDetails.wakeUpTime?.let {
                     WakeUpTime(userWakeTime = it) { time->
@@ -168,7 +186,14 @@ fun SettingsScreen(
                     }
                 }
 
-                SectionSpacer(modifier = Modifier.fillMaxWidth())
+                SectionSpacer(
+                    modifier = Modifier.fillMaxWidth(),
+                    title = stringResource(R.string.others)
+                )
+
+                Support()
+
+                HorizontalDivider()
 
                 PrivacyPolicy {
                     onPrivacy()
@@ -181,8 +206,6 @@ fun SettingsScreen(
                     appVersion = BuildConfig.VERSION_NAME
                 )
             }
-
-
         }
     }
 }

@@ -147,7 +147,6 @@ fun NotificationScreen(
                     } else {
                         Timber.d("Turning back notification on")
                         PreferencesManager(context).saveNotificationPreference(true)
-                        val scheduler = NeerAlarmScheduler(context = context)
                         val alarmItem = AlarmItem(
                             LocalDateTime.now().plusMinutes(30),
                             PreferencesManager(context = context)

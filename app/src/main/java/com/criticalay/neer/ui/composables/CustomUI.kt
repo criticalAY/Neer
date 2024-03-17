@@ -53,7 +53,7 @@ fun SectionSpacer(
         ) {
             title?.let {
                 Text(
-                    modifier = Modifier.padding(start = 6.dp),
+                    modifier = Modifier.padding(start = 12.dp),
                     text = it,
                     style = MaterialTheme.typography.bodySmall,
                     fontSize = 14.sp

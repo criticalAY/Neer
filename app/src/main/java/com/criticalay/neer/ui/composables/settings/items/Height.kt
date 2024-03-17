@@ -26,6 +26,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.rounded.Height
+import androidx.compose.material.icons.rounded.Support
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -68,9 +70,14 @@ fun Height(
                 .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            Icon(
+                modifier = Modifier.padding(end = 5.dp),
+                imageVector = Icons.Rounded.Height,
+                contentDescription = null
+            )
             Text(
                 modifier = Modifier
-                    .weight(1f),
+                    .weight(1f).padding(start = 5.dp),
                 fontSize = 18.sp,
                 text = stringResource(R.string.height)
             )

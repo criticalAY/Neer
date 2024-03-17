@@ -32,7 +32,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Clear
+import androidx.compose.material.icons.outlined.MonitorWeight
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.rounded.MonitorWeight
+import androidx.compose.material.icons.rounded.Scale
+import androidx.compose.material.icons.rounded.Support
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -71,9 +75,14 @@ fun Weight(
                 .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            Icon(
+                modifier = Modifier.padding(end = 5.dp),
+                imageVector = Icons.Outlined.MonitorWeight,
+                contentDescription = null
+            )
             Text(
                 modifier = Modifier
-                    .weight(1f),
+                    .weight(1f).padding(start = 5.dp),
                 fontSize = 18.sp,
                 text = stringResource(R.string.weight)
             )

@@ -18,6 +18,10 @@ package com.criticalay.neer.ui.composables.settings.items
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material.icons.rounded.Support
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -41,8 +45,13 @@ fun AppVersionSettingItem(
                 .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ){
+            Icon(
+                modifier = Modifier.padding(end = 5.dp),
+                imageVector = Icons.Rounded.Info,
+                contentDescription = null
+            )
             Text(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f).padding(start = 5.dp),
                 fontSize = 18.sp,
                 text = stringResource(id = R.string.setting_app_version_title))
 
