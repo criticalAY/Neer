@@ -70,4 +70,31 @@
     <string name="sleep_cycle">睡眠习惯</string>
     <string name="others">其他</string>
     <string name="support">支持</string>
+    <string-array name="weighing_values">
+        <item>千克</item>
+        <item>磅</item>
+    </string-array>
+
+    <string-array name="water_reminder_titles">
+        <item>保持喝水</item>
+        <item>水分警报</item>
+        <item>快喝点水</item>
+        <item>喝水时间</item>
+        <item>保持活力</item>
+        <item>口渴提醒</item>
+        <item>保持水分</item>
+        <item>给自己刷个新</item>
+        <item>饮水歇息</item>
+        <item>现在喝水</item>
+        <item>水分提醒</item>
+        <item>保持湿润</item>
+        <item>H2O警报</item>
+        <item>饮水警报</item>
+        <item>喝水提醒</item>
+        <item>嗓子要干了！</item>
+        <item>水分时间</item>
+        <item>饮水呼唤</item>
+        <item>现在是喝水时间</item>
+        <item>保持清爽</item>
+    </string-array>
 </resources>
