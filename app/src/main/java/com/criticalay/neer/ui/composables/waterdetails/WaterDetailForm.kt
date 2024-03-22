@@ -98,11 +98,14 @@ fun WaterDetailForm(
         var notificationTriggered by remember {
             mutableStateOf(false)
         }
+        var notificationPermissionGranted by remember {
+            mutableStateOf(false)
+        }
 
         val notificationInterval =1.0
         PreferencesManager(context).setNotificationInterval(notificationInterval)
 
-        if (!notificationTriggered && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        if (notificationTriggered && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             NotificationDialog { value ->
                 if (value) {
                     Timber.d("Creating notification")
@@ -114,10 +117,13 @@ fun WaterDetailForm(
                         AppUtils.getRandomMessage(context)
                     )
                     scheduler.scheduleRegular(alarmItem)
-                    notificationTriggered = true
+                    notificationPermissionGranted= true
+                    onProceed()
+                } else {
+                    onProceed()
                 }
             }
-        }else if (!notificationTriggered){
+        }else if (notificationTriggered){
             Timber.d("Creating notification")
             val scheduler = NeerAlarmScheduler(context = context)
             val alarmItem = AlarmItem(
@@ -127,9 +133,10 @@ fun WaterDetailForm(
                 AppUtils.getRandomMessage(context)
             )
             scheduler.scheduleRegular(alarmItem)
-            notificationTriggered = true
+            notificationPermissionGranted = true
+            onProceed()
         }
-        PreferencesManager(context).saveNotificationPreference(notificationTriggered)
+        PreferencesManager(context).saveNotificationPreference(notificationPermissionGranted)
 
         Column(
             modifier = Modifier
@@ -217,7 +224,8 @@ fun WaterDetailForm(
                                 totalIntakeAmount = waterIntakeAmount.toInt()
                             )
                         )))
-                        onProceed()
+                        notificationTriggered = true
+                  //      onProceed()
                     }) {
                     Text(text = stringResource(id = R.string.proceed))
 
@@ -234,5 +242,5 @@ fun WaterDetailForm(
 @Preview(showBackground = true)
 @Composable
 fun PreviewWaterDetailForm() {
-    WaterDetailForm(onProceed = {  }, neerEventListener = {}, userDetails = User())
+    WaterDetailForm(onProceed = {  }, neerEventListener = {}, userDetails = User("ashish"))
 }

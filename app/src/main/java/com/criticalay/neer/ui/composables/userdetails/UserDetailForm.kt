@@ -38,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -53,6 +54,8 @@ import com.criticalay.neer.ui.composables.SectionSpacer
 import com.criticalay.neer.ui.composables.userdetails.time.SleepTimePicker
 import com.criticalay.neer.ui.composables.userdetails.time.WakeUpTimePicker
 import com.criticalay.neer.utils.Converters.getUnitName
+import com.criticalay.neer.utils.PreferencesManager
+import com.criticalay.neer.utils.SleepCycle
 import timber.log.Timber
 import java.time.LocalTime
 
@@ -103,6 +106,7 @@ fun UserDetailForm(
             var userSelectedUnit by remember {
                 mutableStateOf(Units.KG_ML)
             }
+            val context = LocalContext.current
 
             val weightUnit = getUnitName(userSelectedUnit, 0)
 
@@ -241,6 +245,8 @@ fun UserDetailForm(
                     .align(Alignment.CenterHorizontally),
                 enabled = submitButtonEnabled,
                 onClick = {
+                        PreferencesManager(context).saveSleepCycleTime(SleepCycle.SLEEP_TIME, selectedSleepTime)
+                        PreferencesManager(context).saveSleepCycleTime(SleepCycle.WAKE_TIME, selectedWakeTime)
                     neerEventListener(
                         NeerEvent.AddUser(
                             User(
@@ -269,5 +275,5 @@ fun UserDetailForm(
 @Preview(showBackground = true)
 @Composable
 fun PreviewUserDetailForm() {
-    UserDetailForm(viewModel(), {})
+    UserDetailForm(viewModel()) {}
 }
