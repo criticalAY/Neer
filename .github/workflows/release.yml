@@ -164,7 +164,7 @@ jobs:
           git push origin "${{ steps.v.outputs.tag }}"
 
       - name: Publish GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ steps.v.outputs.tag }}
           name: Neer ${{ steps.v.outputs.version_name }}
