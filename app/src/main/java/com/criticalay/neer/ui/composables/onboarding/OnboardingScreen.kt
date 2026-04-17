@@ -23,12 +23,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -49,10 +49,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Devices.TABLET
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.criticalay.neer.R
@@ -94,18 +96,17 @@ fun OnboardingScreen(
                 )
             }
 
-            Spacer(Modifier.height(32.dp))
-
+            // Image claims 30% of the available column height; the remaining
+            // 70% is split among the header, body copy, feature list, and CTA.
             Image(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .sizeIn(minWidth = 220.dp, minHeight = 220.dp)
-                    .padding(vertical = 8.dp),
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.3f),
                 painter = painterResource(id = R.drawable.onboarding_hero),
-                contentDescription = null
+                contentDescription = null,
+                contentScale = ContentScale.Fit
             )
-
-            Spacer(Modifier.height(24.dp))
 
             Text(
                 text = stringResource(R.string.onboarding_title),
@@ -200,3 +201,12 @@ fun PreviewWelcomeScreen() {
         OnboardingScreen {}
     }
 }
+
+@Preview(showBackground = true, device = TABLET)
+@Composable
+fun PreviewWelcomeScreenTablet() {
+    NeerTheme {
+        OnboardingScreen {}
+    }
+}
+
