@@ -45,6 +45,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.criticalay.neer.R
@@ -168,11 +169,10 @@ private fun FirstSipHint() {
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = Icons.Filled.WaterDrop,
+            androidx.compose.foundation.Image(
+                painter = painterResource(id = com.criticalay.neer.R.drawable.stats_hero),
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(96.dp)
             )
             Spacer(Modifier.size(12.dp))
             Column(modifier = Modifier.weight(1f)) {

@@ -17,10 +17,16 @@
 package com.criticalay.neer.ui.composables.notification.dialog
 
 import android.Manifest
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -45,80 +51,109 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.criticalay.neer.R
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionState
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
-import com.google.accompanist.permissions.shouldShowRationale
+import com.criticalay.neer.utils.PreferencesManager
 
 /**
- * A Material3 bottom-sheet asking for POST_NOTIFICATIONS permission (API 33+).
+ * Material3 bottom sheet that asks for POST_NOTIFICATIONS following the
+ * Android framework's recommended flow — no third-party permissions library.
  *
- * Behavior:
- *  - On API < 33 or when permission is already granted, the sheet never shows
- *    and [onGranted] fires once synchronously.
- *  - When the permission is ungranted but the OS allows a rationale, the sheet
- *    appears; tapping "Allow" launches the system permission dialog.
- *  - When the OS won't show a rationale anymore (user permanently denied), the
- *    "Allow" button label switches to "Open settings" and deep-links into the
- *    app's notification settings screen.
- *  - Dismissing the sheet (back gesture, drag-down, or "Not now") fires
- *    [onDismiss]; neither path auto-calls [onGranted] unless the permission
- *    is actually granted.
+ * Path decision at display time:
+ *  - API < 33 → permission not needed, fire [onGranted] immediately.
+ *  - Already granted → fire [onGranted] immediately, no sheet.
+ *  - Never asked before → show sheet with "Allow" → launches the system
+ *    permission dialog via the Activity Result API on tap.
+ *  - Previously denied + `shouldShowRequestPermissionRationale == true` →
+ *    same "Allow" sheet; the system will show the permission dialog again.
+ *  - Previously denied + `shouldShowRequestPermissionRationale == false`
+ *    (permanent / "don't ask again") → sheet swaps to "Open settings" and
+ *    deep-links into the app's notification settings, since a second
+ *    `launchPermissionRequest()` would be a no-op in this state.
  */
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotificationPermissionSheet(
     onGranted: () -> Unit,
     onDismiss: () -> Unit
 ) {
+    val context = LocalContext.current
+
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
         LaunchedEffect(Unit) { onGranted() }
         return
     }
 
-    val permissionState = rememberPermissionState(
-        permission = Manifest.permission.POST_NOTIFICATIONS
-    )
-
-    if (permissionState.status.isGranted) {
+    val alreadyGranted = remember {
+        ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.POST_NOTIFICATIONS
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+    if (alreadyGranted) {
         LaunchedEffect(Unit) { onGranted() }
         return
     }
 
+    val prefs = remember { PreferencesManager(context) }
+    val activity = remember(context) { context.findActivity() }
+    val hasAskedBefore = remember { mutableStateOf(prefs.hasAskedNotificationPermission()) }
+
+    // `shouldShowRationale` is reliably true only *between* the first denial
+    // and "don't ask again". Combined with our "has asked" bit, we can tell
+    // a first-time prompt from a permanent denial.
+    val shouldShowRationale = remember {
+        activity?.let {
+            ActivityCompat.shouldShowRequestPermissionRationale(
+                it,
+                Manifest.permission.POST_NOTIFICATIONS
+            )
+        } ?: false
+    }
+    val permanentlyDenied = hasAskedBefore.value && !shouldShowRationale
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        hasAskedBefore.value = true
+        prefs.markNotificationPermissionAsked()
+        if (granted) {
+            onGranted()
+            onDismiss()
+        }
+        // If denied, we leave the sheet visible; next composition will detect
+        // the new shouldShowRationale state and potentially flip the button
+        // to "Open settings".
+    }
+
     SheetContent(
-        permissionState = permissionState,
-        onGranted = onGranted,
+        permanentlyDenied = permanentlyDenied,
+        onAllow = { permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS) },
+        onOpenSettings = { openAppNotificationSettings(context) },
         onDismiss = onDismiss
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SheetContent(
-    permissionState: PermissionState,
-    onGranted: () -> Unit,
+    permanentlyDenied: Boolean,
+    onAllow: () -> Unit,
+    onOpenSettings: () -> Unit,
     onDismiss: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val context = LocalContext.current
-    val permanentlyDenied = !permissionState.status.isGranted &&
-        !permissionState.status.shouldShowRationale
-
-    // If we come back from the system dialog with a grant, fire and close.
-    LaunchedEffect(permissionState.status.isGranted) {
-        if (permissionState.status.isGranted) {
-            onGranted()
-            onDismiss()
-        }
-    }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -175,17 +210,7 @@ private fun SheetContent(
                     Text(stringResource(R.string.notif_perm_not_now))
                 }
                 Button(
-                    onClick = {
-                        if (permanentlyDenied) {
-                            val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
-                                putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
-                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            }
-                            runCatching { context.startActivity(intent) }
-                        } else {
-                            permissionState.launchPermissionRequest()
-                        }
-                    },
+                    onClick = if (permanentlyDenied) onOpenSettings else onAllow,
                     modifier = Modifier.weight(1f),
                     shape = RoundedCornerShape(14.dp)
                 ) {
@@ -198,5 +223,29 @@ private fun SheetContent(
                 }
             }
         }
+    }
+}
+
+private fun Context.findActivity(): Activity? {
+    var ctx: Context = this
+    while (ctx is ContextWrapper) {
+        if (ctx is Activity) return ctx
+        ctx = ctx.baseContext
+    }
+    return null
+}
+
+private fun openAppNotificationSettings(context: Context) {
+    val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+        putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    }
+    runCatching { context.startActivity(intent) }.onFailure {
+        // Fallback for OEMs that don't resolve the notification settings action.
+        val fallback = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            data = Uri.fromParts("package", context.packageName, null)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        runCatching { context.startActivity(fallback) }
     }
 }

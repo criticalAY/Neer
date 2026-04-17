@@ -143,20 +143,11 @@ private fun EmptyState(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box(
-            modifier = Modifier
-                .size(96.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f)),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_rounded_glass_cup),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(52.dp)
-            )
-        }
+        androidx.compose.foundation.Image(
+            painter = painterResource(id = R.drawable.empty_glass_hero),
+            contentDescription = null,
+            modifier = Modifier.size(160.dp)
+        )
         Spacer(Modifier.height(16.dp))
         Text(
             text = stringResource(R.string.empty_today_headline),

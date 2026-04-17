@@ -96,24 +96,14 @@ fun OnboardingScreen(
 
             Spacer(Modifier.height(32.dp))
 
-            Card(
+            Image(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
+                    .sizeIn(minWidth = 220.dp, minHeight = 220.dp)
                     .padding(vertical = 8.dp),
-                shape = RoundedCornerShape(28.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
-                ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
-            ) {
-                Image(
-                    modifier = Modifier
-                        .padding(20.dp)
-                        .sizeIn(minWidth = 180.dp, minHeight = 180.dp),
-                    painter = painterResource(id = R.drawable.refreshing_beverage),
-                    contentDescription = null
-                )
-            }
+                painter = painterResource(id = R.drawable.onboarding_hero),
+                contentDescription = null
+            )
 
             Spacer(Modifier.height(24.dp))
 

@@ -100,6 +100,18 @@ class PreferencesManager(context: Context) {
         return sharedPreferences.getBoolean("notification_pref", false)
     }
 
+    /** True once we've asked for POST_NOTIFICATIONS at least once; lets us
+     *  distinguish a first-time prompt (show rationale + launch) from a
+     *  permanent denial (shouldShowRationale == false after the first ask). */
+    fun hasAskedNotificationPermission(): Boolean =
+        sharedPreferences.getBoolean("has_asked_notification_permission", false)
+
+    fun markNotificationPermissionAsked() {
+        sharedPreferences.edit()
+            .putBoolean("has_asked_notification_permission", true)
+            .apply()
+    }
+
     fun setNotificationInterval(interval:Double){
         val editor = sharedPreferences.edit()
         editor.putDouble("notification_interval", interval)
