@@ -16,16 +16,17 @@
 
 package com.criticalay.neer.ui.composables.home
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -50,12 +51,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.criticalay.neer.R
+import com.criticalay.neer.ui.adaptive.isExpandedWidth
 import com.criticalay.neer.data.event.BeverageEvent
 import com.criticalay.neer.data.event.IntakeEvent
 import com.criticalay.neer.data.event.NeerEvent
@@ -87,8 +88,7 @@ fun Home(
     onTabSelect: (Destination) -> Unit = {}
 ) {
     val context = LocalContext.current
-    val isPortrait =
-        LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
+    val wideLayout = isExpandedWidth()
     var showQuickAdd by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -147,47 +147,24 @@ fun Home(
             )
         }
     ) { padding ->
-        Column(
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp)
-        ) {
-            Spacer(Modifier.height(8.dp))
-            GreetingBlock(userName = userDetails.name, percent = percentOfGoal(todayIntake, targetIntake))
-            Spacer(Modifier.height(12.dp))
-
-            if (isPortrait) {
-                HydrationHero(
-                    todayIntake = todayIntake,
-                    targetIntake = targetIntake,
-                    selectedUnits = userDetails.unit
-                )
-            } else {
-                Text(
-                    text = "$todayIntake / $targetIntake",
-                    style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 16.dp),
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }
-
-            Spacer(Modifier.height(24.dp))
-
-            TodayRecordHeader(intakeCount = intakeList.size)
-
-            Spacer(Modifier.height(12.dp))
-
-            RecordList(
-                todayAllIntakes = intakeList,
-                selectedUnits = userDetails.unit,
+        if (wideLayout) {
+            WideLayout(
+                padding = padding,
+                todayIntake = todayIntake,
+                targetIntake = targetIntake,
+                userDetails = userDetails,
+                intakeList = intakeList,
                 neerEventListener = neerEventListener
             )
-
-            Spacer(Modifier.height(96.dp))
+        } else {
+            CompactLayout(
+                padding = padding,
+                todayIntake = todayIntake,
+                targetIntake = targetIntake,
+                userDetails = userDetails,
+                intakeList = intakeList,
+                neerEventListener = neerEventListener
+            )
         }
     }
 
@@ -213,6 +190,106 @@ fun Home(
             initialAmount = PreferencesManager(context).getWaterAmount(),
             selectedUnits = userDetails.unit
         )
+    }
+}
+
+@Composable
+private fun CompactLayout(
+    padding: androidx.compose.foundation.layout.PaddingValues,
+    todayIntake: Int,
+    targetIntake: Int,
+    userDetails: User,
+    intakeList: List<Intake>,
+    neerEventListener: (NeerEvent) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .padding(padding)
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 20.dp)
+    ) {
+        Spacer(Modifier.height(8.dp))
+        GreetingBlock(
+            userName = userDetails.name,
+            percent = percentOfGoal(todayIntake, targetIntake)
+        )
+        Spacer(Modifier.height(12.dp))
+        HydrationHero(
+            todayIntake = todayIntake,
+            targetIntake = targetIntake,
+            selectedUnits = userDetails.unit
+        )
+        Spacer(Modifier.height(24.dp))
+        TodayRecordHeader(intakeCount = intakeList.size)
+        Spacer(Modifier.height(12.dp))
+        RecordList(
+            todayAllIntakes = intakeList,
+            selectedUnits = userDetails.unit,
+            neerEventListener = neerEventListener
+        )
+        Spacer(Modifier.height(96.dp))
+    }
+}
+
+@Composable
+private fun WideLayout(
+    padding: androidx.compose.foundation.layout.PaddingValues,
+    todayIntake: Int,
+    targetIntake: Int,
+    userDetails: User,
+    intakeList: List<Intake>,
+    neerEventListener: (NeerEvent) -> Unit
+) {
+    // Landscape phone / tablet — hero on the left, today's log on the right.
+    // Hero column doesn't scroll (ring is the focal element); log column
+    // scrolls independently so long lists don't push the hero off-screen.
+    Row(
+        modifier = Modifier
+            .padding(padding)
+            .fillMaxSize()
+            .padding(horizontal = 24.dp, vertical = 8.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .widthIn(max = 520.dp)
+                .verticalScroll(rememberScrollState())
+                .padding(end = 16.dp),
+            verticalArrangement = Arrangement.Top
+        ) {
+            GreetingBlock(
+                userName = userDetails.name,
+                percent = percentOfGoal(todayIntake, targetIntake)
+            )
+            Spacer(Modifier.height(12.dp))
+            HydrationHero(
+                todayIntake = todayIntake,
+                targetIntake = targetIntake,
+                selectedUnits = userDetails.unit
+            )
+            Spacer(Modifier.height(24.dp))
+        }
+
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .verticalScroll(rememberScrollState())
+                .padding(start = 16.dp),
+            verticalArrangement = Arrangement.Top
+        ) {
+            Spacer(Modifier.height(4.dp))
+            TodayRecordHeader(intakeCount = intakeList.size)
+            Spacer(Modifier.height(12.dp))
+            RecordList(
+                todayAllIntakes = intakeList,
+                selectedUnits = userDetails.unit,
+                neerEventListener = neerEventListener
+            )
+            Spacer(Modifier.height(96.dp))
+        }
     }
 }
 
