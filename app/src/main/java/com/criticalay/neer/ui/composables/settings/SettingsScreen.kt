@@ -17,26 +17,23 @@
 package com.criticalay.neer.ui.composables.settings
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.outlined.Bedtime
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MediumTopAppBar
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -59,11 +56,11 @@ import com.criticalay.neer.data.event.NeerEvent
 import com.criticalay.neer.data.event.UserEvent
 import com.criticalay.neer.data.model.User
 import com.criticalay.neer.data.repository.NeerRepository
-import com.criticalay.neer.ui.composables.SectionSpacer
 import com.criticalay.neer.ui.composables.settings.items.AppVersionSettingItem
 import com.criticalay.neer.ui.composables.settings.items.BedTime
 import com.criticalay.neer.ui.composables.settings.items.Gender
 import com.criticalay.neer.ui.composables.settings.items.Height
+import com.criticalay.neer.ui.composables.settings.items.HydrationPlanRow
 import com.criticalay.neer.ui.composables.settings.items.NameDisplay
 import com.criticalay.neer.ui.composables.settings.items.PrivacyPolicy
 import com.criticalay.neer.ui.composables.settings.items.Support
@@ -71,6 +68,8 @@ import com.criticalay.neer.ui.composables.settings.items.TargetAmount
 import com.criticalay.neer.ui.composables.settings.items.Units
 import com.criticalay.neer.ui.composables.settings.items.WakeUpTime
 import com.criticalay.neer.ui.composables.settings.items.Weight
+import com.criticalay.neer.ui.navigation.Destination
+import com.criticalay.neer.ui.navigation.NeerBottomNavigationBar
 import com.criticalay.neer.ui.viewmodel.SharedViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -81,8 +80,9 @@ fun SettingsScreen(
     userDetails : User,
     waterDrinkTarget : Int,
     neerEventListener: (neerEvent:NeerEvent) -> Unit,
-    onBack : () -> Unit,
-    onPrivacy:() -> Unit
+    onPrivacy:() -> Unit,
+    onHydrationPlan: () -> Unit,
+    onTabSelect: (Destination) -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     Scaffold(
@@ -95,117 +95,103 @@ fun SettingsScreen(
                         modifier = Modifier.padding(start = 10.dp)
                     )
                 },
-                navigationIcon = {
-                    IconButton(onClick = { onBack() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.go_back)
-                        )
-
-                    }
-                },
                 scrollBehavior = scrollBehavior
+            )
+        },
+        bottomBar = {
+            NeerBottomNavigationBar(
+                currentRoute = Destination.Settings.path,
+                onTabSelect = onTabSelect
             )
         }
     ) { padding ->
         Column(
             modifier = Modifier
-                .verticalScroll(
-                    rememberScrollState()
-                )
+                .verticalScroll(rememberScrollState())
                 .padding(padding)
+                .padding(horizontal = 16.dp)
         ) {
             LaunchedEffect(Unit) {
                 neerEventListener(NeerEvent.TriggerUserEvent(UserEvent.GetUserDetails))
             }
 
-            Column {
-                SectionSpacer(
-                    modifier = Modifier.fillMaxWidth(),
-                     title = stringResource(R.string.personal)
-                )
+            SectionHeader(
+                icon = Icons.Outlined.Person,
+                title = stringResource(R.string.personal)
+            )
+            SettingsGroup {
                 userDetails.name?.let {
                     NameDisplay(userName = it) { name ->
                         Timber.d("User updated name")
                         neerEventListener(NeerEvent.TriggerUserEvent(UserEvent.UpdateUserName(name)))
                     }
+                    HorizontalDivider()
                 }
-
-                HorizontalDivider()
-
                 Gender(userGender = userDetails.gender.genderValue) { gender ->
                     Timber.d("user updated gender")
                     neerEventListener(NeerEvent.TriggerUserEvent(UserEvent.UpdateUserGender(gender)))
                 }
-
                 HorizontalDivider()
-
                 Height(userHeight = userDetails.height) { height ->
                     Timber.d("User updated height")
                     neerEventListener(NeerEvent.TriggerUserEvent(UserEvent.UpdateUserHeight(height = height)))
                 }
-
                 HorizontalDivider()
-
                 Weight(userWeight = userDetails.weight, selectedUnits = userDetails.unit) { weight ->
                     Timber.d("User updated weight")
                     neerEventListener(NeerEvent.TriggerUserEvent(UserEvent.UpdateUserWeight(weight)))
                 }
-
                 HorizontalDivider()
-
-                TargetAmount(targetAmount = waterDrinkTarget, selectedUnits = userDetails.unit ) {newTarget->
+                TargetAmount(
+                    targetAmount = waterDrinkTarget,
+                    selectedUnits = userDetails.unit
+                ) { newTarget ->
                     Timber.d("User updated drink target")
                     neerEventListener(NeerEvent.TriggerBeverageEvent(BeverageEvent.UpdateTarget(newTarget)))
-
                 }
-
                 HorizontalDivider()
-
-                Units(userSelectedUnits = userDetails.unit.unitValue) {units->
-                    Timber.d("User updated weight")
+                Units(userSelectedUnits = userDetails.unit.unitValue) { units ->
+                    Timber.d("User updated units")
                     neerEventListener(NeerEvent.TriggerUserEvent(UserEvent.UpdateUserUnits(units)))
                 }
+                HorizontalDivider()
+                HydrationPlanRow(onClick = onHydrationPlan)
+            }
 
-                SectionSpacer(
-                    modifier = Modifier.fillMaxWidth(),
-                    title = stringResource(R.string.sleep_cycle)
-                )
-
+            SectionHeader(
+                icon = Icons.Outlined.Bedtime,
+                title = stringResource(R.string.sleep_cycle)
+            )
+            SettingsGroup {
                 userDetails.wakeUpTime?.let {
-                    WakeUpTime(userWakeTime = it) { time->
+                    WakeUpTime(userWakeTime = it) { time ->
                         neerEventListener(NeerEvent.TriggerUserEvent(UserEvent.UpdateUserWakeUpTime(time)))
                     }
+                    HorizontalDivider()
                 }
-
-                HorizontalDivider()
-
                 userDetails.bedTime?.let {
-                    BedTime(userBedTime = it) { time->
+                    BedTime(userBedTime = it) { time ->
                         neerEventListener(NeerEvent.TriggerUserEvent(UserEvent.UpdateUserSleepTime(time)))
                     }
                 }
+            }
 
-                SectionSpacer(
-                    modifier = Modifier.fillMaxWidth(),
-                    title = stringResource(R.string.others)
-                )
-
+            SectionHeader(
+                icon = Icons.Outlined.Info,
+                title = stringResource(R.string.others)
+            )
+            SettingsGroup {
                 Support()
-
                 HorizontalDivider()
-
-                PrivacyPolicy {
-                    onPrivacy()
-                }
-
+                PrivacyPolicy { onPrivacy() }
                 HorizontalDivider()
-
                 AppVersionSettingItem(
                     modifier = Modifier.fillMaxWidth(),
                     appVersion = BuildConfig.VERSION_NAME
                 )
             }
+
+            Spacer(Modifier.height(24.dp))
         }
     }
 }
@@ -218,7 +204,8 @@ fun PreviewSettingsScreen(){
         userDetails = User("Ashish"),
         waterDrinkTarget = 5000,
         neerEventListener = {},
-        onBack = { /*TODO*/ }) {
-        
-    }
+        onPrivacy = {},
+        onHydrationPlan = {},
+        onTabSelect = {}
+    )
 }

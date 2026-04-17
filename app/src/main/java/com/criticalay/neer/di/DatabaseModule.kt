@@ -18,6 +18,8 @@ package com.criticalay.neer.di
 
 import android.content.Context
 import androidx.room.Room
+import com.criticalay.neer.alarm.default_alarm.AlarmScheduler
+import com.criticalay.neer.alarm.default_alarm.data.NeerAlarmScheduler
 import com.criticalay.neer.data.NeerDatabase
 import com.criticalay.neer.utils.Constants.NEER_DATABASE_NAME
 import dagger.Module
@@ -55,5 +57,10 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideAlarmDao(database: NeerDatabase) = database.alarmDao()
+
+    @Provides
+    @Singleton
+    fun provideAlarmScheduler(@ApplicationContext context: Context): AlarmScheduler =
+        NeerAlarmScheduler(context)
 
 }

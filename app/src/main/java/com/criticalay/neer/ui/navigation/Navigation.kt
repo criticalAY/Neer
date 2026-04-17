@@ -25,14 +25,17 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import com.criticalay.neer.ui.composables.home.Home
+import com.criticalay.neer.ui.composables.hydrationplan.HydrationPlanScreen
 import com.criticalay.neer.ui.composables.notification.NotificationScreen
 import com.criticalay.neer.ui.composables.onboarding.OnboardingScreen
 import com.criticalay.neer.ui.composables.privacy.PrivacyScreen
 import com.criticalay.neer.ui.composables.settings.SettingsScreen
+import com.criticalay.neer.ui.composables.stats.StatsScreen
 import com.criticalay.neer.ui.composables.userdetails.UserDetailForm
 import com.criticalay.neer.ui.composables.waterdetails.WaterDetailForm
 import com.criticalay.neer.ui.viewmodel.SharedViewModel
@@ -58,12 +61,10 @@ fun Navigation(
         val isFreshInstall = context.isFreshInstall
         val onboarded = preferencesManager.isOnboarded(!isFreshInstall)
         preferencesManager.saveFirstLaunchStatus(false)
-
         onboarded
     } else {
         false
     }
-
 
     val initialDestination = when {
         userDetailsFilled && waterDetailsFilled -> Destination.HomeScreen.path
@@ -74,47 +75,53 @@ fun Navigation(
     }
     startDestination = initialDestination
 
+    val onTabSelect: (Destination) -> Unit = { destination ->
+        navController.navigate(destination.path) {
+            popUpTo(navController.graph.findStartDestination().id) {
+                saveState = true
+            }
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
+
     NavHost(
         navController = navController,
         modifier = modifier,
         startDestination = startDestination
     ) {
         composable(route = Destination.Onboarding.path) {
-            OnboardingScreen(){
+            OnboardingScreen {
                 preferencesManager.saveOnboarding()
-                navController.navigate(Destination.UserDetails.path){
-                    popUpTo(route = Destination.Onboarding.path){
-                        inclusive= true
-                    }
+                navController.navigate(Destination.UserDetails.path) {
+                    popUpTo(route = Destination.Onboarding.path) { inclusive = true }
                 }
             }
         }
 
         composable(route = Destination.UserDetails.path) {
-            UserDetailForm(neerEventListener = sharedViewModel::handleEvent,
+            UserDetailForm(
+                neerEventListener = sharedViewModel::handleEvent,
                 onProceed = {
                     preferencesManager.saveUserDetails()
-                    navController.navigate(Destination.WaterDetails.path){
-                        popUpTo(route = Destination.UserDetails.path){
-                            inclusive= true
-                        }
+                    navController.navigate(Destination.WaterDetails.path) {
+                        popUpTo(route = Destination.UserDetails.path) { inclusive = true }
                     }
-                })
+                }
+            )
         }
 
         composable(route = Destination.WaterDetails.path) {
-            WaterDetailForm(neerEventListener = sharedViewModel::handleEvent,
+            WaterDetailForm(
+                neerEventListener = sharedViewModel::handleEvent,
                 onProceed = {
                     preferencesManager.saveWaterDetails()
                     navController.navigate(Destination.HomeScreen.path) {
-                        popUpTo(route = Destination.WaterDetails.path){
-                            inclusive= true
-                        }
+                        popUpTo(route = Destination.WaterDetails.path) { inclusive = true }
                     }
                 },
                 userDetails = sharedViewModel.userDetails.collectAsState().value
-                )
-
+            )
         }
 
         composable(route = Destination.HomeScreen.path) {
@@ -124,54 +131,51 @@ fun Navigation(
                 targetIntake = sharedViewModel.targetIntakeAmount.collectAsState().value,
                 intakeList = sharedViewModel.todayAllIntakes.collectAsState().value,
                 userDetails = sharedViewModel.userDetails.collectAsState().value,
-                navigateToSettings = {
-                    navController.navigate(Destination.Settings.path)
-                },
                 navigateToNotifications = {
                     navController.navigate(Destination.Notification.path)
-                }
+                },
+                onTabSelect = onTabSelect
             )
         }
 
-        composable(route = Destination.Notification.path){
+        composable(route = Destination.Stats.path) {
+            StatsScreen(
+                intakeHistory = sharedViewModel.intakeHistory.collectAsState().value,
+                targetIntake = sharedViewModel.targetIntakeAmount.collectAsState().value,
+                selectedUnits = sharedViewModel.userDetails.collectAsState().value.unit,
+                neerEventListener = sharedViewModel::handleEvent,
+                onTabSelect = onTabSelect
+            )
+        }
+
+        composable(route = Destination.Notification.path) {
             NotificationScreen(
-                onBack = {
-                    navController.navigate(Destination.HomeScreen.path){
-                        popUpTo(Destination.HomeScreen.path){
-                            inclusive=true
-                        }
-                    }
-                },
+                onBack = { navController.popBackStack() },
                 notificationList = sharedViewModel.allNotifications.collectAsState().value,
                 neerEventListener = sharedViewModel::handleEvent
             )
         }
 
-        composable(route = Destination.Privacy.path){
-            PrivacyScreen(onBack = {
-                navController.navigate(Destination.HomeScreen.path){
-                    popUpTo(Destination.HomeScreen.path){
-                        inclusive=true
-                    }
-                }
-            })
+        composable(route = Destination.Privacy.path) {
+            PrivacyScreen(onBack = { navController.popBackStack() })
         }
 
         composable(route = Destination.Settings.path) {
             SettingsScreen(
                 neerEventListener = sharedViewModel::handleEvent,
-                onPrivacy = {
-                    navController.navigate(Destination.Privacy.path)
-                },
+                onPrivacy = { navController.navigate(Destination.Privacy.path) },
+                onHydrationPlan = { navController.navigate(Destination.HydrationPlan.path) },
                 userDetails = sharedViewModel.userDetails.collectAsState().value,
                 waterDrinkTarget = sharedViewModel.targetIntakeAmount.collectAsState().value,
-                onBack = {
-                    navController.navigate(Destination.HomeScreen.path){
-                        popUpTo(Destination.HomeScreen.path){
-                            inclusive=true
-                        }
-                    }
-                }
+                onTabSelect = onTabSelect
+            )
+        }
+
+        composable(route = Destination.HydrationPlan.path) {
+            HydrationPlanScreen(
+                userDetails = sharedViewModel.userDetails.collectAsState().value,
+                neerEventListener = sharedViewModel::handleEvent,
+                onBack = { navController.popBackStack() }
             )
         }
     }

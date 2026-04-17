@@ -25,6 +25,10 @@ sealed class Destination(val path: String) {
 
     data object Settings : Destination("settings")
 
+    data object HydrationPlan : Destination("hydrationPlan")
+
+    data object Stats : Destination("stats")
+
     data object Notification : Destination("notifications")
 
     data object Privacy : Destination("privacy")
@@ -35,6 +39,7 @@ sealed class Destination(val path: String) {
         fun fromString(route: String): Destination {
             return when (route) {
                 Settings.path -> Settings
+                Stats.path -> Stats
                 UserDetails.path -> UserDetails
                 WaterDetails.path -> WaterDetails
                 else -> HomeScreen

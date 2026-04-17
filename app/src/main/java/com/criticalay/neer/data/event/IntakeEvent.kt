@@ -31,6 +31,8 @@ sealed class IntakeEvent {
 
     data class UpdateIntakeById(val intakeId:Long, val intakeAmount:Int) : IntakeEvent()
 
+    data class GetIntakeHistory(val startDate: LocalDateTime, val endDate: LocalDateTime) : IntakeEvent()
+
     // TODO: add them
 //    data object DeleteIntake:IntakeEvent()
 //    data object UpdateIntake:IntakeEvent()

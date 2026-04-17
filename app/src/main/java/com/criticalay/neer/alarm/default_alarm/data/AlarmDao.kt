@@ -31,8 +31,17 @@ interface AlarmDao {
     @Query("SELECT * FROM $ALARM_DATABASE_TABLE")
     fun getAllAlarms(): Flow<List<AlarmItem>>?
 
+    @Query("SELECT * FROM $ALARM_DATABASE_TABLE")
+    suspend fun getAllAlarmsSnapshot(): List<AlarmItem>
+
+    @Query("DELETE FROM $ALARM_DATABASE_TABLE")
+    suspend fun clearAll()
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAlarm(alarmItem: AlarmItem)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAlarmReturningId(alarmItem: AlarmItem): Long
 
     @Update
     suspend fun updateAlarm(alarmItem: AlarmItem)

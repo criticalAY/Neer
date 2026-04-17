@@ -26,13 +26,13 @@ import com.criticalay.neer.data.model.Gender
 import com.criticalay.neer.data.model.Intake
 import com.criticalay.neer.data.model.Units
 import com.criticalay.neer.data.model.User
-import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDateTime
 import java.time.LocalTime
 import javax.inject.Inject
+import javax.inject.Singleton
 
-@ViewModelScoped
+@Singleton
 class NeerRepository @Inject constructor(
     private val userDao: UserDao,
     private val intakeDao: IntakeDao,
@@ -134,14 +134,33 @@ class NeerRepository @Inject constructor(
             endDate = endDay)
     }
 
+    fun getIntakeHistory(
+        waterBeverageId: Long,
+        startDate: LocalDateTime,
+        endDate: LocalDateTime
+    ): Flow<List<Intake>> {
+        return intakeDao.getWaterIntakesForDateRange(
+            waterBeverageId = waterBeverageId,
+            startDate = startDate,
+            endDate = endDate
+        )
+    }
+
     // ---- Alarm ---- //
     suspend fun createAlarm(alarm : AlarmItem){
         return alarmDao.insertAlarm(alarmItem = alarm)
     }
 
+    suspend fun createAlarmReturningId(alarm: AlarmItem): Long =
+        alarmDao.insertAlarmReturningId(alarmItem = alarm)
+
     fun getAllAlarms(): Flow<List<AlarmItem>>? {
         return alarmDao.getAllAlarms()
     }
+
+    suspend fun getAllAlarmsSnapshot(): List<AlarmItem> = alarmDao.getAllAlarmsSnapshot()
+
+    suspend fun clearAllAlarms() = alarmDao.clearAll()
 
     suspend fun deleteAlarm(alarm : AlarmItem){
         return alarmDao.deleteAlarm(alarm)

@@ -16,107 +16,147 @@
 
 package com.criticalay.neer.alarm.default_alarm.data
 
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import com.criticalay.neer.alarm.default_alarm.AlarmReceiver
 import com.criticalay.neer.alarm.default_alarm.AlarmScheduler
 import timber.log.Timber
+import java.time.LocalDateTime
 import java.time.ZoneId
 
+/**
+ * Schedules water-reminder alarms through [AlarmManager].
+ *
+ * All firings land on [AlarmReceiver]. Exact alarms are used when the OS grants
+ * the privilege (via USE_EXACT_ALARM on ≥ API 33 or SCHEDULE_EXACT_ALARM on
+ * older versions); otherwise we fall back to [AlarmManager.setAndAllowWhileIdle]
+ * so Doze still lets reminders fire — at the cost of OS-imposed batching.
+ */
 class NeerAlarmScheduler(
     val context: Context
 ) : AlarmScheduler {
 
     private val alarmManager = context.getSystemService(AlarmManager::class.java)
 
-    override fun scheduleRegular(item: AlarmItem) {
-        Timber.d("Scheduling alarm")
-        val intent = Intent(context, AlarmReceiver::class.java).apply {
-            putExtra("NOTIFICATION_TYPE", "regular")
-        }
+    private val regularRequestCode = REGULAR_ALARM_REQUEST_CODE
 
-        if (item.interval != null) {
-            Timber.d("NeerAlarmScheduler interval received is %.2f", item.interval)
-            alarmManager.setInexactRepeating(
-                AlarmManager.RTC_WAKEUP,
-                item.time.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
-                (item.interval * 60 * 60 * 1000).toLong(),
-                PendingIntent.getBroadcast(
-                    context,
-                    101,
-                    intent,
-                    PendingIntent.FLAG_IMMUTABLE
-                )
-            )
-        }
+    override fun scheduleRegular(item: AlarmItem) {
+        Timber.d("Scheduling regular (repeating, interval=${item.interval}h) alarm")
+        if (item.interval == null) return
+
+        val pendingIntent = regularPendingIntent()
+        val firstFireMillis = item.time.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000
+        val intervalMillis = (item.interval * 60 * 60 * 1000).toLong()
+
+        alarmManager.setInexactRepeating(
+            AlarmManager.RTC_WAKEUP,
+            firstFireMillis,
+            intervalMillis,
+            pendingIntent
+        )
     }
 
     override fun scheduleOneTime(item: AlarmItem) {
-        Timber.d("Scheduling custom alarm one time repeat")
-        val intent = Intent(context, AlarmReceiver::class.java).apply {
-            putExtra("NOTIFICATION_TYPE", "custom")
-            putExtra("ALARM_ID", item.alarmId)
-        }
-        Timber.d("alarm id recieved : %d", item.alarmId)
-
-        alarmManager.set(
-            AlarmManager.RTC_WAKEUP,
-            item.time.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
-            PendingIntent.getBroadcast(
-                context,
-                item.alarmId.toInt(),
-                intent,
-                PendingIntent.FLAG_IMMUTABLE
-            )
-        )
+        Timber.d("Scheduling custom one-time alarm id=${item.alarmId}")
+        val pendingIntent = customPendingIntent(item.alarmId)
+        val fireMillis = item.time.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000
+        scheduleExactOrAllowWhileIdle(fireMillis, pendingIntent)
     }
 
     override fun scheduleRepeating(item: AlarmItem) {
-        Timber.d("Scheduling custom alarm daily repeat")
-        val intent = Intent(context, AlarmReceiver::class.java).apply {
-            putExtra("NOTIFICATION_TYPE", "custom")
+        Timber.d("Scheduling custom daily-repeating alarm id=${item.alarmId}")
+        val pendingIntent = customPendingIntent(item.alarmId)
+        val fireMillis = nextOccurrenceMillis(item.time)
+        scheduleExactOrAllowWhileIdle(fireMillis, pendingIntent)
+    }
+
+    override fun scheduleIfEnabled(item: AlarmItem) {
+        if (!item.alarmState) {
+            Timber.d("Skipping disabled alarm id=${item.alarmId}")
+            return
         }
-            Timber.d("NeerAlarmScheduler interval received is %.2f", item.interval)
-            alarmManager.setInexactRepeating(
-                AlarmManager.RTC_WAKEUP,
-                item.time.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
-                (24 * 60 * 60 * 1000).toLong(),
-                PendingIntent.getBroadcast(
-                    context,
-                    item.alarmId.toInt(),
-                    intent,
-                    PendingIntent.FLAG_IMMUTABLE
-                )
-            )
+        if (item.repeating) scheduleRepeating(item) else scheduleOneTime(item)
     }
 
     override fun cancel() {
-        Timber.d("Cancelling alarm")
-        alarmManager.cancel(
-            PendingIntent.getBroadcast(
-                context,
-                101,
-                Intent(context, AlarmReceiver::class.java),
-                PendingIntent.FLAG_IMMUTABLE
-            )
-        )
-        Timber.d("Successfully cancelled alarm")
+        Timber.d("Cancelling regular alarm")
+        alarmManager.cancel(regularPendingIntent())
     }
 
     override fun cancelCustomAlarm(alarmId: Long) {
-        Timber.d("Cancelling custom alarm")
-        alarmManager.cancel(
-            PendingIntent.getBroadcast(
-                context,
-                alarmId.toInt(),
-                Intent(context, AlarmReceiver::class.java),
-                PendingIntent.FLAG_IMMUTABLE
-            )
-        )
-        Timber.d("Successfully cancelled custom alarm")
+        Timber.d("Cancelling custom alarm id=$alarmId")
+        alarmManager.cancel(customPendingIntent(alarmId))
     }
 
+    private fun regularPendingIntent(): PendingIntent {
+        val intent = Intent(context, AlarmReceiver::class.java).apply {
+            putExtra("NOTIFICATION_TYPE", "regular")
+        }
+        return PendingIntent.getBroadcast(
+            context,
+            regularRequestCode,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+    }
 
+    private fun customPendingIntent(alarmId: Long): PendingIntent {
+        val intent = Intent(context, AlarmReceiver::class.java).apply {
+            putExtra("NOTIFICATION_TYPE", "custom")
+            putExtra("ALARM_ID", alarmId)
+        }
+        return PendingIntent.getBroadcast(
+            context,
+            alarmId.toInt(),
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+    }
+
+    /**
+     * On the day the user creates/toggles the alarm, [item.time] may already
+     * be in the past (e.g., user enables a 08:00 reminder at 14:00). Advance
+     * to the next 24h boundary so the first firing is in the future.
+     */
+    private fun nextOccurrenceMillis(time: LocalDateTime): Long {
+        val zone = ZoneId.systemDefault()
+        var next = time
+        val nowMillis = System.currentTimeMillis()
+        var candidate = next.atZone(zone).toEpochSecond() * 1000
+        while (candidate <= nowMillis) {
+            next = next.plusDays(1)
+            candidate = next.atZone(zone).toEpochSecond() * 1000
+        }
+        return candidate
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun scheduleExactOrAllowWhileIdle(triggerAtMillis: Long, pendingIntent: PendingIntent) {
+        val canSchedule = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            alarmManager.canScheduleExactAlarms()
+        } else true
+
+        if (canSchedule) {
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                triggerAtMillis,
+                pendingIntent
+            )
+        } else {
+            Timber.w("Exact alarms not permitted — falling back to setAndAllowWhileIdle")
+            alarmManager.setAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                triggerAtMillis,
+                pendingIntent
+            )
+        }
+    }
+
+    companion object {
+        private const val REGULAR_ALARM_REQUEST_CODE = 101
+    }
 }

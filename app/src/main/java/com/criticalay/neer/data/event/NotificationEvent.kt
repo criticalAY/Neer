@@ -28,4 +28,10 @@ sealed class NotificationEvent {
     data object GetAllScheduledNotifications: NotificationEvent()
 
     data class ToggleNotificationState(val alarmId:Long, val state:Boolean): NotificationEvent()
+
+    /**
+     * Cancel every existing custom alarm + clear the table, then insert the new
+     * list and schedule each entry. Used by the generated hydration plan.
+     */
+    data class ReplaceAllAlarms(val alarms: List<AlarmItem>): NotificationEvent()
 }

@@ -45,8 +45,12 @@ interface IntakeDao {
     fun getWaterIntakesForToday(waterBeverageId: Long, startOfDay: LocalDateTime, startOfNextDay: LocalDateTime): Flow<List<Intake>>
 
 
-    // Method to get water intake entries for a specific date range
-    @Query("SELECT * FROM intake WHERE beverageId = :waterBeverageId AND DATE(intakeDateTime) BETWEEN DATE(:startDate) AND DATE(:endDate)")
+    // Method to get water intake entries for a specific date range.
+    // Uses half-open interval [startDate, endDate) on the raw epoch-Long to
+    // match how LocalDateTime is stored by Converters.dateToTimestamp. The old
+    // DATE(intakeDateTime) form treated the epoch as a Julian day and returned
+    // nothing for modern dates.
+    @Query("SELECT * FROM intake WHERE beverageId = :waterBeverageId AND intakeDateTime >= :startDate AND intakeDateTime < :endDate ORDER BY intakeDateTime ASC")
     fun getWaterIntakesForDateRange(waterBeverageId: Long, startDate: LocalDateTime, endDate: LocalDateTime): Flow<List<Intake>>
 
     // Method to get the total amount of water intake for today

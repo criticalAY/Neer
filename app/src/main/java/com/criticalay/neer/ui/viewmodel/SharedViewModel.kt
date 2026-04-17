@@ -18,6 +18,7 @@ package com.criticalay.neer.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.criticalay.neer.alarm.default_alarm.AlarmScheduler
 import com.criticalay.neer.alarm.default_alarm.data.AlarmItem
 import com.criticalay.neer.data.event.BeverageEvent
 import com.criticalay.neer.data.event.IntakeEvent
@@ -36,7 +37,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SharedViewModel @Inject constructor(
-    private val repository: NeerRepository
+    private val repository: NeerRepository,
+    private val alarmScheduler: AlarmScheduler
 ) : ViewModel() {
     private val _todayAllIntakes = MutableStateFlow<List<Intake>>(emptyList())
     val todayAllIntakes: StateFlow<List<Intake>> = _todayAllIntakes
@@ -52,6 +54,9 @@ class SharedViewModel @Inject constructor(
 
     private val _allNotifications = MutableStateFlow<List<AlarmItem>>(emptyList())
     val allNotifications: StateFlow<List<AlarmItem>> = _allNotifications
+
+    private val _intakeHistory = MutableStateFlow<List<Intake>>(emptyList())
+    val intakeHistory: StateFlow<List<Intake>> = _intakeHistory
 
     fun handleEvent(neerEvent: NeerEvent) {
         when (neerEvent) {
@@ -128,6 +133,16 @@ class SharedViewModel @Inject constructor(
                             repository.updateIntakeById(intakeId = neerEvent.intakeEvent.intakeId, intakeAmount =  neerEvent.intakeEvent.intakeAmount)
                         }
                     }
+
+                    is IntakeEvent.GetIntakeHistory -> {
+                        viewModelScope.launch {
+                            repository.getIntakeHistory(
+                                waterBeverageId = BEVERAGE_ID,
+                                startDate = neerEvent.intakeEvent.startDate,
+                                endDate = neerEvent.intakeEvent.endDate
+                            ).collect { _intakeHistory.value = it }
+                        }
+                    }
                 }
             }
             is NeerEvent.TriggerUserEvent -> {
@@ -183,34 +198,61 @@ class SharedViewModel @Inject constructor(
             }
 
             is NeerEvent.TriggerNotificationEvent -> {
-                when(neerEvent.notificationEvent){
+                when (val event = neerEvent.notificationEvent) {
                     is NotificationEvent.DeleteNotification -> {
                         viewModelScope.launch {
-                            repository.deleteAlarm(neerEvent.notificationEvent.notification)
+                            alarmScheduler.cancelCustomAlarm(event.notification.alarmId)
+                            repository.deleteAlarm(event.notification)
                         }
                     }
+
                     NotificationEvent.GetAllScheduledNotifications -> {
                         viewModelScope.launch {
-                            repository.getAllAlarms()?.collect{alarms ->
+                            repository.getAllAlarms()?.collect { alarms ->
                                 _allNotifications.value = alarms
-
                             }
                         }
                     }
+
                     is NotificationEvent.SaveNotification -> {
                         viewModelScope.launch {
-                            repository.createAlarm(neerEvent.notificationEvent.notification)
+                            val id = repository.createAlarmReturningId(event.notification)
+                            val stored = event.notification.copy(alarmId = id)
+                            alarmScheduler.scheduleIfEnabled(stored)
                         }
                     }
+
                     is NotificationEvent.UpdateNotification -> {
                         viewModelScope.launch {
-                            repository.updateAlarm(neerEvent.notificationEvent.notification)
+                            alarmScheduler.cancelCustomAlarm(event.notification.alarmId)
+                            repository.updateAlarm(event.notification)
+                            alarmScheduler.scheduleIfEnabled(event.notification)
                         }
                     }
 
                     is NotificationEvent.ToggleNotificationState -> {
                         viewModelScope.launch {
-                            repository.toggleAlarm(neerEvent.notificationEvent.alarmId, neerEvent.notificationEvent.state)
+                            repository.toggleAlarm(event.alarmId, event.state)
+                            val updated = repository.getAllAlarmsSnapshot()
+                                .firstOrNull { it.alarmId == event.alarmId } ?: return@launch
+                            if (event.state) {
+                                alarmScheduler.scheduleIfEnabled(updated)
+                            } else {
+                                alarmScheduler.cancelCustomAlarm(event.alarmId)
+                            }
+                        }
+                    }
+
+                    is NotificationEvent.ReplaceAllAlarms -> {
+                        viewModelScope.launch {
+                            repository.getAllAlarmsSnapshot().forEach {
+                                alarmScheduler.cancelCustomAlarm(it.alarmId)
+                            }
+                            repository.clearAllAlarms()
+                            event.alarms.forEach { template ->
+                                val id = repository.createAlarmReturningId(template)
+                                alarmScheduler.scheduleIfEnabled(template.copy(alarmId = id))
+                            }
                         }
                     }
                 }

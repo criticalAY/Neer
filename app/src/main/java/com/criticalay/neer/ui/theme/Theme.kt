@@ -25,32 +25,84 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
-private val DarkColorScheme = darkColorScheme(
-    primary = DarkBluePrimary,
-    secondary = DarkBlueSecondary,
-    tertiary = DarkBlueTertiary
+private val LightColorScheme = lightColorScheme(
+    primary = NeerLightPrimary,
+    onPrimary = NeerLightOnPrimary,
+    primaryContainer = NeerLightPrimaryContainer,
+    onPrimaryContainer = NeerLightOnPrimaryContainer,
+    secondary = NeerLightSecondary,
+    onSecondary = NeerLightOnSecondary,
+    secondaryContainer = NeerLightSecondaryContainer,
+    onSecondaryContainer = NeerLightOnSecondaryContainer,
+    tertiary = NeerLightTertiary,
+    onTertiary = NeerLightOnTertiary,
+    tertiaryContainer = NeerLightTertiaryContainer,
+    onTertiaryContainer = NeerLightOnTertiaryContainer,
+    error = NeerLightError,
+    onError = NeerLightOnError,
+    errorContainer = NeerLightErrorContainer,
+    onErrorContainer = NeerLightOnErrorContainer,
+    background = NeerLightBackground,
+    onBackground = NeerLightOnBackground,
+    surface = NeerLightSurface,
+    onSurface = NeerLightOnSurface,
+    surfaceVariant = NeerLightSurfaceVariant,
+    onSurfaceVariant = NeerLightOnSurfaceVariant,
+    outline = NeerLightOutline,
+    outlineVariant = NeerLightOutlineVariant,
+    surfaceContainerLowest = NeerLightSurfaceContainerLowest,
+    surfaceContainerLow = NeerLightSurfaceContainerLow,
+    surfaceContainer = NeerLightSurfaceContainer,
+    surfaceContainerHigh = NeerLightSurfaceContainerHigh,
+    surfaceContainerHighest = NeerLightSurfaceContainerHighest,
+    inverseSurface = NeerLightInverseSurface,
+    inverseOnSurface = NeerLightInverseOnSurface,
+    inversePrimary = NeerLightInversePrimary,
+    scrim = NeerLightScrim,
+    surfaceTint = NeerLightSurfaceTint
 )
 
-private val LightColorScheme = lightColorScheme(
-    primary = BluePrimary,
-    secondary = BlueSecondary,
-    tertiary = BlueTertiary
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+private val DarkColorScheme = darkColorScheme(
+    primary = NeerDarkPrimary,
+    onPrimary = NeerDarkOnPrimary,
+    primaryContainer = NeerDarkPrimaryContainer,
+    onPrimaryContainer = NeerDarkOnPrimaryContainer,
+    secondary = NeerDarkSecondary,
+    onSecondary = NeerDarkOnSecondary,
+    secondaryContainer = NeerDarkSecondaryContainer,
+    onSecondaryContainer = NeerDarkOnSecondaryContainer,
+    tertiary = NeerDarkTertiary,
+    onTertiary = NeerDarkOnTertiary,
+    tertiaryContainer = NeerDarkTertiaryContainer,
+    onTertiaryContainer = NeerDarkOnTertiaryContainer,
+    error = NeerDarkError,
+    onError = NeerDarkOnError,
+    errorContainer = NeerDarkErrorContainer,
+    onErrorContainer = NeerDarkOnErrorContainer,
+    background = NeerDarkBackground,
+    onBackground = NeerDarkOnBackground,
+    surface = NeerDarkSurface,
+    onSurface = NeerDarkOnSurface,
+    surfaceVariant = NeerDarkSurfaceVariant,
+    onSurfaceVariant = NeerDarkOnSurfaceVariant,
+    outline = NeerDarkOutline,
+    outlineVariant = NeerDarkOutlineVariant,
+    surfaceContainerLowest = NeerDarkSurfaceContainerLowest,
+    surfaceContainerLow = NeerDarkSurfaceContainerLow,
+    surfaceContainer = NeerDarkSurfaceContainer,
+    surfaceContainerHigh = NeerDarkSurfaceContainerHigh,
+    surfaceContainerHighest = NeerDarkSurfaceContainerHighest,
+    inverseSurface = NeerDarkInverseSurface,
+    inverseOnSurface = NeerDarkInverseOnSurface,
+    inversePrimary = NeerDarkInversePrimary,
+    scrim = NeerDarkScrim,
+    surfaceTint = NeerDarkSurfaceTint
 )
 
 @Composable
 fun NeerTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
+    // Dynamic color is available on Android 12+; off by default so our brand colors win
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
@@ -59,7 +111,6 @@ fun NeerTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
