@@ -167,6 +167,10 @@
     <string name="details_reminders_sub">We\'ll split your goal into %1$d nudges between wake and sleep.</string>
     <string name="details_reminders_sub_off">You can enable this later from Settings → Hydration plan.</string>
     <string name="details_continue_with_plan">Continue with my plan</string>
+    <string name="widget_tracking_label">Neer · Water tracker</string>
+    <string name="widget_tracking_description">Track today\'s intake and log sips without opening the app.</string>
+    <string name="widget_streak_label">Neer · Streak</string>
+    <string name="widget_streak_description">Your current consecutive-goal-hit streak at a glance.</string>
     <string name="gender_male">Male</string>
     <string name="gender_female">Female</string>
     <string name="gender_other">Other</string>

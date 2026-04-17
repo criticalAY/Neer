@@ -130,5 +130,8 @@ dependencies {
     coreLibraryDesugaring(libs.desugar.jdk.libs.nio)
     implementation( libs.androidx.datastore.preferences)
     implementation(libs.accompanist.permissions)
+    // widgets
+    implementation(libs.androidx.glance.appwidget)
+    implementation(libs.androidx.glance.material3)
 
 }

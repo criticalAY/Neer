@@ -50,6 +50,39 @@
         <receiver android:name=".notification.WaterNotificationReceiver"/>
 
         <receiver
+            android:name=".widget.TrackingWidgetReceiver"
+            android:exported="false"
+            android:label="@string/widget_tracking_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/tracking_widget_info"/>
+        </receiver>
+
+        <receiver
+            android:name=".widget.StreakWidgetReceiver"
+            android:exported="false"
+            android:label="@string/widget_streak_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/streak_widget_info"/>
+        </receiver>
+
+        <activity
+            android:name=".widget.TrackingWidgetConfigureActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Neer">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
+            </intent-filter>
+        </activity>
+
+        <receiver
             android:name=".alarm.BootReceiver"
             android:enabled="true"
             android:exported="true"

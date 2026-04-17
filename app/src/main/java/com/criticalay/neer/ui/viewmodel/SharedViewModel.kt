@@ -29,6 +29,7 @@ import com.criticalay.neer.data.model.Intake
 import com.criticalay.neer.data.model.User
 import com.criticalay.neer.data.repository.NeerRepository
 import com.criticalay.neer.utils.Constants.BEVERAGE_ID
+import com.criticalay.neer.widget.WidgetUpdater
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -38,7 +39,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SharedViewModel @Inject constructor(
     private val repository: NeerRepository,
-    private val alarmScheduler: AlarmScheduler
+    private val alarmScheduler: AlarmScheduler,
+    private val widgetUpdater: WidgetUpdater
 ) : ViewModel() {
     private val _todayAllIntakes = MutableStateFlow<List<Intake>>(emptyList())
     val todayAllIntakes: StateFlow<List<Intake>> = _todayAllIntakes
@@ -86,6 +88,7 @@ class SharedViewModel @Inject constructor(
                     is BeverageEvent.UpdateTarget -> {
                         viewModelScope.launch {
                             repository.updateIntakeTarget(neerEvent.beverageEvent.target)
+                            widgetUpdater.refresh()
                         }
                     }
                 }
@@ -95,6 +98,7 @@ class SharedViewModel @Inject constructor(
                     is IntakeEvent.AddIntake -> {
                         viewModelScope.launch {
                             repository.addIntake(neerEvent.intakeEvent.intake)
+                            widgetUpdater.refresh()
                         }
                     }
 
@@ -125,12 +129,14 @@ class SharedViewModel @Inject constructor(
                     is IntakeEvent.DeleteIntake -> {
                         viewModelScope.launch {
                             repository.deleteIntake(neerEvent.intakeEvent.intake)
+                            widgetUpdater.refresh()
                         }
                     }
 
                     is IntakeEvent.UpdateIntakeById -> {
                         viewModelScope.launch {
                             repository.updateIntakeById(intakeId = neerEvent.intakeEvent.intakeId, intakeAmount =  neerEvent.intakeEvent.intakeAmount)
+                            widgetUpdater.refresh()
                         }
                     }
 
