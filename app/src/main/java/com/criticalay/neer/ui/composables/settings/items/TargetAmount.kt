@@ -63,37 +63,14 @@ fun TargetAmount(
     selectedUnits: Units,
     newTargetAmount: (value:Int) -> Unit
 ) {
-    var showDialog by remember {
-        mutableStateOf(false)
-    }
-    SettingItem(modifier = modifier .clickable {
-        showDialog = true
-    }) {
-        Row(
-            modifier = Modifier
-                .semantics(mergeDescendants = true) {}
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                modifier = Modifier.padding(end = 5.dp),
-                imageVector = Icons.Rounded.Adjust,
-                contentDescription = null
-            )
-            Text(
-                modifier = Modifier
-                    .weight(1f).padding(start = 5.dp),
-                fontSize = 18.sp,
-                text = stringResource(R.string.drink_target)
-            )
-
-            Text(
-                color = MaterialTheme.colorScheme.primary,
-                fontSize = 18.sp,
-                text = "$targetAmount ${Converters.getUnitName(selectedUnits,1)}"
-            )
-        }
-    }
+    var showDialog by remember { mutableStateOf(false) }
+    com.criticalay.neer.ui.composables.settings.SettingsRow(
+        icon = Icons.Rounded.Adjust,
+        title = stringResource(R.string.drink_target),
+        trailingValue = "$targetAmount ${Converters.getUnitName(selectedUnits, 1)}",
+        onClick = { showDialog = true },
+        modifier = modifier
+    )
     if (showDialog) {
         EditHeightDialog(
             height = targetAmount,

@@ -58,37 +58,14 @@ fun Height(
     userHeight:Double,
     newHeight: (value:Double) -> Unit
 ) {
-    var showDialog by remember {
-        mutableStateOf(false)
-    }
-    SettingItem(modifier = modifier .clickable {
-       showDialog = true
-    }) {
-        Row(
-            modifier = Modifier
-                .semantics(mergeDescendants = true) {}
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                modifier = Modifier.padding(end = 5.dp),
-                imageVector = Icons.Rounded.Height,
-                contentDescription = null
-            )
-            Text(
-                modifier = Modifier
-                    .weight(1f).padding(start = 5.dp),
-                fontSize = 18.sp,
-                text = stringResource(R.string.height)
-            )
-
-            Text(
-                color = MaterialTheme.colorScheme.primary,
-                fontSize = 18.sp,
-                text = stringResource(R.string.height_value, userHeight)
-            )
-        }
-    }
+    var showDialog by remember { mutableStateOf(false) }
+    com.criticalay.neer.ui.composables.settings.SettingsRow(
+        icon = Icons.Rounded.Height,
+        title = stringResource(R.string.height),
+        trailingValue = stringResource(R.string.height_value, userHeight),
+        onClick = { showDialog = true },
+        modifier = modifier
+    )
     if (showDialog) {
         EditHeightDialog(
             height = userHeight,

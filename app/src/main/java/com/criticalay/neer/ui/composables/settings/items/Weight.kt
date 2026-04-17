@@ -63,37 +63,14 @@ fun Weight(
     selectedUnits: Units,
     newWeight: (weight:Double) -> Unit
 ) {
-    var showDialog by remember {
-        mutableStateOf(false)
-    }
-    SettingItem(modifier = modifier .clickable {
-        showDialog = true
-    }) {
-        Row(
-            modifier = Modifier
-                .semantics(mergeDescendants = true) {}
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                modifier = Modifier.padding(end = 5.dp),
-                imageVector = Icons.Outlined.MonitorWeight,
-                contentDescription = null
-            )
-            Text(
-                modifier = Modifier
-                    .weight(1f).padding(start = 5.dp),
-                fontSize = 18.sp,
-                text = stringResource(R.string.weight)
-            )
-
-            Text(
-                color = MaterialTheme.colorScheme.primary,
-                fontSize = 18.sp,
-                text = "$userWeight ${Converters.getUnitName(selectedUnits, 0)}"
-            )
-        }
-    }
+    var showDialog by remember { mutableStateOf(false) }
+    com.criticalay.neer.ui.composables.settings.SettingsRow(
+        icon = Icons.Outlined.MonitorWeight,
+        title = stringResource(R.string.weight),
+        trailingValue = "$userWeight ${Converters.getUnitName(selectedUnits, 0)}",
+        onClick = { showDialog = true },
+        modifier = modifier
+    )
     if (showDialog) {
         EditWeightDialog(
             weight = userWeight,

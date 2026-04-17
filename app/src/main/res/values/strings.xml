@@ -171,6 +171,16 @@
     <string name="widget_tracking_description">Track today\'s intake and log sips without opening the app.</string>
     <string name="widget_streak_label">Neer · Streak</string>
     <string name="widget_streak_description">Your current consecutive-goal-hit streak at a glance.</string>
+    <string name="support_sheet_title">Support the project</string>
+    <string name="support_sheet_subtitle">Neer is free and open-source. If it helps you, here are two ways to say thanks.</string>
+    <string name="support_buy_coffee">Buy me a coffee</string>
+    <string name="support_buy_coffee_sub">One-time donation on BuyMeACoffee</string>
+    <string name="support_github">Star on GitHub</string>
+    <string name="support_github_sub">criticalAY/Neer \u2014 open source</string>
+    <string name="support_issue">Report an issue</string>
+    <string name="support_issue_sub">File a bug or request a feature</string>
+    <string name="support_subtitle">Donate or contribute</string>
+    <string name="privacy_policy_subtitle">Read how your data is handled</string>
     <string name="gender_male">Male</string>
     <string name="gender_female">Female</string>
     <string name="gender_other">Other</string>

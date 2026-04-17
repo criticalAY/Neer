@@ -40,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.criticalay.neer.R
 import com.criticalay.neer.data.model.Intake
@@ -65,7 +66,12 @@ fun WeeklyBarChart(
         }
     }
 
+    // Chart ceiling always honours both the goal and the highest recorded day
+    // so a 200%-of-goal day still fits and the target-gridline stays visible.
     val chartMax = maxOf(targetIntake, daily.maxOf { it.second }, 1)
+    val targetFraction = if (targetIntake > 0)
+        (targetIntake.toFloat() / chartMax).coerceIn(0f, 1f)
+    else 0f
     val dowFormatter = DateTimeFormatter.ofPattern("EEE")
 
     Card(
@@ -92,22 +98,69 @@ fun WeeklyBarChart(
             )
             Spacer(Modifier.height(16.dp))
 
-            Row(
+            // Bars row — fixed height, bars grow from the bottom. Label row is
+            // a separate sibling row below so the label can never be clipped
+            // by a bar that fills 100 % of its cell.
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(160.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Bottom
+                    .height(140.dp)
             ) {
-                daily.forEach { (date, total) ->
-                    val fraction = (total.toFloat() / chartMax.toFloat()).coerceIn(0f, 1f)
-                    val hitGoal = total >= targetIntake && targetIntake > 0
+                if (targetFraction > 0f) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(targetFraction)
+                            .align(Alignment.BottomStart)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(1.dp)
+                                .align(Alignment.TopStart)
+                                .background(
+                                    MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                                )
+                        )
+                    }
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    daily.forEach { (date, total) ->
+                        val fraction = (total.toFloat() / chartMax.toFloat())
+                            .coerceIn(0f, 1f)
+                        val hitGoal = total >= targetIntake && targetIntake > 0
+                        val isToday = date == today
+                        BarColumn(
+                            fraction = fraction,
+                            emphasize = isToday,
+                            hitGoal = hitGoal,
+                            modifier = Modifier.weight(1f).fillMaxHeight()
+                        )
+                    }
+                }
+            }
+            Spacer(Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                daily.forEach { (date, _) ->
                     val isToday = date == today
-                    BarColumn(
-                        fraction = fraction,
-                        label = date.format(dowFormatter),
-                        emphasize = isToday,
-                        hitGoal = hitGoal,
+                    Text(
+                        text = date.format(dowFormatter),
+                        style = if (isToday)
+                            MaterialTheme.typography.labelMedium.copy(
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        else
+                            MaterialTheme.typography.labelSmall.copy(
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            ),
+                        textAlign = TextAlign.Center,
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -119,7 +172,6 @@ fun WeeklyBarChart(
 @Composable
 private fun BarColumn(
     fraction: Float,
-    label: String,
     emphasize: Boolean,
     hitGoal: Boolean,
     modifier: Modifier = Modifier
@@ -127,7 +179,7 @@ private fun BarColumn(
     val animated by animateFloatAsState(
         targetValue = fraction,
         animationSpec = tween(durationMillis = 700),
-        label = "bar-$label"
+        label = "bar"
     )
     val barColor = when {
         hitGoal -> MaterialTheme.colorScheme.primary
@@ -135,10 +187,13 @@ private fun BarColumn(
         else -> MaterialTheme.colorScheme.primary.copy(alpha = 0.35f)
     }
 
-    Column(
-        modifier = modifier.fillMaxHeight(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Bottom
+    // The bar lives inside its own Box so Arrangement.Bottom of the parent Row
+    // anchors it to the baseline. The Box occupies the cell's full height; the
+    // bar is rendered as a bottom-aligned child that can safely fill 100 %
+    // without pushing anything else.
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.BottomCenter
     ) {
         Box(
             modifier = Modifier
@@ -146,14 +201,6 @@ private fun BarColumn(
                 .fillMaxHeight(animated.coerceAtLeast(0.015f))
                 .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
                 .background(barColor)
-        )
-        Spacer(Modifier.height(6.dp))
-        Text(
-            text = label,
-            style = if (emphasize)
-                MaterialTheme.typography.labelMedium.copy(color = MaterialTheme.colorScheme.primary)
-            else
-                MaterialTheme.typography.labelSmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
         )
     }
 }

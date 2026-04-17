@@ -65,35 +65,13 @@ fun Gender(
 ) {
     Box {
         var expanded by remember { mutableStateOf(false) }
-        SettingItem(modifier = modifier.clickable {
-            expanded = !expanded
-        }) {
-            Row(
-                modifier = Modifier
-                    .semantics(mergeDescendants = true) {}
-                    .padding(horizontal = 16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    modifier = Modifier.padding(end = 5.dp),
-                    imageVector = Icons.Rounded.Wc,
-                    contentDescription = null
-                )
-                Text(
-                    modifier = Modifier
-                        .padding(start = 5.dp)
-                        .weight(1f),
-                    fontSize = 18.sp,
-                    text = stringResource(R.string.gender)
-                )
-
-                Text(
-                    color = MaterialTheme.colorScheme.primary,
-                    fontSize = 18.sp,
-                    text = userGender
-                )
-            }
-        }
+        com.criticalay.neer.ui.composables.settings.SettingsRow(
+            icon = Icons.Rounded.Wc,
+            title = stringResource(R.string.gender),
+            trailingValue = userGender,
+            onClick = { expanded = !expanded },
+            modifier = modifier
+        )
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },

@@ -16,62 +16,25 @@
 
 package com.criticalay.neer.ui.composables.settings.items
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.WaterDrop
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.unit.dp
 import com.criticalay.neer.R
-import com.criticalay.neer.ui.composables.settings.SettingItem
+import com.criticalay.neer.ui.composables.settings.SettingsRow
 
 @Composable
 fun HydrationPlanRow(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    SettingItem(modifier = modifier.clickable(onClick = onClick)) {
-        Row(
-            modifier = Modifier
-                .semantics(mergeDescendants = true) {}
-                .padding(horizontal = 16.dp, vertical = 4.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Filled.WaterDrop,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary
-            )
-            Spacer(Modifier.size(12.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = stringResource(R.string.hydration_plan_row),
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Text(
-                    text = stringResource(R.string.hydration_plan_row_sub),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-    }
+    SettingsRow(
+        icon = Icons.Filled.WaterDrop,
+        title = stringResource(R.string.hydration_plan_row),
+        subtitle = stringResource(R.string.hydration_plan_row_sub),
+        showChevron = true,
+        onClick = onClick,
+        modifier = modifier
+    )
 }

@@ -63,34 +63,13 @@ fun BedTime(
     val formattedTime = remember(timeState.hour, timeState.minute) {
         TimeUtils.formatTime(timeState.hour, timeState.minute, timeState.hour < 12)
     }
-    SettingItem(modifier = modifier .clickable {
-        showTimeDialog = true
-    }) {
-        Row(
-            modifier = Modifier
-                .semantics(mergeDescendants = true) {}
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                modifier = Modifier.padding(end = 5.dp),
-                imageVector = Icons.Rounded.Bedtime,
-                contentDescription = null
-            )
-            Text(
-                modifier = Modifier
-                    .weight(1f).padding(start = 5.dp),
-                fontSize = 18.sp,
-                text = stringResource(R.string.sleep_time)
-            )
-
-            Text(
-                color = MaterialTheme.colorScheme.primary,
-                fontSize = 18.sp,
-                text = formattedTime
-            )
-        }
-    }
+    com.criticalay.neer.ui.composables.settings.SettingsRow(
+        icon = Icons.Rounded.Bedtime,
+        title = stringResource(R.string.sleep_time),
+        trailingValue = formattedTime,
+        onClick = { showTimeDialog = true },
+        modifier = modifier
+    )
 
     TimeDialog(
         showDialog = showTimeDialog,
