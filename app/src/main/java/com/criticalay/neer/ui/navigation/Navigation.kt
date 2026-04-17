@@ -67,9 +67,7 @@ fun Navigation(
     }
 
     val initialDestination = when {
-        userDetailsFilled && waterDetailsFilled -> Destination.HomeScreen.path
-        waterDetailsFilled -> Destination.HomeScreen.path
-        userDetailsFilled -> Destination.WaterDetails.path
+        userDetailsFilled -> Destination.HomeScreen.path
         userOnboarded -> Destination.UserDetails.path
         else -> Destination.Onboarding.path
     }
@@ -104,7 +102,8 @@ fun Navigation(
                 neerEventListener = sharedViewModel::handleEvent,
                 onProceed = {
                     preferencesManager.saveUserDetails()
-                    navController.navigate(Destination.WaterDetails.path) {
+                    preferencesManager.saveWaterDetails()
+                    navController.navigate(Destination.HomeScreen.path) {
                         popUpTo(route = Destination.UserDetails.path) { inclusive = true }
                     }
                 }

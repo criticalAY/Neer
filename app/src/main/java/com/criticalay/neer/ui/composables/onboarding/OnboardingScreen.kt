@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Ashish Yadav <mailtoashish693@gmail.com>
+ * Copyright (c) 2026 Ashish Yadav <mailtoashish693@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,129 +16,197 @@
 
 package com.criticalay.neer.ui.composables.onboarding
 
-import android.content.res.Resources.Theme
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.NavigateNext
-import androidx.compose.material.icons.filled.NavigateNext
-import androidx.compose.material.icons.rounded.WaterDrop
+import androidx.compose.material.icons.filled.WaterDrop
+import androidx.compose.material.icons.outlined.BarChart
+import androidx.compose.material.icons.outlined.NotificationsActive
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ButtonElevation
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Cyan
-import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.criticalay.neer.R
 import com.criticalay.neer.ui.theme.NeerTheme
 
 @Composable
 fun OnboardingScreen(
-    modifier: Modifier =Modifier,
-    navigateToUserDetails : () -> Unit
+    modifier: Modifier = Modifier,
+    navigateToUserDetails: () -> Unit
 ) {
-    Scaffold {padding ->
+    Scaffold(containerColor = MaterialTheme.colorScheme.surface) { padding ->
         Column(
             modifier = modifier
                 .fillMaxSize()
                 .padding(padding)
+                .padding(horizontal = 24.dp)
         ) {
-            Text(
-                modifier = Modifier
-                    .align(alignment = Alignment.CenterHorizontally)
-                    .padding(top = 20.dp),
-                textAlign = TextAlign.Center,
-                style = TextStyle(
-                    color = MaterialTheme.colorScheme.primary,
-                    fontSize = 30.sp
-                ),
-                fontWeight = FontWeight(400),
-                text = stringResource(R.string.onboarding_title)
-            )
-            Card(
-                modifier = Modifier
-                    .align(alignment = Alignment.CenterHorizontally)
-                    .padding(top = 40.dp),
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 10.dp
-                ),
-            ) {
-                Image(
-                    modifier = Modifier.padding(10.dp),
-                    painter =  painterResource(id = R.drawable.refreshing_beverage),
-                    contentDescription =null
+            Spacer(Modifier.height(24.dp))
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primaryContainer),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.WaterDrop,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
+                Spacer(Modifier.size(12.dp))
+                Text(
+                    text = stringResource(R.string.app_name),
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
-            Text(
+            Spacer(Modifier.height(32.dp))
+
+            Card(
                 modifier = Modifier
-                    .align(alignment = Alignment.CenterHorizontally)
-                    .padding(top = 40.dp),
-                textAlign = TextAlign.Center,
-                style = TextStyle(
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = 16.sp
+                    .align(Alignment.CenterHorizontally)
+                    .padding(vertical = 8.dp),
+                shape = RoundedCornerShape(28.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
                 ),
-                fontWeight = FontWeight(300),
-                text = stringResource(R.string.onbaording_meesage)
+                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+            ) {
+                Image(
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .sizeIn(minWidth = 180.dp, minHeight = 180.dp),
+                    painter = painterResource(id = R.drawable.refreshing_beverage),
+                    contentDescription = null
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                text = stringResource(R.string.onboarding_title),
+                style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.SemiBold),
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Start
+            )
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = stringResource(R.string.onbaording_meesage),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(Modifier.height(24.dp))
+
+            FeatureRow(
+                icon = Icons.Outlined.Person,
+                label = stringResource(R.string.onboarding_feature_personal)
+            )
+            FeatureRow(
+                icon = Icons.Outlined.NotificationsActive,
+                label = stringResource(R.string.onboarding_feature_reminders)
+            )
+            FeatureRow(
+                icon = Icons.Outlined.BarChart,
+                label = stringResource(R.string.onboarding_feature_stats)
+            )
+
+            Spacer(Modifier.weight(1f))
 
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp)
-                    .align(Alignment.CenterHorizontally),
-                onClick = { navigateToUserDetails() },
-                elevation = ButtonDefaults.elevatedButtonElevation( disabledElevation = 50.dp)
+                    .height(56.dp)
+                    .padding(bottom = 8.dp),
+                onClick = navigateToUserDetails,
+                shape = RoundedCornerShape(18.dp)
             ) {
-                Text(text = stringResource(id = R.string.proceed))
-                Icon(imageVector = Icons.AutoMirrored.Filled.NavigateNext, contentDescription = stringResource(
-                    id = R.string.proceed
-                ) )
-
+                Text(
+                    text = stringResource(R.string.onboarding_cta_start),
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Spacer(Modifier.size(8.dp))
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.NavigateNext,
+                    contentDescription = null
+                )
             }
+            Spacer(Modifier.height(16.dp))
         }
+    }
+}
+
+@Composable
+private fun FeatureRow(icon: ImageVector, label: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start
+    ) {
+        Box(
+            modifier = Modifier
+                .size(36.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.secondaryContainer),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+        Spacer(Modifier.size(14.dp))
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface
+        )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun  PreviewWelcomeScreen(){
+fun PreviewWelcomeScreen() {
     NeerTheme {
-        OnboardingScreen(){
-            
-        }
+        OnboardingScreen {}
     }
 }

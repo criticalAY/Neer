@@ -81,6 +81,7 @@ import com.criticalay.neer.data.model.Gender
 import com.criticalay.neer.data.model.Units
 import com.criticalay.neer.data.model.User
 import com.criticalay.neer.hydration.HydrationPlan
+import com.criticalay.neer.ui.composables.notification.dialog.NotificationPermissionSheet
 import com.criticalay.neer.utils.Converters
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -99,6 +100,7 @@ fun HydrationPlanScreen(
         userDetails.wakeUpTime != null &&
         userDetails.bedTime != null
     var showInfo by remember { mutableStateOf(false) }
+    var showPermissionSheet by remember { mutableStateOf(false) }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
@@ -173,8 +175,45 @@ fun HydrationPlanScreen(
                 wakeTime = userDetails.wakeUpTime!!,
                 sleepTime = userDetails.bedTime!!,
                 unitLabel = Converters.getUnitName(userDetails.unit, 1),
-                onEnableReminders = {
-                    if (!ensureExactAlarmPermission(context)) return@ScheduleCard
+                onEnableReminders = { showPermissionSheet = true }
+            )
+
+            Text(
+                text = stringResource(R.string.plan_research_note),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(Modifier.height(24.dp))
+        }
+    }
+
+    if (showInfo) {
+        HydrationInfoSheet(
+            userDetails = userDetails,
+            onDismiss = { showInfo = false }
+        )
+    }
+
+    if (showPermissionSheet) {
+        NotificationPermissionSheet(
+            onGranted = {
+                if (!ensureExactAlarmPermission(context)) {
+                    showPermissionSheet = false
+                    return@NotificationPermissionSheet
+                }
+                if (profileComplete) {
+                    val schedule = HydrationPlan.generateSchedule(
+                        goalMl = HydrationPlan.computeDailyGoalMl(
+                            weight = userDetails.weight,
+                            gender = userDetails.gender,
+                            ageYears = userDetails.age,
+                            units = userDetails.unit
+                        ),
+                        wakeTime = userDetails.wakeUpTime!!,
+                        sleepTime = userDetails.bedTime!!
+                    )
                     val alarms = schedule.map { slot ->
                         slot.toAlarmItem(
                             title = context.getString(R.string.notification_title),
@@ -194,23 +233,9 @@ fun HydrationPlanScreen(
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-            )
-
-            Text(
-                text = stringResource(R.string.plan_research_note),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(Modifier.height(24.dp))
-        }
-    }
-
-    if (showInfo) {
-        HydrationInfoSheet(
-            userDetails = userDetails,
-            onDismiss = { showInfo = false }
+                showPermissionSheet = false
+            },
+            onDismiss = { showPermissionSheet = false }
         )
     }
 }
