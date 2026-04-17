@@ -22,9 +22,27 @@ plugins {
     alias(libs.plugins.hilt)
 }
 
+// Release workflow passes versionCode + versionName via -P flags (see
+// .github/workflows/release.yml) so we don't have to commit a version bump
+// to ship a release. Local builds fall back to the hardcoded values below.
+val overrideVersionCode: Int? = (project.findProperty("versionCode") as? String)?.toIntOrNull()
+val overrideVersionName: String? = project.findProperty("versionName") as? String
+
 android {
     namespace = "com.criticalay.neer"
     compileSdk = 36
+
+    signingConfigs {
+        create("release") {
+            val storePath = System.getenv("KEYSTORE_FILE")
+            if (!storePath.isNullOrBlank()) {
+                storeFile = file(storePath)
+                storePassword = System.getenv("KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("KEY_ALIAS")
+                keyPassword = System.getenv("KEY_PASSWORD")
+            }
+        }
+    }
 
     defaultConfig {
         applicationId = "com.criticalay.neer"
@@ -52,8 +70,8 @@ android {
         //
         // This ensures the correct ordering between the various types of releases (dev < alpha < beta < release) which is
         // needed for upgrades to be offered correctly.
-        versionCode = 10300101
-        versionName = "1.03alpha1"
+        versionCode = overrideVersionCode ?: 10300101
+        versionName = overrideVersionName ?: "1.03alpha1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -68,6 +86,13 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            // Sign with the release keystore when env vars are supplied (CI);
+            // otherwise fall back to the debug key so local `assembleRelease`
+            // still produces an installable APK.
+            signingConfig = if (System.getenv("KEYSTORE_FILE").isNullOrBlank())
+                signingConfigs.getByName("debug")
+            else
+                signingConfigs.getByName("release")
         }
         debug {
             versionNameSuffix = "-debug"
