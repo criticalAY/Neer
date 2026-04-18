@@ -44,7 +44,7 @@ import java.time.LocalDate
 @Composable
 fun StreakHeatmap(
     intakeHistory: List<Intake>,
-    targetIntake: Int
+    targetIntake: Int,
 ) {
     val today = LocalDate.now()
     val totalsByDate: Map<LocalDate, Int> = intakeHistory
@@ -60,14 +60,14 @@ fun StreakHeatmap(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
-        )
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        ),
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
             Text(
                 text = stringResource(R.string.stats_heatmap_title),
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
             )
             Spacer(Modifier.height(12.dp))
 
@@ -75,13 +75,13 @@ fun StreakHeatmap(
             rows.forEach { row ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
                 ) {
                     row.forEach { (_, amount) ->
                         HeatCell(
                             amount = amount,
                             target = targetIntake,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
                         )
                     }
                     // Pad trailing cells if row is short
@@ -96,7 +96,11 @@ fun StreakHeatmap(
 }
 
 @Composable
-private fun HeatCell(amount: Int, target: Int, modifier: Modifier = Modifier) {
+private fun HeatCell(
+    amount: Int,
+    target: Int,
+    modifier: Modifier = Modifier,
+) {
     val intensity = when {
         target <= 0 || amount == 0 -> 0f
         amount >= target -> 1f
@@ -110,13 +114,18 @@ private fun HeatCell(amount: Int, target: Int, modifier: Modifier = Modifier) {
         modifier = modifier
             .aspectRatio(1f)
             .clip(RoundedCornerShape(6.dp))
-            .background(color)
+            .background(color),
     )
 }
 
-private fun lerpColor(start: Color, stop: Color, fraction: Float): Color = Color(
-    red = start.red + (stop.red - start.red) * fraction,
-    green = start.green + (stop.green - start.green) * fraction,
-    blue = start.blue + (stop.blue - start.blue) * fraction,
-    alpha = start.alpha + (stop.alpha - start.alpha) * fraction
-)
+private fun lerpColor(
+    start: Color,
+    stop: Color,
+    fraction: Float,
+): Color =
+    Color(
+        red = start.red + (stop.red - start.red) * fraction,
+        green = start.green + (stop.green - start.green) * fraction,
+        blue = start.blue + (stop.blue - start.blue) * fraction,
+        alpha = start.alpha + (stop.alpha - start.alpha) * fraction,
+    )

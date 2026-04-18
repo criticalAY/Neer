@@ -32,8 +32,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -42,7 +40,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -57,14 +54,14 @@ import com.criticalay.neer.ui.theme.NeerTheme
 @Composable
 fun OnboardingScreen(
     modifier: Modifier = Modifier,
-    navigateToUserDetails: () -> Unit
+    navigateToUserDetails: () -> Unit,
 ) {
     Scaffold(containerColor = MaterialTheme.colorScheme.surface) { padding ->
         Column(
             modifier = modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 24.dp)
+                .padding(horizontal = 24.dp),
         ) {
             Spacer(Modifier.height(24.dp))
 
@@ -74,19 +71,20 @@ fun OnboardingScreen(
                         .size(40.dp)
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.primaryContainer),
-                    contentAlignment = Alignment.Center
+                    contentAlignment = Alignment.Center,
                 ) {
                     Icon(
-                        painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_water_drop),
+                        painter = androidx.compose.ui.res
+                            .painterResource(id = R.drawable.ic_water_drop),
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
                     )
                 }
                 Spacer(Modifier.size(12.dp))
                 Text(
                     text = stringResource(R.string.app_name),
                     style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
             }
 
@@ -99,7 +97,7 @@ fun OnboardingScreen(
                     .fillMaxHeight(0.3f),
                 painter = painterResource(id = R.drawable.onboarding_hero),
                 contentDescription = null,
-                contentScale = ContentScale.Fit
+                contentScale = ContentScale.Fit,
             )
 
             Text(
@@ -107,28 +105,28 @@ fun OnboardingScreen(
                 style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.SemiBold),
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Start
+                textAlign = TextAlign.Start,
             )
             Spacer(Modifier.height(8.dp))
             Text(
                 text = stringResource(R.string.onbaording_meesage),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
             Spacer(Modifier.height(24.dp))
 
             FeatureRow(
                 icon = R.drawable.ic_account,
-                label = stringResource(R.string.onboarding_feature_personal)
+                label = stringResource(R.string.onboarding_feature_personal),
             )
             FeatureRow(
                 icon = R.drawable.ic_notification_active,
-                label = stringResource(R.string.onboarding_feature_reminders)
+                label = stringResource(R.string.onboarding_feature_reminders),
             )
             FeatureRow(
                 icon = R.drawable.ic_barchart,
-                label = stringResource(R.string.onboarding_feature_stats)
+                label = stringResource(R.string.onboarding_feature_stats),
             )
 
             Spacer(Modifier.weight(1f))
@@ -139,16 +137,17 @@ fun OnboardingScreen(
                     .height(56.dp)
                     .padding(bottom = 8.dp),
                 onClick = navigateToUserDetails,
-                shape = RoundedCornerShape(18.dp)
+                shape = RoundedCornerShape(18.dp),
             ) {
                 Text(
                     text = stringResource(R.string.onboarding_cta_start),
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
                 )
                 Spacer(Modifier.size(8.dp))
                 Icon(
-                    painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_chevron_fwd),
-                    contentDescription = null
+                    painter = androidx.compose.ui.res
+                        .painterResource(id = R.drawable.ic_chevron_fwd),
+                    contentDescription = null,
                 )
             }
             Spacer(Modifier.height(16.dp))
@@ -157,33 +156,36 @@ fun OnboardingScreen(
 }
 
 @Composable
-private fun FeatureRow(@androidx.annotation.DrawableRes icon: Int, label: String) {
+private fun FeatureRow(
+    @androidx.annotation.DrawableRes icon: Int,
+    label: String,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start
+        horizontalArrangement = Arrangement.Start,
     ) {
         Box(
             modifier = Modifier
                 .size(36.dp)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.secondaryContainer),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             Icon(
                 painter = painterResource(id = icon),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSecondaryContainer,
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(20.dp),
             )
         }
         Spacer(Modifier.size(14.dp))
         Text(
             text = label,
             style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
         )
     }
 }
@@ -203,4 +205,3 @@ fun PreviewWelcomeScreenTablet() {
         OnboardingScreen {}
     }
 }
-

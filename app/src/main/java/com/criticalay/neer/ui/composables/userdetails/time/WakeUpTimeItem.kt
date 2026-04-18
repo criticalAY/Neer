@@ -33,30 +33,29 @@ import com.criticalay.neer.ui.composables.settings.SettingItem
 fun WakeUpTimeItem(
     modifier: Modifier = Modifier,
     title: String,
-    setTime : String,
+    setTime: String,
     onSettingClicked: () -> Unit,
 ) {
     SettingItem(modifier = modifier) {
         Row(
             modifier = Modifier.run {
                 clickable(
-                            onClickLabel = stringResource(R.string.select_wake_up_time)
-                        ) {
-                            onSettingClicked()
-                        }
-                        .padding(horizontal = 16.dp)
+                    onClickLabel = stringResource(R.string.select_wake_up_time),
+                ) {
+                    onSettingClicked()
+                }.padding(horizontal = 16.dp)
             },
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 text = title,
                 modifier = Modifier
                     .weight(1f),
-                fontSize = 18.sp
+                fontSize = 18.sp,
             )
             Text(
                 text = setTime,
-                fontSize = 18.sp
+                fontSize = 18.sp,
             )
         }
     }

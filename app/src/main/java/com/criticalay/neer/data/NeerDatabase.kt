@@ -16,11 +16,9 @@
 
 package com.criticalay.neer.data
 
-import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import androidx.room.migration.AutoMigrationSpec
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.criticalay.neer.alarm.default_alarm.data.AlarmDao
@@ -34,17 +32,24 @@ import com.criticalay.neer.data.model.User
 import com.criticalay.neer.utils.Constants.ALARM_DATABASE_TABLE
 import com.criticalay.neer.utils.Converters
 
-@Database(entities = [
-    Beverage::class,
-    User::class,
-    Intake::class,
-    AlarmItem::class],
-    version = 2, exportSchema = true)
+@Database(
+    entities = [
+        Beverage::class,
+        User::class,
+        Intake::class,
+        AlarmItem::class,
+    ],
+    version = 2,
+    exportSchema = true,
+)
 @TypeConverters(Converters::class)
 abstract class NeerDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
-    abstract fun intakeDao() : IntakeDao
-    abstract fun beverageDao() : BeverageDao
+
+    abstract fun intakeDao(): IntakeDao
+
+    abstract fun beverageDao(): BeverageDao
+
     abstract fun alarmDao(): AlarmDao
 
     companion object {
@@ -58,16 +63,15 @@ abstract class NeerDatabase : RoomDatabase() {
                 // Create the new table for AlarmItem with the corrected structure
                 db.execSQL(
                     "CREATE TABLE IF NOT EXISTS $ALARM_DATABASE_TABLE (" +
-                            "alarmId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                            "time INTEGER NOT NULL," + // Corrected to INTEGER
-                            "interval REAL," +
-                            "title TEXT NOT NULL," +
-                            "message TEXT NOT NULL," +
-                            "repeating INTEGER NOT NULL DEFAULT 0," +
-                            "alarmState INTEGER NOT NULL DEFAULT 1)"
+                        "alarmId INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                        "time INTEGER NOT NULL," + // Corrected to INTEGER
+                        "interval REAL," +
+                        "title TEXT NOT NULL," +
+                        "message TEXT NOT NULL," +
+                        "repeating INTEGER NOT NULL DEFAULT 0," +
+                        "alarmState INTEGER NOT NULL DEFAULT 1)",
                 )
             }
         }
-
     }
 }

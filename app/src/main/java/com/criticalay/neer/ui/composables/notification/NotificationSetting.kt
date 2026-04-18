@@ -38,37 +38,40 @@ import com.criticalay.neer.ui.composables.settings.SettingItem
 @Composable
 fun NotificationSetting(
     modifier: Modifier = Modifier,
-    title:String,
-    checked:Boolean,
-    onCheckChanged: (checked:Boolean) -> Unit
-){
+    title: String,
+    checked: Boolean,
+    onCheckChanged: (checked: Boolean) -> Unit,
+) {
     val notificationsEnabledState = if (checked) {
         stringResource(R.string.cd_notifications_enabled)
-    } else stringResource(R.string.cd_notifications_disabled)
+    } else {
+        stringResource(R.string.cd_notifications_disabled)
+    }
 
-    SettingItem(modifier=modifier) {
+    SettingItem(modifier = modifier) {
         Row(
             modifier = Modifier
                 .toggleable(
                     value = checked,
                     onValueChange = onCheckChanged,
-                    role = Role.Switch
-                )
-                .semantics {
+                    role = Role.Switch,
+                ).semantics {
                     stateDescription = notificationsEnabledState
-                }
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
+                }.padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
-                modifier= Modifier.padding(5.dp),
-                painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_announcement),
-                contentDescription = null)
+                modifier = Modifier.padding(5.dp),
+                painter = androidx.compose.ui.res
+                    .painterResource(id = R.drawable.ic_announcement),
+                contentDescription = null,
+            )
             Text(
                 text = title,
                 modifier = Modifier
-                    .weight(1f).padding(start = 5.dp),
-                fontSize = 18.sp
+                    .weight(1f)
+                    .padding(start = 5.dp),
+                fontSize = 18.sp,
             )
             Switch(checked = checked, onCheckedChange = null)
         }
@@ -77,6 +80,6 @@ fun NotificationSetting(
 
 @Composable
 @Preview
-fun NotificationSettingsPreview(){
-    NotificationSetting( title = "Enable Notification", checked = false, onCheckChanged = { })
+fun NotificationSettingsPreview() {
+    NotificationSetting(title = "Enable Notification", checked = false, onCheckChanged = { })
 }

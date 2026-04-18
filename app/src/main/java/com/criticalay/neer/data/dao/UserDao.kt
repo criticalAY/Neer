@@ -20,14 +20,13 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
 import androidx.room.Update
 import com.criticalay.neer.data.model.Gender
 import com.criticalay.neer.data.model.Units
 import com.criticalay.neer.data.model.User
 import com.criticalay.neer.utils.Constants
-import kotlinx.coroutines.flow.Flow
 import java.time.LocalTime
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
@@ -41,7 +40,7 @@ interface UserDao {
     suspend fun updateUser(user: User)
 
     @Query("SELECT * FROM ${Constants.USER_DATABASE_TABLE}")
-    fun getUserDetails() : Flow<User>
+    fun getUserDetails(): Flow<User>
 
     @Query("UPDATE ${Constants.USER_DATABASE_TABLE} SET name = :name")
     suspend fun updateUserName(name: String)

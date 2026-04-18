@@ -44,8 +44,7 @@ fun currentWindowSizeClass(): WindowSizeClass = LocalWindowSizeClass.current
  */
 @Composable
 @ReadOnlyComposable
-fun isExpandedWidth(): Boolean =
-    currentWindowSizeClass().widthSizeClass >= WindowWidthSizeClass.Medium
+fun isExpandedWidth(): Boolean = currentWindowSizeClass().widthSizeClass >= WindowWidthSizeClass.Medium
 
 /**
  * True when vertical space is tight — phone landscape, foldable compact, etc.
@@ -53,5 +52,4 @@ fun isExpandedWidth(): Boolean =
  */
 @Composable
 @ReadOnlyComposable
-fun isCompactHeight(): Boolean =
-    currentWindowSizeClass().heightSizeClass == WindowHeightSizeClass.Compact
+fun isCompactHeight(): Boolean = currentWindowSizeClass().heightSizeClass == WindowHeightSizeClass.Compact

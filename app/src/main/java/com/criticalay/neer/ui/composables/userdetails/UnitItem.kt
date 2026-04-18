@@ -42,7 +42,7 @@ fun UnitItem(
     modifier: Modifier = Modifier,
     title: String,
     selectedUnit: Units,
-    onOptionSelected: (option: Units) -> Unit
+    onOptionSelected: (option: Units) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -51,15 +51,14 @@ fun UnitItem(
             modifier = Modifier
                 .clickable(
                     onClick = { expanded = !expanded },
-                    onClickLabel = stringResource(R.string.select_unit)
-                )
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
+                    onClickLabel = stringResource(R.string.select_unit),
+                ).padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 modifier = Modifier.weight(2f),
                 fontSize = 18.sp,
-                text = title
+                text = title,
             )
             Text(text = selectedUnit.unitValue)
         }
@@ -74,10 +73,9 @@ fun UnitItem(
                         onOptionSelected(units)
                         expanded = false
                     },
-                    Modifier.offset(16.dp, 0.dp)
+                    Modifier.offset(16.dp, 0.dp),
                 )
             }
         }
     }
-
 }

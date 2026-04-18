@@ -49,13 +49,16 @@ fun CustomCircularProgressIndicator(
     minValue: Int = 0,
     maxValue: Int = 100,
 ) {
-    val target = if (maxValue <= minValue) 0f
-    else ((initialValue - minValue).toFloat() / (maxValue - minValue)).coerceIn(0f, 1f)
+    val target = if (maxValue <= minValue) {
+        0f
+    } else {
+        ((initialValue - minValue).toFloat() / (maxValue - minValue)).coerceIn(0f, 1f)
+    }
 
     val animatedFraction by animateFloatAsState(
         targetValue = target,
         animationSpec = tween(durationMillis = 900, easing = FastOutSlowInEasing),
-        label = "progressSweep"
+        label = "progressSweep",
     )
 
     Box(modifier = modifier) {
@@ -70,18 +73,18 @@ fun CustomCircularProgressIndicator(
                 brush = Brush.radialGradient(
                     listOf(
                         primaryColor.copy(alpha = 0.18f),
-                        secondaryColor.copy(alpha = 0.06f)
-                    )
+                        secondaryColor.copy(alpha = 0.06f),
+                    ),
                 ),
                 radius = circleRadius,
-                center = center
+                center = center,
             )
 
             drawCircle(
                 style = Stroke(width = circleThickness),
                 color = secondaryColor.copy(alpha = 0.45f),
                 radius = circleRadius,
-                center = center
+                center = center,
             )
 
             drawArc(
@@ -93,8 +96,8 @@ fun CustomCircularProgressIndicator(
                 size = Size(width = circleRadius * 2f, height = circleRadius * 2f),
                 topLeft = Offset(
                     (width - circleRadius * 2f) / 2f,
-                    (height - circleRadius * 2f) / 2f
-                )
+                    (height - circleRadius * 2f) / 2f,
+                ),
             )
         }
     }
@@ -108,6 +111,6 @@ fun PreviewCustomCircularProgressIndicator() {
         initialValue = 50,
         maxValue = 200,
         primaryColor = Color(0xFF00BFFF),
-        secondaryColor = Color(0xFFA7C7E7)
+        secondaryColor = Color(0xFFA7C7E7),
     )
 }

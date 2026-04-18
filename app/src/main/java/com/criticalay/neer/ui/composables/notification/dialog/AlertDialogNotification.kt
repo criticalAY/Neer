@@ -43,7 +43,7 @@ fun AlertDialogNotification(
         icon = {
             Icon(
                 painter = painterResource(id = icon),
-                contentDescription = null
+                contentDescription = null,
             )
         },
         title = { Text(text = dialogTitle) },
@@ -58,6 +58,6 @@ fun AlertDialogNotification(
             TextButton(onClick = onDismissRequest) {
                 Text(stringResource(id = R.string.dismiss))
             }
-        }
+        },
     )
 }

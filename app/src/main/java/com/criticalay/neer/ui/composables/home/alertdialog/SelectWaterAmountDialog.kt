@@ -62,28 +62,28 @@ fun SelectWaterAmountDialog(
     Dialog(
         onDismissRequest = {
             // Do nothing
-        }) {
+        },
+    ) {
         Column(
-            modifier = modifier.padding(10.dp)
+            modifier = modifier.padding(10.dp),
         ) {
             Card(
                 elevation = CardDefaults.cardElevation(
-                    defaultElevation = 6.dp
-                )
+                    defaultElevation = 6.dp,
+                ),
             ) {
                 Text(
                     textAlign = TextAlign.Center,
                     fontSize = 20.sp,
                     modifier = Modifier.padding(10.dp),
-                    text = stringResource(R.string.change_the_water_intake_amount)
+                    text = stringResource(R.string.change_the_water_intake_amount),
                 )
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
-                    contentPadding = PaddingValues(4.dp)
+                    contentPadding = PaddingValues(4.dp),
                 ) {
                     items(waterAmountItem, key = { value ->
                         value.dec()
-
                     }) { amount ->
                         val isSelected = selectedMap.getOrDefault(amount, false)
                         FilterChip(
@@ -101,21 +101,23 @@ fun SelectWaterAmountDialog(
                             label = {
                                 Text(
                                     maxLines = 1,
-                                    text = "$amount ml"
+                                    text = "$amount ml",
                                 )
                             },
                             selected = isSelected,
                             leadingIcon = {
                                 Image(
                                     painter = painterResource(
-                                        id = R.drawable.ic_juice_glass
-                                    ), contentDescription = null
+                                        id = R.drawable.ic_juice_glass,
+                                    ),
+                                    contentDescription = null,
                                 )
                             },
                             trailingIcon = if (isSelected) {
                                 {
                                     Icon(
-                                        painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_tick),
+                                        painter = androidx.compose.ui.res
+                                            .painterResource(id = R.drawable.ic_tick),
                                         contentDescription = stringResource(R.string.done),
                                     )
                                 }
@@ -140,26 +142,23 @@ fun SelectWaterAmountDialog(
                     .padding(top = 8.dp)
                     .background(
                         color = MaterialTheme.colorScheme.primaryContainer,
-                        shape = CircleShape
-                    )
-                    .border(2.dp, MaterialTheme.colorScheme.outline, shape = CircleShape)
+                        shape = CircleShape,
+                    ).border(2.dp, MaterialTheme.colorScheme.outline, shape = CircleShape),
             ) {
                 Icon(
-                    painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_close),
-                    contentDescription = stringResource(R.string.close)
+                    painter = androidx.compose.ui.res
+                        .painterResource(id = R.drawable.ic_close),
+                    contentDescription = stringResource(R.string.close),
                 )
             }
         }
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun PreviewEditWaterAmountDialog() {
     SelectWaterAmountDialog(onDismissRequest = {
-
     }, setShowDialog = {
-
     }, currentValue = 100)
 }

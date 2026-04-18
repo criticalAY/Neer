@@ -32,15 +32,17 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
-
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext context: Context) =
-        Room.databaseBuilder(
+    fun provideDatabase(
+        @ApplicationContext context: Context,
+    ) = Room
+        .databaseBuilder(
             context = context,
             NeerDatabase::class.java,
-            NEER_DATABASE_NAME
-        ).addMigrations(NeerDatabase.MIGRATION_1_2).build()
+            NEER_DATABASE_NAME,
+        ).addMigrations(NeerDatabase.MIGRATION_1_2)
+        .build()
 
     @Provides
     @Singleton
@@ -60,7 +62,7 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideAlarmScheduler(@ApplicationContext context: Context): AlarmScheduler =
-        NeerAlarmScheduler(context)
-
+    fun provideAlarmScheduler(
+        @ApplicationContext context: Context,
+    ): AlarmScheduler = NeerAlarmScheduler(context)
 }

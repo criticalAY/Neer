@@ -64,11 +64,13 @@ import com.criticalay.neer.R
  * [TrackingWidgetConfigureActivity]); defaults are 250 ml / 500 ml.
  */
 class TrackingWidget : GlanceAppWidget() {
-
     override val stateDefinition = PreferencesGlanceStateDefinition
     override val sizeMode = SizeMode.Exact
 
-    override suspend fun provideGlance(context: Context, id: GlanceId) {
+    override suspend fun provideGlance(
+        context: Context,
+        id: GlanceId,
+    ) {
         provideContent { Content() }
     }
 
@@ -92,19 +94,19 @@ class TrackingWidget : GlanceAppWidget() {
                 .cornerRadius(20.dp)
                 .padding(14.dp),
             horizontalAlignment = Alignment.Start,
-            verticalAlignment = Alignment.Top
+            verticalAlignment = Alignment.Top,
         ) {
             Row(
                 modifier = GlanceModifier
                     .fillMaxWidth()
                     .clickable(actionStartActivity<NeerActivity>()),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Image(
                     provider = ImageProvider(R.drawable.ic_outline_water_full),
                     contentDescription = null,
                     colorFilter = ColorFilter.tint(colors.primary),
-                    modifier = GlanceModifier.size(22.dp)
+                    modifier = GlanceModifier.size(22.dp),
                 )
                 Spacer(GlanceModifier.width(8.dp))
                 Column(modifier = GlanceModifier.defaultWeight()) {
@@ -113,15 +115,15 @@ class TrackingWidget : GlanceAppWidget() {
                         style = TextStyle(
                             color = colors.onSurface,
                             fontSize = TextUnit(22f, TextUnitType.Sp),
-                            fontWeight = FontWeight.Bold
-                        )
+                            fontWeight = FontWeight.Bold,
+                        ),
                     )
                     Text(
                         text = if (target > 0) "of $target $unitLabel · $percent%" else "Set a daily goal",
                         style = TextStyle(
                             color = colors.onSurfaceVariant,
-                            fontSize = TextUnit(11f, TextUnitType.Sp)
-                        )
+                            fontSize = TextUnit(11f, TextUnitType.Sp),
+                        ),
                     )
                 }
             }
@@ -130,20 +132,20 @@ class TrackingWidget : GlanceAppWidget() {
                 progress = progress,
                 modifier = GlanceModifier.fillMaxWidth().height(6.dp),
                 color = colors.primary,
-                backgroundColor = colors.surfaceVariant
+                backgroundColor = colors.surfaceVariant,
             )
             Spacer(GlanceModifier.height(12.dp))
             Row(modifier = GlanceModifier.fillMaxWidth()) {
                 QuickAddButton(
                     amountMl = amount1,
                     unitLabel = unitLabel,
-                    modifier = GlanceModifier.defaultWeight()
+                    modifier = GlanceModifier.defaultWeight(),
                 )
                 Spacer(GlanceModifier.width(10.dp))
                 QuickAddButton(
                     amountMl = amount2,
                     unitLabel = unitLabel,
-                    modifier = GlanceModifier.defaultWeight()
+                    modifier = GlanceModifier.defaultWeight(),
                 )
             }
         }
@@ -154,7 +156,7 @@ class TrackingWidget : GlanceAppWidget() {
 private fun QuickAddButton(
     amountMl: Int,
     unitLabel: String,
-    modifier: GlanceModifier = GlanceModifier
+    modifier: GlanceModifier = GlanceModifier,
 ) {
     val colors = GlanceTheme.colors
     Row(
@@ -164,17 +166,17 @@ private fun QuickAddButton(
             .padding(vertical = 12.dp, horizontal = 10.dp)
             .clickable(
                 actionRunCallback<QuickAddAction>(
-                    actionParametersOf(QuickAddAction.AmountKey to amountMl)
-                )
+                    actionParametersOf(QuickAddAction.AmountKey to amountMl),
+                ),
             ),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
             provider = ImageProvider(R.drawable.ic_outline_water_full),
             contentDescription = null,
             colorFilter = ColorFilter.tint(colors.onPrimary),
-            modifier = GlanceModifier.size(16.dp)
+            modifier = GlanceModifier.size(16.dp),
         )
         Spacer(GlanceModifier.width(6.dp))
         Text(
@@ -182,8 +184,8 @@ private fun QuickAddButton(
             style = TextStyle(
                 color = colors.onPrimary,
                 fontSize = TextUnit(14f, TextUnitType.Sp),
-                fontWeight = FontWeight.Bold
-            )
+                fontWeight = FontWeight.Bold,
+            ),
         )
     }
 }

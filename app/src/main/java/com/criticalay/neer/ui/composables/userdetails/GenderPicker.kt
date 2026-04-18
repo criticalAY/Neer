@@ -33,19 +33,19 @@ import com.criticalay.neer.data.model.Gender
 fun GenderPicker(
     selected: Gender,
     onSelect: (Gender) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val options = listOf(
         Gender.MALE to R.string.gender_male,
         Gender.FEMALE to R.string.gender_female,
-        Gender.OTHER to R.string.gender_other
+        Gender.OTHER to R.string.gender_other,
     )
     SingleChoiceSegmentedButtonRow(modifier = modifier.fillMaxWidth()) {
         options.forEachIndexed { index, (gender, labelRes) ->
             SegmentedButton(
                 selected = selected == gender,
                 onClick = { onSelect(gender) },
-                shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size)
+                shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size),
             ) {
                 Text(stringResource(labelRes))
             }

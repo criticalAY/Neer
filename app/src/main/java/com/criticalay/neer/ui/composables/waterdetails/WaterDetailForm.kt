@@ -43,7 +43,6 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -96,14 +95,16 @@ fun WaterDetailForm(
     val sleepTime = userDetails.bedTime ?: LocalTime.of(23, 0)
 
     val recommendedMl = remember(userDetails) {
-        if (userDetails.weight > 0.0)
+        if (userDetails.weight > 0.0) {
             HydrationPlan.computeDailyGoalMl(
                 weight = userDetails.weight,
                 gender = userDetails.gender,
                 ageYears = userDetails.age,
-                units = userDetails.unit
+                units = userDetails.unit,
             )
-        else 0
+        } else {
+            0
+        }
     }
 
     var step by remember { mutableStateOf(Step.ChooseGoal) }
@@ -118,10 +119,10 @@ fun WaterDetailForm(
                     Beverage(
                         userId = USER_ID,
                         beverageName = context.getString(R.string.water),
-                        totalIntakeAmount = amount
-                    )
-                )
-            )
+                        totalIntakeAmount = amount,
+                    ),
+                ),
+            ),
         )
         step = Step.EnableReminders
     }
@@ -132,10 +133,10 @@ fun WaterDetailForm(
             CenterAlignedTopAppBar(
                 title = { Text(text = stringResource(R.string.water_detail_header)) },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
+                    containerColor = MaterialTheme.colorScheme.surface,
+                ),
             )
-        }
+        },
     ) { padding ->
         Column(
             modifier = Modifier
@@ -143,12 +144,12 @@ fun WaterDetailForm(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 20.dp, vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text(
                 text = stringResource(R.string.water_detail_sub),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
             when (step) {
@@ -158,12 +159,12 @@ fun WaterDetailForm(
                             goalMl = recommendedMl,
                             unitLabel = Converters.getUnitName(userDetails.unit, 1),
                             hasAge = userDetails.age != null,
-                            onUseRecommended = { commitGoal(recommendedMl) }
+                            onUseRecommended = { commitGoal(recommendedMl) },
                         )
                     }
                     ManualGoalSection(
                         unitLabel = Converters.getUnitName(userDetails.unit, 1),
-                        onSave = { commitGoal(it) }
+                        onSave = { commitGoal(it) },
                     )
                 }
 
@@ -175,7 +176,7 @@ fun WaterDetailForm(
                         onSkip = {
                             PreferencesManager(context).saveNotificationPreference(false)
                             onProceed()
-                        }
+                        },
                     )
                 }
             }
@@ -189,7 +190,7 @@ fun WaterDetailForm(
                 val schedule = HydrationPlan.generateSchedule(
                     goalMl = committedGoalMl,
                     wakeTime = wakeTime,
-                    sleepTime = sleepTime
+                    sleepTime = sleepTime,
                 )
                 val alarms = schedule.map { slot ->
                     slot.toAlarmItem(
@@ -197,18 +198,18 @@ fun WaterDetailForm(
                         message = context.getString(
                             R.string.plan_reminder_body,
                             slot.amountMl,
-                            Converters.getUnitName(userDetails.unit, 1)
-                        )
+                            Converters.getUnitName(userDetails.unit, 1),
+                        ),
                     )
                 }
                 neerEventListener(
-                    NeerEvent.TriggerNotificationEvent(NotificationEvent.ReplaceAllAlarms(alarms))
+                    NeerEvent.TriggerNotificationEvent(NotificationEvent.ReplaceAllAlarms(alarms)),
                 )
                 PreferencesManager(context).saveNotificationPreference(true)
                 showPermissionSheet = false
                 onProceed()
             },
-            onDismiss = { showPermissionSheet = false }
+            onDismiss = { showPermissionSheet = false },
         )
     }
 }
@@ -218,27 +219,28 @@ private fun RecommendedGoalCard(
     goalMl: Int,
     unitLabel: String,
     hasAge: Boolean,
-    onUseRecommended: () -> Unit
+    onUseRecommended: () -> Unit,
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        )
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+        ),
     ) {
         Column(modifier = Modifier.padding(24.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                    painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_water_drop),
+                    painter = androidx.compose.ui.res
+                        .painterResource(id = R.drawable.ic_water_drop),
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
                 Spacer(Modifier.size(8.dp))
                 Text(
                     text = stringResource(R.string.water_detail_recommended_card),
                     style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
             }
             Spacer(Modifier.height(12.dp))
@@ -246,14 +248,14 @@ private fun RecommendedGoalCard(
                 Text(
                     text = "$goalMl",
                     style = MaterialTheme.typography.displayMedium.copy(fontWeight = FontWeight.Bold),
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
                 Spacer(Modifier.size(6.dp))
                 Text(
                     text = unitLabel,
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    modifier = Modifier.padding(bottom = 8.dp),
                 )
             }
             Spacer(Modifier.height(8.dp))
@@ -263,35 +265,36 @@ private fun RecommendedGoalCard(
                     R.string.water_detail_recommended_sub,
                     ageSuffix,
                     goalMl,
-                    unitLabel
+                    unitLabel,
                 ),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
             )
             Spacer(Modifier.height(16.dp))
             Button(
                 onClick = onUseRecommended,
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(14.dp)
+                shape = RoundedCornerShape(14.dp),
             ) {
                 Text(stringResource(R.string.water_detail_use_recommended))
             }
             Spacer(Modifier.height(8.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Icon(
-                    painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_info),
+                    painter = androidx.compose.ui.res
+                        .painterResource(id = R.drawable.ic_info),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.size(16.dp)
+                    modifier = Modifier.size(16.dp),
                 )
                 Spacer(Modifier.size(6.dp))
                 Text(
                     text = stringResource(R.string.water_detail_learn_more),
                     style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
             }
         }
@@ -301,7 +304,7 @@ private fun RecommendedGoalCard(
 @Composable
 private fun ManualGoalSection(
     unitLabel: String,
-    onSave: (Int) -> Unit
+    onSave: (Int) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
     var typed by remember { mutableStateOf("") }
@@ -311,42 +314,46 @@ private fun ManualGoalSection(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
-        )
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        ),
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { expanded = !expanded },
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = stringResource(R.string.water_detail_manual_title),
                         style = MaterialTheme.typography.titleSmall,
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
                     Text(
                         text = stringResource(
-                            if (expanded) R.string.water_detail_manual_collapse
-                            else R.string.water_detail_manual_expand
+                            if (expanded) {
+                                R.string.water_detail_manual_collapse
+                            } else {
+                                R.string.water_detail_manual_expand
+                            },
                         ),
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
                 Icon(
-                    painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_chevron_fwd),
+                    painter = androidx.compose.ui.res
+                        .painterResource(id = R.drawable.ic_chevron_fwd),
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
 
             AnimatedVisibility(
                 visible = expanded,
                 enter = fadeIn() + expandVertically(),
-                exit = fadeOut() + shrinkVertically()
+                exit = fadeOut() + shrinkVertically(),
             ) {
                 Column(modifier = Modifier.padding(top = 12.dp)) {
                     DetailTextField(
@@ -359,17 +366,18 @@ private fun ManualGoalSection(
                         placeholder = stringResource(R.string.enter_your_water_intake, unitLabel),
                         leadingIcon = {
                             Icon(
-                                painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_account),
-                                contentDescription = null
+                                painter = androidx.compose.ui.res
+                                    .painterResource(id = R.drawable.ic_account),
+                                contentDescription = null,
                             )
                         },
                         keyboardOptions = KeyboardOptions(
                             imeAction = ImeAction.Done,
-                            keyboardType = KeyboardType.Number
+                            keyboardType = KeyboardType.Number,
                         ),
                         keyboardActions = KeyboardActions(
-                            onDone = { keyboardController?.hide() }
-                        )
+                            onDone = { keyboardController?.hide() },
+                        ),
                     )
                     Spacer(Modifier.height(12.dp))
                     Button(
@@ -379,7 +387,7 @@ private fun ManualGoalSection(
                         },
                         enabled = typed.isNotEmpty() && (typed.toIntOrNull() ?: 0) > 0,
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(14.dp)
+                        shape = RoundedCornerShape(14.dp),
                     ) {
                         Text(stringResource(R.string.water_detail_manual_save))
                     }
@@ -394,53 +402,54 @@ private fun RemindersCard(
     goalMl: Int,
     unitLabel: String,
     onEnable: () -> Unit,
-    onSkip: () -> Unit
+    onSkip: () -> Unit,
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
-        )
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        ),
     ) {
         Column(modifier = Modifier.padding(24.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                    painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_notification),
+                    painter = androidx.compose.ui.res
+                        .painterResource(id = R.drawable.ic_notification),
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = MaterialTheme.colorScheme.primary,
                 )
                 Spacer(Modifier.size(8.dp))
                 Text(
                     text = stringResource(R.string.water_detail_reminders_card_title),
                     style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
             }
             Spacer(Modifier.height(8.dp))
             Text(
                 text = stringResource(R.string.water_detail_reminders_card_sub),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Spacer(Modifier.height(4.dp))
             Text(
                 text = "$goalMl $unitLabel",
                 style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
             )
             Spacer(Modifier.height(20.dp))
             Button(
                 onClick = onEnable,
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(14.dp)
+                shape = RoundedCornerShape(14.dp),
             ) {
                 Text(stringResource(R.string.water_detail_reminders_enable))
             }
             Spacer(Modifier.height(8.dp))
             TextButton(
                 onClick = onSkip,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(stringResource(R.string.water_detail_reminders_skip))
             }
@@ -450,7 +459,7 @@ private fun RemindersCard(
 
 private fun HydrationPlan.ScheduleSlot.toAlarmItem(
     title: String,
-    message: String
+    message: String,
 ): AlarmItem {
     val todayBase = LocalDate.now()
     val fireDate = if (time.isBefore(LocalTime.now())) todayBase.plusDays(1) else todayBase
@@ -460,7 +469,7 @@ private fun HydrationPlan.ScheduleSlot.toAlarmItem(
         title = title,
         message = message,
         repeating = true,
-        alarmState = true
+        alarmState = true,
     )
 }
 
@@ -470,6 +479,6 @@ fun PreviewWaterDetailForm() {
     WaterDetailForm(
         onProceed = {},
         neerEventListener = {},
-        userDetails = User(name = "ashish", weight = 72.0)
+        userDetails = User(name = "ashish", weight = 72.0),
     )
 }

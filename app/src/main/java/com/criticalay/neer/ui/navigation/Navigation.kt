@@ -46,7 +46,7 @@ import com.criticalay.neer.utils.PreferencesManager
 fun Navigation(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    sharedViewModel: SharedViewModel
+    sharedViewModel: SharedViewModel,
 ) {
     val context = LocalContext.current
     val preferencesManager = remember { PreferencesManager(context) }
@@ -86,7 +86,7 @@ fun Navigation(
     NavHost(
         navController = navController,
         modifier = modifier,
-        startDestination = startDestination
+        startDestination = startDestination,
     ) {
         composable(route = Destination.Onboarding.path) {
             OnboardingScreen {
@@ -106,7 +106,7 @@ fun Navigation(
                     navController.navigate(Destination.HomeScreen.path) {
                         popUpTo(route = Destination.UserDetails.path) { inclusive = true }
                     }
-                }
+                },
             )
         }
 
@@ -119,7 +119,7 @@ fun Navigation(
                         popUpTo(route = Destination.WaterDetails.path) { inclusive = true }
                     }
                 },
-                userDetails = sharedViewModel.userDetails.collectAsState().value
+                userDetails = sharedViewModel.userDetails.collectAsState().value,
             )
         }
 
@@ -133,7 +133,7 @@ fun Navigation(
                 navigateToNotifications = {
                     navController.navigate(Destination.Notification.path)
                 },
-                onTabSelect = onTabSelect
+                onTabSelect = onTabSelect,
             )
         }
 
@@ -141,9 +141,11 @@ fun Navigation(
             StatsScreen(
                 intakeHistory = sharedViewModel.intakeHistory.collectAsState().value,
                 targetIntake = sharedViewModel.targetIntakeAmount.collectAsState().value,
-                selectedUnits = sharedViewModel.userDetails.collectAsState().value.unit,
+                selectedUnits = sharedViewModel.userDetails
+                    .collectAsState()
+                    .value.unit,
                 neerEventListener = sharedViewModel::handleEvent,
-                onTabSelect = onTabSelect
+                onTabSelect = onTabSelect,
             )
         }
 
@@ -151,7 +153,7 @@ fun Navigation(
             NotificationScreen(
                 onBack = { navController.popBackStack() },
                 notificationList = sharedViewModel.allNotifications.collectAsState().value,
-                neerEventListener = sharedViewModel::handleEvent
+                neerEventListener = sharedViewModel::handleEvent,
             )
         }
 
@@ -166,7 +168,7 @@ fun Navigation(
                 onHydrationPlan = { navController.navigate(Destination.HydrationPlan.path) },
                 userDetails = sharedViewModel.userDetails.collectAsState().value,
                 waterDrinkTarget = sharedViewModel.targetIntakeAmount.collectAsState().value,
-                onTabSelect = onTabSelect
+                onTabSelect = onTabSelect,
             )
         }
 
@@ -174,7 +176,7 @@ fun Navigation(
             HydrationPlanScreen(
                 userDetails = sharedViewModel.userDetails.collectAsState().value,
                 neerEventListener = sharedViewModel::handleEvent,
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
             )
         }
     }

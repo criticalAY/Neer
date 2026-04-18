@@ -57,12 +57,12 @@ import java.time.LocalTime
 fun AlarmBottomSheet(
     modifier: Modifier = Modifier,
     timeState: TimePickerState,
-    title:String,
+    title: String,
     onConfirm: (time: LocalTime) -> Unit,
     showBottomSheet: (state: Boolean) -> Unit,
-    repeatable:(repeating:Boolean) -> Unit,
+    repeatable: (repeating: Boolean) -> Unit,
     deleteListener: (() -> Unit?)? = null,
-    defaultChip: ChipType = ChipType.RemindOnce
+    defaultChip: ChipType = ChipType.RemindOnce,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var selectedChip by remember { mutableStateOf(defaultChip) }
@@ -72,12 +72,12 @@ fun AlarmBottomSheet(
         onDismissRequest = {
             showBottomSheet(false)
         },
-        sheetState = sheetState
+        sheetState = sheetState,
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(16.dp),
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -86,8 +86,13 @@ fun AlarmBottomSheet(
                     .padding(bottom = 20.dp),
             ) {
                 IconButton(
-                    onClick = { showBottomSheet(false) }) {
-                    Icon(painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_close), contentDescription = null)
+                    onClick = { showBottomSheet(false) },
+                ) {
+                    Icon(
+                        painter = androidx.compose.ui.res
+                            .painterResource(id = R.drawable.ic_close),
+                        contentDescription = null,
+                    )
                 }
 
                 Text(
@@ -95,7 +100,7 @@ fun AlarmBottomSheet(
                     textAlign = TextAlign.Center,
                     style = TextStyle(fontWeight = FontWeight(500)),
                     fontSize = 20.sp,
-                    text = title
+                    text = title,
                 )
 
                 IconButton(
@@ -103,14 +108,18 @@ fun AlarmBottomSheet(
                         val selectedTime = LocalTime.of(timeState.hour, timeState.minute)
                         onConfirm(selectedTime)
                         showBottomSheet(false)
-                    }) {
-                    Icon(painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_tick), contentDescription = null)
+                    },
+                ) {
+                    Icon(
+                        painter = androidx.compose.ui.res
+                            .painterResource(id = R.drawable.ic_tick),
+                        contentDescription = null,
+                    )
                 }
-
             }
             TimePicker(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                state = timeState
+                state = timeState,
             )
             HorizontalDivider()
 
@@ -118,13 +127,13 @@ fun AlarmBottomSheet(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .padding(8.dp)
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
             ) {
                 FilterChip(
                     modifier = Modifier.padding(8.dp),
                     onClick = {
                         if (selectedChip != ChipType.RemindOnce) {
-                            selectedChip =  ChipType.RemindOnce
+                            selectedChip = ChipType.RemindOnce
                         }
                         repeatable(false)
                     },
@@ -133,19 +142,22 @@ fun AlarmBottomSheet(
                     leadingIcon = if (selectedChip == ChipType.RemindOnce) {
                         {
                             Icon(
-                                painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_tick),
+                                painter = androidx.compose.ui.res
+                                    .painterResource(id = R.drawable.ic_tick),
                                 contentDescription = "Done icon",
-                                modifier = Modifier.size(FilterChipDefaults.IconSize)
+                                modifier = Modifier.size(FilterChipDefaults.IconSize),
                             )
                         }
-                    } else null
+                    } else {
+                        null
+                    },
                 )
 
                 FilterChip(
                     modifier = Modifier.padding(8.dp),
                     onClick = {
                         if (selectedChip != ChipType.RemindDaily) {
-                            selectedChip =ChipType.RemindDaily
+                            selectedChip = ChipType.RemindDaily
                         }
                         repeatable(true)
                     },
@@ -154,22 +166,26 @@ fun AlarmBottomSheet(
                     leadingIcon = if (selectedChip == ChipType.RemindDaily) {
                         {
                             Icon(
-                                painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_tick),
+                                painter = androidx.compose.ui.res
+                                    .painterResource(id = R.drawable.ic_tick),
                                 contentDescription = "Done icon",
-                                modifier = Modifier.size(FilterChipDefaults.IconSize)
+                                modifier = Modifier.size(FilterChipDefaults.IconSize),
                             )
                         }
-                    } else null
+                    } else {
+                        null
+                    },
                 )
             }
 
-            if(title== stringResource(R.string.edit_notification)){
+            if (title == stringResource(R.string.edit_notification)) {
                 Button(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Red
+                        containerColor = Color.Red,
                     ),
-                    onClick = { deleteListener?.invoke() }) {
+                    onClick = { deleteListener?.invoke() },
+                ) {
                     Text(text = "Delete")
                 }
             }
@@ -179,5 +195,5 @@ fun AlarmBottomSheet(
 
 enum class ChipType {
     RemindOnce,
-    RemindDaily
+    RemindDaily,
 }

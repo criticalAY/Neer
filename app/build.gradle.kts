@@ -84,15 +84,16 @@ android {
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
             // Sign with the release keystore when env vars are supplied (CI);
             // otherwise fall back to the debug key so local `assembleRelease`
             // still produces an installable APK.
-            signingConfig = if (System.getenv("KEYSTORE_FILE").isNullOrBlank())
+            signingConfig = if (System.getenv("KEYSTORE_FILE").isNullOrBlank()) {
                 signingConfigs.getByName("debug")
-            else
+            } else {
                 signingConfigs.getByName("release")
+            }
         }
         debug {
             versionNameSuffix = "-debug"
@@ -153,10 +154,9 @@ dependencies {
     ksp(libs.hilt.android.compiler)
     // desugaring
     coreLibraryDesugaring(libs.desugar.jdk.libs.nio)
-    implementation( libs.androidx.datastore.preferences)
+    implementation(libs.androidx.datastore.preferences)
     implementation(libs.accompanist.permissions)
     // widgets
     implementation(libs.androidx.glance.appwidget)
     implementation(libs.androidx.glance.material3)
-
 }

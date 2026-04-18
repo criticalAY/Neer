@@ -16,33 +16,28 @@
 
 package com.criticalay.neer.ui.composables.settings.items
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.criticalay.neer.ui.composables.settings.SettingItem
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.criticalay.neer.R
 import com.criticalay.neer.data.model.Units
@@ -52,9 +47,9 @@ import com.criticalay.neer.utils.Converters
 @Composable
 fun Weight(
     modifier: Modifier = Modifier,
-    userWeight:Double,
+    userWeight: Double,
     selectedUnits: Units,
-    newWeight: (weight:Double) -> Unit
+    newWeight: (weight: Double) -> Unit,
 ) {
     var showDialog by remember { mutableStateOf(false) }
     com.criticalay.neer.ui.composables.settings.SettingsRow(
@@ -62,16 +57,15 @@ fun Weight(
         title = stringResource(R.string.weight),
         trailingValue = "$userWeight ${Converters.getUnitName(selectedUnits, 0)}",
         onClick = { showDialog = true },
-        modifier = modifier
+        modifier = modifier,
     )
     if (showDialog) {
         EditWeightDialog(
             weight = userWeight,
             newValue = { weight ->
                 newWeight(weight)
-
             },
-            showAlertDialog = { show -> showDialog = show }
+            showAlertDialog = { show -> showDialog = show },
         )
     }
 }
@@ -93,7 +87,7 @@ private fun EditWeightDialog(
                 Text(
                     modifier = Modifier.padding(10.dp),
                     text = stringResource(R.string.change_your_weight),
-                    fontSize = 20.sp
+                    fontSize = 20.sp,
                 )
                 DetailTextField(
                     modifier = Modifier.fillMaxWidth(),
@@ -109,24 +103,26 @@ private fun EditWeightDialog(
                     placeholder = stringResource(R.string.change_your_weight),
                     leadingIcon = {
                         Icon(
-                            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_account),
-                            contentDescription = null
+                            painter = androidx.compose.ui.res
+                                .painterResource(id = R.drawable.ic_account),
+                            contentDescription = null,
                         )
                     },
                     trailingIcon = {
                         if (userWeight.isNotBlank()) {
                             IconButton(onClick = { userWeight = "" }) {
                                 Icon(
-                                    painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_close),
-                                    contentDescription = stringResource(R.string.clear)
+                                    painter = androidx.compose.ui.res
+                                        .painterResource(id = R.drawable.ic_close),
+                                    contentDescription = stringResource(R.string.clear),
                                 )
                             }
                         }
                     },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Done
-                    )
+                        imeAction = ImeAction.Done,
+                    ),
                 )
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
@@ -139,7 +135,7 @@ private fun EditWeightDialog(
                             showAlertDialog(false)
                         },
                         modifier = Modifier.padding(8.dp),
-                        enabled = userWeight.isNotBlank()
+                        enabled = userWeight.isNotBlank(),
                     ) {
                         Text(stringResource(R.string.confirm))
                     }

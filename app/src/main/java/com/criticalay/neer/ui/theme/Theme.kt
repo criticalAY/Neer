@@ -59,7 +59,7 @@ private val LightColorScheme = lightColorScheme(
     inverseOnSurface = NeerLightInverseOnSurface,
     inversePrimary = NeerLightInversePrimary,
     scrim = NeerLightScrim,
-    surfaceTint = NeerLightSurfaceTint
+    surfaceTint = NeerLightSurfaceTint,
 )
 
 private val DarkColorScheme = darkColorScheme(
@@ -96,7 +96,7 @@ private val DarkColorScheme = darkColorScheme(
     inverseOnSurface = NeerDarkInverseOnSurface,
     inversePrimary = NeerDarkInversePrimary,
     scrim = NeerDarkScrim,
-    surfaceTint = NeerDarkSurfaceTint
+    surfaceTint = NeerDarkSurfaceTint,
 )
 
 @Composable
@@ -104,7 +104,7 @@ fun NeerTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+; off by default so our brand colors win
     dynamicColor: Boolean = false,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
@@ -118,6 +118,6 @@ fun NeerTheme(
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
-        content = content
+        content = content,
     )
 }

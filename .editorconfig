@@ -1,0 +1,46 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{kt,kts}]
+indent_size = 4
+continuation_indent_size = 4
+max_line_length = 120
+
+# Tell IntelliJ/Studio to match ktlint's expectations.
+ij_kotlin_allow_trailing_comma = true
+ij_kotlin_allow_trailing_comma_on_call_site = true
+ij_kotlin_imports_layout = *
+ij_kotlin_packages_to_use_import_on_demand = unset
+ij_continuation_indent_size = 4
+
+# ktlint — enable the standard ruleset, leave experimental off.
+ktlint_standard = enabled
+ktlint_experimental = disabled
+
+# --- Compose-specific overrides -------------------------------------------
+# @Composable functions are allowed to be PascalCase, and Compose also freely
+# uses large top-level composables without a "max-length" cap; turn off the
+# rules that fight the framework.
+ktlint_standard_function-naming = disabled
+ktlint_standard_filename = disabled
+
+# Our codebase has plenty of multi-expression blocks that are idiomatic for
+# Compose previews; don't force them onto a single line.
+ktlint_standard_multiline-expression-wrapping = disabled
+ktlint_standard_string-template-indent = disabled
+
+# Existing `custom_alarm` / `default_alarm` subpackages keep their underscores
+# for readability; renaming them would be a large cross-cutting move.
+ktlint_standard_package-name = disabled
+
+[*.{xml,gradle}]
+indent_size = 4
+
+[*.md]
+trim_trailing_whitespace = false

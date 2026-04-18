@@ -16,27 +16,16 @@
 
 package com.criticalay.neer.ui.composables.settings.items
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.criticalay.neer.R
-import com.criticalay.neer.ui.composables.settings.SettingItem
 import com.criticalay.neer.ui.composables.timepicker.TimeDialog
 import com.criticalay.neer.utils.TimeUtils
 import java.time.LocalTime
@@ -45,7 +34,7 @@ import java.time.LocalTime
 @Composable
 fun BedTime(
     modifier: Modifier = Modifier,
-    userBedTime:LocalTime,
+    userBedTime: LocalTime,
     onTimeSelected: (time: LocalTime) -> Unit,
 ) {
     var showTimeDialog by remember {
@@ -54,7 +43,7 @@ fun BedTime(
     val defaultSelectedTime by remember { mutableStateOf(userBedTime) }
     val timeState = rememberTimePickerState(
         initialHour = defaultSelectedTime.hour,
-        initialMinute = defaultSelectedTime.minute
+        initialMinute = defaultSelectedTime.minute,
     )
 
     val formattedTime = remember(timeState.hour, timeState.minute) {
@@ -65,7 +54,7 @@ fun BedTime(
         title = stringResource(R.string.sleep_time),
         trailingValue = formattedTime,
         onClick = { showTimeDialog = true },
-        modifier = modifier
+        modifier = modifier,
     )
 
     TimeDialog(
@@ -75,6 +64,6 @@ fun BedTime(
             showTimeDialog = false
             onTimeSelected(selectedTime)
         },
-        timeState = timeState
+        timeState = timeState,
     )
 }

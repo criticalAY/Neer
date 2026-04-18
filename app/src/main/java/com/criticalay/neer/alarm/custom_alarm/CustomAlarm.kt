@@ -20,5 +20,6 @@ import com.criticalay.neer.alarm.default_alarm.data.AlarmItem
 
 interface CustomAlarm {
     fun schedule(item: AlarmItem)
+
     fun cancel()
 }

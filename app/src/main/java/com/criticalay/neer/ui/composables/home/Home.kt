@@ -52,13 +52,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.criticalay.neer.R
-import com.criticalay.neer.ui.adaptive.isExpandedWidth
 import com.criticalay.neer.data.event.BeverageEvent
 import com.criticalay.neer.data.event.IntakeEvent
 import com.criticalay.neer.data.event.NeerEvent
 import com.criticalay.neer.data.event.UserEvent
 import com.criticalay.neer.data.model.Intake
 import com.criticalay.neer.data.model.User
+import com.criticalay.neer.ui.adaptive.isExpandedWidth
 import com.criticalay.neer.ui.composables.home.hero.HydrationHero
 import com.criticalay.neer.ui.composables.home.hero.QuickAddSheet
 import com.criticalay.neer.ui.composables.home.water.RecordList
@@ -81,7 +81,7 @@ fun Home(
     userDetails: User,
     intakeList: List<Intake>,
     navigateToNotifications: () -> Unit,
-    onTabSelect: (Destination) -> Unit = {}
+    onTabSelect: (Destination) -> Unit = {},
 ) {
     val context = LocalContext.current
     val wideLayout = isExpandedWidth()
@@ -94,9 +94,9 @@ fun Home(
             NeerEvent.TriggerIntakeEvent(
                 IntakeEvent.GetTodayTotalIntake(
                     startDay = startOfDay,
-                    endDay = startOfNextDay
-                )
-            )
+                    endDay = startOfNextDay,
+                ),
+            ),
         )
         neerEventListener(NeerEvent.TriggerUserEvent(UserEvent.GetUserDetails))
         neerEventListener(NeerEvent.TriggerBeverageEvent(BeverageEvent.GetTargetAmount))
@@ -116,32 +116,39 @@ fun Home(
                 actions = {
                     IconButton(onClick = navigateToNotifications) {
                         Icon(
-                            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_notification_active),
-                            contentDescription = stringResource(R.string.notification)
+                            painter = androidx.compose.ui.res
+                                .painterResource(id = R.drawable.ic_notification_active),
+                            contentDescription = stringResource(R.string.notification),
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
+                    containerColor = MaterialTheme.colorScheme.surface,
+                ),
             )
         },
         bottomBar = {
             NeerBottomNavigationBar(
                 currentRoute = Destination.HomeScreen.path,
-                onTabSelect = onTabSelect
+                onTabSelect = onTabSelect,
             )
         },
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = { showQuickAdd = true },
-                icon = { Icon(painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_add), contentDescription = null) },
+                icon = {
+                    Icon(
+                        painter = androidx.compose.ui.res
+                            .painterResource(id = R.drawable.ic_add),
+                        contentDescription = null,
+                    )
+                },
                 text = { Text(stringResource(R.string.add_water)) },
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
-                shape = RoundedCornerShape(28.dp)
+                shape = RoundedCornerShape(28.dp),
             )
-        }
+        },
     ) { padding ->
         if (wideLayout) {
             WideLayout(
@@ -150,7 +157,7 @@ fun Home(
                 targetIntake = targetIntake,
                 userDetails = userDetails,
                 intakeList = intakeList,
-                neerEventListener = neerEventListener
+                neerEventListener = neerEventListener,
             )
         } else {
             CompactLayout(
@@ -159,7 +166,7 @@ fun Home(
                 targetIntake = targetIntake,
                 userDetails = userDetails,
                 intakeList = intakeList,
-                neerEventListener = neerEventListener
+                neerEventListener = neerEventListener,
             )
         }
     }
@@ -177,14 +184,14 @@ fun Home(
                                 USER_ID,
                                 BEVERAGE_ID,
                                 amount,
-                                LocalDateTime.now()
-                            )
-                        )
-                    )
+                                LocalDateTime.now(),
+                            ),
+                        ),
+                    ),
                 )
             },
             initialAmount = PreferencesManager(context).getWaterAmount(),
-            selectedUnits = userDetails.unit
+            selectedUnits = userDetails.unit,
         )
     }
 }
@@ -196,25 +203,25 @@ private fun CompactLayout(
     targetIntake: Int,
     userDetails: User,
     intakeList: List<Intake>,
-    neerEventListener: (NeerEvent) -> Unit
+    neerEventListener: (NeerEvent) -> Unit,
 ) {
     Column(
         modifier = Modifier
             .padding(padding)
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 20.dp)
+            .padding(horizontal = 20.dp),
     ) {
         Spacer(Modifier.height(8.dp))
         GreetingBlock(
             userName = userDetails.name,
-            percent = percentOfGoal(todayIntake, targetIntake)
+            percent = percentOfGoal(todayIntake, targetIntake),
         )
         Spacer(Modifier.height(12.dp))
         HydrationHero(
             todayIntake = todayIntake,
             targetIntake = targetIntake,
-            selectedUnits = userDetails.unit
+            selectedUnits = userDetails.unit,
         )
         Spacer(Modifier.height(24.dp))
         TodayRecordHeader(intakeCount = intakeList.size)
@@ -222,7 +229,7 @@ private fun CompactLayout(
         RecordList(
             todayAllIntakes = intakeList,
             selectedUnits = userDetails.unit,
-            neerEventListener = neerEventListener
+            neerEventListener = neerEventListener,
         )
         Spacer(Modifier.height(96.dp))
     }
@@ -235,7 +242,7 @@ private fun WideLayout(
     targetIntake: Int,
     userDetails: User,
     intakeList: List<Intake>,
-    neerEventListener: (NeerEvent) -> Unit
+    neerEventListener: (NeerEvent) -> Unit,
 ) {
     // Landscape phone / tablet — hero on the left, today's log on the right.
     // Hero column doesn't scroll (ring is the focal element); log column
@@ -244,7 +251,7 @@ private fun WideLayout(
         modifier = Modifier
             .padding(padding)
             .fillMaxSize()
-            .padding(horizontal = 24.dp, vertical = 8.dp)
+            .padding(horizontal = 24.dp, vertical = 8.dp),
     ) {
         Column(
             modifier = Modifier
@@ -253,17 +260,17 @@ private fun WideLayout(
                 .widthIn(max = 520.dp)
                 .verticalScroll(rememberScrollState())
                 .padding(end = 16.dp),
-            verticalArrangement = Arrangement.Top
+            verticalArrangement = Arrangement.Top,
         ) {
             GreetingBlock(
                 userName = userDetails.name,
-                percent = percentOfGoal(todayIntake, targetIntake)
+                percent = percentOfGoal(todayIntake, targetIntake),
             )
             Spacer(Modifier.height(12.dp))
             HydrationHero(
                 todayIntake = todayIntake,
                 targetIntake = targetIntake,
-                selectedUnits = userDetails.unit
+                selectedUnits = userDetails.unit,
             )
             Spacer(Modifier.height(24.dp))
         }
@@ -274,7 +281,7 @@ private fun WideLayout(
                 .fillMaxHeight()
                 .verticalScroll(rememberScrollState())
                 .padding(start = 16.dp),
-            verticalArrangement = Arrangement.Top
+            verticalArrangement = Arrangement.Top,
         ) {
             Spacer(Modifier.height(4.dp))
             TodayRecordHeader(intakeCount = intakeList.size)
@@ -282,7 +289,7 @@ private fun WideLayout(
             RecordList(
                 todayAllIntakes = intakeList,
                 selectedUnits = userDetails.unit,
-                neerEventListener = neerEventListener
+                neerEventListener = neerEventListener,
             )
             Spacer(Modifier.height(96.dp))
         }
@@ -290,7 +297,10 @@ private fun WideLayout(
 }
 
 @Composable
-private fun GreetingBlock(userName: String?, percent: Int) {
+private fun GreetingBlock(
+    userName: String?,
+    percent: Int,
+) {
     val hour = LocalTime.now().hour
     val greetingRes = when (hour) {
         in 5..11 -> R.string.good_morning
@@ -310,12 +320,12 @@ private fun GreetingBlock(userName: String?, percent: Int) {
         Text(
             text = line,
             style = MaterialTheme.typography.headlineSmall,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
         )
         Text(
             text = stringResource(subtitleRes),
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
@@ -325,33 +335,37 @@ private fun TodayRecordHeader(intakeCount: Int) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         Icon(
-            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_water_drop),
+            painter = androidx.compose.ui.res
+                .painterResource(id = R.drawable.ic_water_drop),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(22.dp)
+            modifier = Modifier.size(22.dp),
         )
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = stringResource(R.string.today_record),
                 style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
             )
             if (intakeCount > 0) {
                 val plural = if (intakeCount == 1) "" else "s"
                 Text(
                     text = stringResource(R.string.today_record_subtitle, intakeCount, plural),
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
     }
 }
 
-private fun percentOfGoal(todayIntake: Int, targetIntake: Int): Int {
+private fun percentOfGoal(
+    todayIntake: Int,
+    targetIntake: Int,
+): Int {
     if (targetIntake <= 0) return 0
     return ((todayIntake.toFloat() / targetIntake.toFloat()) * 100f).toInt().coerceAtMost(999)
 }
@@ -365,6 +379,6 @@ fun PreviewHome() {
         targetIntake = 3000,
         intakeList = emptyList(),
         userDetails = User(),
-        navigateToNotifications = {}
+        navigateToNotifications = {},
     )
 }

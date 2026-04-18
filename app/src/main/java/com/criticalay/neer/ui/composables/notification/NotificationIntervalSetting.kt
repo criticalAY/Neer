@@ -40,34 +40,39 @@ import com.criticalay.neer.ui.composables.settings.SettingItem
 fun NotificationIntervalSetting(
     modifier: Modifier = Modifier,
     notificationInterval: Double,
-    newInterval : (interval:Double) -> Unit
+    newInterval: (interval: Double) -> Unit,
 ) {
     var showDialog by remember {
         mutableStateOf(false)
     }
-    SettingItem(modifier = modifier.clickable {
-        showDialog = true
-    }){
+    SettingItem(
+        modifier = modifier.clickable {
+            showDialog = true
+        },
+    ) {
         Row(
             modifier = Modifier
                 .semantics(mergeDescendants = true) {}
                 .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ){
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             Icon(
-                modifier= Modifier.padding(5.dp),
-                painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_rounded_alarm_on),
-                contentDescription = null)
+                modifier = Modifier.padding(5.dp),
+                painter = androidx.compose.ui.res
+                    .painterResource(id = R.drawable.ic_rounded_alarm_on),
+                contentDescription = null,
+            )
             Text(
                 modifier = Modifier
-                    .weight(1f).padding(start = 5.dp),
+                    .weight(1f)
+                    .padding(start = 5.dp),
                 fontSize = 18.sp,
-                text = stringResource(R.string.notification_interval)
+                text = stringResource(R.string.notification_interval),
             )
 
             Text(
                 fontSize = 18.sp,
-                text = stringResource(R.string.hrs, notificationInterval)
+                text = stringResource(R.string.hrs, notificationInterval),
             )
         }
     }
@@ -75,8 +80,9 @@ fun NotificationIntervalSetting(
         NotificationIntervalDialog(
             interval = notificationInterval,
             showAlertDialog = { show -> showDialog = show },
-            newValue ={interval ->
+            newValue = { interval ->
                 newInterval(interval)
-            } )
+            },
+        )
     }
 }

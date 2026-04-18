@@ -19,7 +19,6 @@ package com.criticalay.neer.ui.composables.home.alertdialog
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,9 +32,7 @@ import androidx.compose.ui.res.stringResource
 import com.criticalay.neer.R
 
 @Composable
-fun WaterAmountChip(
-    waterAmount:String
-) {
+fun WaterAmountChip(waterAmount: String) {
     var selected by remember { mutableStateOf(false) }
 
     FilterChip(
@@ -44,17 +41,23 @@ fun WaterAmountChip(
         label = {
             Text(
                 maxLines = 1,
-                text = waterAmount)
+                text = waterAmount,
+            )
         },
         selected = selected,
         leadingIcon = {
-                      Image(painter = painterResource(
-                          id = R.drawable.ic_juice_glass), contentDescription = null )
+            Image(
+                painter = painterResource(
+                    id = R.drawable.ic_juice_glass,
+                ),
+                contentDescription = null,
+            )
         },
         trailingIcon = if (selected) {
             {
                 Icon(
-                    painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_tick),
+                    painter = androidx.compose.ui.res
+                        .painterResource(id = R.drawable.ic_tick),
                     contentDescription = stringResource(R.string.done),
                 )
             }

@@ -16,7 +16,6 @@
 
 package com.criticalay.neer.ui.composables.settings.items
 
-import android.app.AlertDialog
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -56,16 +55,15 @@ fun NameDisplay(
         title = stringResource(R.string.name),
         trailingValue = userName.ifBlank { null },
         onClick = { showDialog = true },
-        modifier = modifier
+        modifier = modifier,
     )
     if (showDialog) {
         EditNameDialog(
             name = userName,
             newValue = { name ->
                 newValue(name)
-
             },
-            showAlertDialog = { show -> showDialog = show }
+            showAlertDialog = { show -> showDialog = show },
         )
     }
 }
@@ -83,15 +81,14 @@ private fun EditNameDialog(
     Dialog(onDismissRequest = {
         // Do nothing
     }) {
-
         Card(modifier = modifier) {
             Column(
-                modifier = Modifier.padding(12.dp)
+                modifier = Modifier.padding(12.dp),
             ) {
                 Text(
                     modifier = Modifier.padding(10.dp),
                     text = stringResource(R.string.edit_your_name),
-                    fontSize = 20.sp
+                    fontSize = 20.sp,
                 )
                 DetailTextField(
                     modifier = Modifier.fillMaxWidth(),
@@ -107,23 +104,25 @@ private fun EditNameDialog(
                     placeholder = stringResource(R.string.edit_your_name),
                     leadingIcon = {
                         Icon(
-                            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_account),
-                            contentDescription = null
+                            painter = androidx.compose.ui.res
+                                .painterResource(id = R.drawable.ic_account),
+                            contentDescription = null,
                         )
                     },
                     trailingIcon = {
                         if (userName.isNotBlank()) {
                             IconButton(onClick = { userName = "" }) {
                                 Icon(
-                                    painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_close),
-                                    contentDescription = stringResource(R.string.clear)
+                                    painter = androidx.compose.ui.res
+                                        .painterResource(id = R.drawable.ic_close),
+                                    contentDescription = stringResource(R.string.clear),
                                 )
                             }
                         }
                     },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Done
+                        imeAction = ImeAction.Done,
                     ),
                 )
 
@@ -146,7 +145,7 @@ private fun EditNameDialog(
                             showAlertDialog(false)
                         },
                         modifier = Modifier.padding(8.dp),
-                        enabled = userName.isNotBlank()
+                        enabled = userName.isNotBlank(),
                     ) {
                         Text(stringResource(R.string.confirm))
                     }

@@ -25,7 +25,7 @@ import com.criticalay.neer.ui.composables.settings.SettingsRow
 @Composable
 fun PrivacyPolicy(
     modifier: Modifier = Modifier,
-    handleClick: () -> Unit
+    handleClick: () -> Unit,
 ) {
     SettingsRow(
         icon = R.drawable.ic_privacy,
@@ -33,6 +33,6 @@ fun PrivacyPolicy(
         subtitle = stringResource(R.string.privacy_policy_subtitle),
         showChevron = true,
         onClick = handleClick,
-        modifier = modifier
+        modifier = modifier,
     )
 }

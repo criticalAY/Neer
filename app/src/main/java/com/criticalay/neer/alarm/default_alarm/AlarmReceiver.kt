@@ -26,22 +26,24 @@ import com.criticalay.neer.utils.AppUtils
 import com.criticalay.neer.utils.PreferencesManager
 import com.criticalay.neer.utils.SleepCycle
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
-class AlarmReceiver:BroadcastReceiver() {
-
+class AlarmReceiver : BroadcastReceiver() {
     @Inject
     lateinit var alarmDao: AlarmDao
 
-    override fun onReceive(context: Context, intent: Intent?) {
+    override fun onReceive(
+        context: Context,
+        intent: Intent?,
+    ) {
         Timber.d("onReceive:: getting intent")
         if (intent != null) {
             val notificationType = intent.getStringExtra("NOTIFICATION_TYPE") ?: return
@@ -50,10 +52,10 @@ class AlarmReceiver:BroadcastReceiver() {
             Timber.d("Intent not null, creating notification")
             val notificationItem = NotificationItem(
                 title = AppUtils.getRandomTitle(context),
-                message = AppUtils.getRandomMessage(context)
+                message = AppUtils.getRandomMessage(context),
             )
             val currentTime = LocalTime.now(ZoneId.systemDefault()).truncatedTo(ChronoUnit.MINUTES)
-            val userSleepTime =  PreferencesManager(context).getSleepCycleTime(SleepCycle.SLEEP_TIME)
+            val userSleepTime = PreferencesManager(context).getSleepCycleTime(SleepCycle.SLEEP_TIME)
             val userWakeTime = PreferencesManager(context).getSleepCycleTime(SleepCycle.WAKE_TIME)
 
             if (currentTime.isAfter(userSleepTime) || currentTime.isBefore(userWakeTime)) {
@@ -62,12 +64,12 @@ class AlarmReceiver:BroadcastReceiver() {
             }
 
             val notificationService = NeerNotificationService(context)
-            if (notificationType=="regular"){
+            if (notificationType == "regular") {
                 Timber.d("Regular type notification")
                 notificationService.showNotification(notificationItem)
-            } else{
+            } else {
                 Timber.d("Custom type notification with alarmId: %d", alarmId)
-                if (alarmId>=0) {
+                if (alarmId >= 0) {
                     CoroutineScope(Dispatchers.IO).launch {
                         Timber.d("Toggling alarm state to off")
                         alarmDao.toggleAlarmState(alarmId, false)

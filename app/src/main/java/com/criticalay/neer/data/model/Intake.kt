@@ -22,11 +22,22 @@ import androidx.room.PrimaryKey
 import com.criticalay.neer.utils.Constants.INTAKE_DATABASE_TABLE
 import java.time.LocalDateTime
 
-@Entity(tableName = INTAKE_DATABASE_TABLE,
+@Entity(
+    tableName = INTAKE_DATABASE_TABLE,
     foreignKeys = [
-        ForeignKey(entity = User::class, parentColumns = ["id"], childColumns = ["userId"], onDelete = ForeignKey.CASCADE),
-        ForeignKey(entity = Beverage::class, parentColumns = ["beverageId"], childColumns = ["beverageId"], onDelete = ForeignKey.CASCADE)
-    ]
+        ForeignKey(
+            entity = User::class,
+            parentColumns = ["id"],
+            childColumns = ["userId"],
+            onDelete = ForeignKey.CASCADE,
+        ),
+        ForeignKey(
+            entity = Beverage::class,
+            parentColumns = ["beverageId"],
+            childColumns = ["beverageId"],
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
 )
 data class Intake(
     val userId: Long, // Foreign key reference to User

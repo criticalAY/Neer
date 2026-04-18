@@ -20,8 +20,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import com.criticalay.neer.data.model.Beverage
-import com.criticalay.neer.data.model.User
-import com.criticalay.neer.utils.Constants
 import com.criticalay.neer.utils.Constants.BEVERAGE_DATABASE_TABLE
 import com.criticalay.neer.utils.Constants.BEVERAGE_ID
 import kotlinx.coroutines.flow.Flow
@@ -34,6 +32,8 @@ interface BeverageDao {
     @Query("SELECT totalIntakeAmount FROM $BEVERAGE_DATABASE_TABLE")
     fun getTotalIntakeAmount(): Flow<Int>
 
-    @Query("UPDATE $BEVERAGE_DATABASE_TABLE SET totalIntakeAmount = :newTotalIntakeAmount WHERE beverageId = $BEVERAGE_ID")
+    @Query(
+        "UPDATE $BEVERAGE_DATABASE_TABLE SET totalIntakeAmount = :newTotalIntakeAmount WHERE beverageId = $BEVERAGE_ID",
+    )
     suspend fun updateTotalIntakeAmount(newTotalIntakeAmount: Int)
 }

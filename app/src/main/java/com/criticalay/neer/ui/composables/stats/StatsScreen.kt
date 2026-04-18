@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,13 +31,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import com.criticalay.neer.ui.adaptive.isExpandedWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -53,6 +50,7 @@ import com.criticalay.neer.data.event.NeerEvent
 import com.criticalay.neer.data.event.UserEvent
 import com.criticalay.neer.data.model.Intake
 import com.criticalay.neer.data.model.Units
+import com.criticalay.neer.ui.adaptive.isExpandedWidth
 import com.criticalay.neer.ui.navigation.Destination
 import com.criticalay.neer.ui.navigation.NeerBottomNavigationBar
 import java.time.LocalDate
@@ -66,13 +64,13 @@ fun StatsScreen(
     targetIntake: Int,
     selectedUnits: Units,
     neerEventListener: (NeerEvent) -> Unit,
-    onTabSelect: (Destination) -> Unit
+    onTabSelect: (Destination) -> Unit,
 ) {
     LaunchedEffect(Unit) {
         val start = LocalDateTime.of(LocalDate.now().minusDays(29), LocalTime.MIN)
         val end = LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.MIN)
         neerEventListener(
-            NeerEvent.TriggerIntakeEvent(IntakeEvent.GetIntakeHistory(startDate = start, endDate = end))
+            NeerEvent.TriggerIntakeEvent(IntakeEvent.GetIntakeHistory(startDate = start, endDate = end)),
         )
         neerEventListener(NeerEvent.TriggerUserEvent(UserEvent.GetUserDetails))
         neerEventListener(NeerEvent.TriggerBeverageEvent(BeverageEvent.GetTargetAmount))
@@ -83,16 +81,16 @@ fun StatsScreen(
             TopAppBar(
                 title = { Text(text = stringResource(R.string.stats_title)) },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
+                    containerColor = MaterialTheme.colorScheme.surface,
+                ),
             )
         },
         bottomBar = {
             NeerBottomNavigationBar(
                 currentRoute = Destination.Stats.path,
-                onTabSelect = onTabSelect
+                onTabSelect = onTabSelect,
             )
-        }
+        },
     ) { padding ->
         val wide = isExpandedWidth()
         Column(
@@ -101,7 +99,7 @@ fun StatsScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 20.dp, vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             if (intakeHistory.isEmpty()) {
                 FirstSipHint()
@@ -109,7 +107,7 @@ fun StatsScreen(
             WeeklyBarChart(
                 intakeHistory = intakeHistory,
                 targetIntake = targetIntake,
-                selectedUnits = selectedUnits
+                selectedUnits = selectedUnits,
             )
             if (wide) {
                 // On landscape phone / tablet, keep the chart full-width above
@@ -117,22 +115,22 @@ fun StatsScreen(
                 // screen doesn't feel scroll-heavy.
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     Column(
                         modifier = Modifier.weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
                         StatCardsRow(
                             intakeHistory = intakeHistory,
                             targetIntake = targetIntake,
-                            selectedUnits = selectedUnits
+                            selectedUnits = selectedUnits,
                         )
                     }
                     Column(modifier = Modifier.weight(1f)) {
                         StreakHeatmap(
                             intakeHistory = intakeHistory,
-                            targetIntake = targetIntake
+                            targetIntake = targetIntake,
                         )
                     }
                 }
@@ -140,11 +138,11 @@ fun StatsScreen(
                 StatCardsRow(
                     intakeHistory = intakeHistory,
                     targetIntake = targetIntake,
-                    selectedUnits = selectedUnits
+                    selectedUnits = selectedUnits,
                 )
                 StreakHeatmap(
                     intakeHistory = intakeHistory,
-                    targetIntake = targetIntake
+                    targetIntake = targetIntake,
                 )
             }
             Spacer(Modifier.height(24.dp))
@@ -158,32 +156,32 @@ private fun FirstSipHint() {
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        )
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+        ),
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             androidx.compose.foundation.Image(
                 painter = painterResource(id = com.criticalay.neer.R.drawable.stats_hero),
                 contentDescription = null,
-                modifier = Modifier.size(96.dp)
+                modifier = Modifier.size(96.dp),
             )
             Spacer(Modifier.size(12.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = stringResource(R.string.stats_preview_headline),
                     style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
                 Spacer(Modifier.size(2.dp))
                 Text(
                     text = stringResource(R.string.stats_preview_sub),
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
             }
         }

@@ -37,7 +37,6 @@ import kotlin.math.roundToInt
  * response documented in geriatric hydration literature.
  */
 object HydrationPlan {
-
     private const val ML_PER_KG = 35.0
     private const val LBS_TO_KG = 0.45359237
 
@@ -70,7 +69,7 @@ object HydrationPlan {
         weight: Double,
         gender: Gender,
         ageYears: Int?,
-        units: Units
+        units: Units,
     ): Int {
         val weightKg = if (units == Units.LBS_OZ) weight * LBS_TO_KG else weight
 
@@ -82,9 +81,11 @@ object HydrationPlan {
         }.toDouble()
 
         val raw = max(weightBased, aiFloor)
-        val adjusted = if (ageYears != null && ageYears >= ELDERLY_AGE_CUTOFF)
+        val adjusted = if (ageYears != null && ageYears >= ELDERLY_AGE_CUTOFF) {
             raw * ELDERLY_MULTIPLIER
-        else raw
+        } else {
+            raw
+        }
 
         val rounded = (adjusted / GOAL_ROUNDING_STEP_ML).roundToInt() * GOAL_ROUNDING_STEP_ML
         return rounded.coerceIn(MIN_DAILY_GOAL_ML, MAX_DAILY_GOAL_ML)
@@ -98,14 +99,14 @@ object HydrationPlan {
         val weightBasedMl: Int,
         val aiFloorMl: Int,
         val elderlyAdjustmentApplied: Boolean,
-        val goalMl: Int
+        val goalMl: Int,
     )
 
     fun explain(
         weight: Double,
         gender: Gender,
         ageYears: Int?,
-        units: Units
+        units: Units,
     ): GoalBreakdown {
         val weightKg = if (units == Units.LBS_OZ) weight * LBS_TO_KG else weight
         val floor = when (gender) {
@@ -118,14 +119,17 @@ object HydrationPlan {
             weightBasedMl = (weightKg * ML_PER_KG).roundToInt(),
             aiFloorMl = floor,
             elderlyAdjustmentApplied = ageYears != null && ageYears >= ELDERLY_AGE_CUTOFF,
-            goalMl = computeDailyGoalMl(weight, gender, ageYears, units)
+            goalMl = computeDailyGoalMl(weight, gender, ageYears, units),
         )
     }
 
     /**
      * A single reminder slot: time of day + how many ml to drink.
      */
-    data class ScheduleSlot(val time: LocalTime, val amountMl: Int)
+    data class ScheduleSlot(
+        val time: LocalTime,
+        val amountMl: Int,
+    )
 
     /**
      * Distribute [goalMl] across the waking window `[wakeTime, sleepTime − 60 min]`
@@ -137,7 +141,7 @@ object HydrationPlan {
         goalMl: Int,
         wakeTime: LocalTime,
         sleepTime: LocalTime,
-        slotSpacingMinutes: Long = DEFAULT_SLOT_SPACING_MINUTES
+        slotSpacingMinutes: Long = DEFAULT_SLOT_SPACING_MINUTES,
     ): List<ScheduleSlot> {
         if (goalMl <= 0) return emptyList()
 
@@ -174,7 +178,10 @@ object HydrationPlan {
         return stepped.coerceAtLeast(AMOUNT_ROUNDING_STEP_ML)
     }
 
-    private fun minutesBetween(start: LocalTime, end: LocalTime): Long {
+    private fun minutesBetween(
+        start: LocalTime,
+        end: LocalTime,
+    ): Long {
         val direct = Duration.between(start, end).toMinutes()
         // If end < start (e.g., sleep at 01:00), wrap around 24h
         return if (direct < 0) direct + 24 * 60 else direct

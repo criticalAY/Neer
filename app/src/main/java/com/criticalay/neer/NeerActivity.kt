@@ -45,7 +45,7 @@ class NeerActivity : ComponentActivity() {
                     val viewModel: SharedViewModel = viewModel()
                     Navigation(
                         navController = navController,
-                        sharedViewModel = viewModel
+                        sharedViewModel = viewModel,
                     )
                 }
             }

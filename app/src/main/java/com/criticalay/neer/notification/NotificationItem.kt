@@ -16,7 +16,7 @@
 
 package com.criticalay.neer.notification
 
-data class NotificationItem (
-    val title:String,
-    val message:String
+data class NotificationItem(
+    val title: String,
+    val message: String,
 )

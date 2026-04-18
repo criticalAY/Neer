@@ -5,6 +5,7 @@ composeCompiler = "2.2.21"
 datastorePreferences = "1.2.1"
 desugar_jdk_libs_nio = "2.1.5"
 glance = "1.1.1"
+ktlint = "14.2.0"
 hiltAndroid = "2.57.2"
 kotlin = "2.2.21"
 ksp = "2.2.21-2.0.5"
@@ -64,3 +65,4 @@ jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = 
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "composeCompiler" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }

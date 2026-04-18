@@ -21,7 +21,6 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -45,7 +44,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -58,9 +56,7 @@ private const val GITHUB_ISSUES_URL = "https://github.com/criticalAY/Neer/issues
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Support(
-    modifier: Modifier = Modifier,
-) {
+fun Support(modifier: Modifier = Modifier) {
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
     val context = LocalContext.current
@@ -71,20 +67,20 @@ fun Support(
         subtitle = stringResource(R.string.support_subtitle),
         showChevron = true,
         onClick = { showBottomSheet = true },
-        modifier = modifier
+        modifier = modifier,
     )
 
     if (showBottomSheet) {
         ModalBottomSheet(
             onDismissRequest = { showBottomSheet = false },
             sheetState = sheetState,
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp)
-                    .padding(top = 4.dp, bottom = 24.dp)
+                    .padding(top = 4.dp, bottom = 24.dp),
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Box(
@@ -92,12 +88,13 @@ fun Support(
                             .size(40.dp)
                             .clip(CircleShape)
                             .background(MaterialTheme.colorScheme.primaryContainer),
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.Center,
                     ) {
                         Icon(
-                            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_heart),
+                            painter = androidx.compose.ui.res
+                                .painterResource(id = R.drawable.ic_heart),
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
                         )
                     }
                     Spacer(Modifier.size(12.dp))
@@ -105,7 +102,7 @@ fun Support(
                         Text(
                             text = stringResource(R.string.support_sheet_title),
                             style = MaterialTheme.typography.titleLarge,
-                            color = MaterialTheme.colorScheme.onSurface
+                            color = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                 }
@@ -113,7 +110,7 @@ fun Support(
                 Text(
                     text = stringResource(R.string.support_sheet_subtitle),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Spacer(Modifier.height(20.dp))
 
@@ -121,19 +118,19 @@ fun Support(
                     icon = R.drawable.ic_coffee,
                     title = stringResource(R.string.support_buy_coffee),
                     subtitle = stringResource(R.string.support_buy_coffee_sub),
-                    onClick = { openUrl(context, BUY_ME_COFFEE_URL) }
+                    onClick = { openUrl(context, BUY_ME_COFFEE_URL) },
                 )
                 SupportAction(
                     icon = R.drawable.ic_star,
                     title = stringResource(R.string.support_github),
                     subtitle = stringResource(R.string.support_github_sub),
-                    onClick = { openUrl(context, GITHUB_URL) }
+                    onClick = { openUrl(context, GITHUB_URL) },
                 )
                 SupportAction(
                     icon = R.drawable.ic_bug_report,
                     title = stringResource(R.string.support_issue),
                     subtitle = stringResource(R.string.support_issue_sub),
-                    onClick = { openUrl(context, GITHUB_ISSUES_URL) }
+                    onClick = { openUrl(context, GITHUB_ISSUES_URL) },
                 )
             }
         }
@@ -145,29 +142,32 @@ private fun SupportAction(
     @androidx.annotation.DrawableRes icon: Int,
     title: String,
     subtitle: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(androidx.compose.foundation.shape.RoundedCornerShape(14.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .clip(
+                androidx.compose.foundation.shape
+                    .RoundedCornerShape(14.dp),
+            ).background(MaterialTheme.colorScheme.surfaceContainer)
             .clickable(onClick = onClick)
             .padding(horizontal = 14.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
             modifier = Modifier
                 .size(36.dp)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.primaryContainer),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             Icon(
-                painter = androidx.compose.ui.res.painterResource(id = icon),
+                painter = androidx.compose.ui.res
+                    .painterResource(id = icon),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier.size(20.dp),
             )
         }
         Spacer(Modifier.size(14.dp))
@@ -175,24 +175,28 @@ private fun SupportAction(
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
             )
             Text(
                 text = subtitle,
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
         Icon(
-            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_chevron_fwd),
+            painter = androidx.compose.ui.res
+                .painterResource(id = R.drawable.ic_chevron_fwd),
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
     Spacer(Modifier.height(10.dp))
 }
 
-private fun openUrl(context: Context, url: String) {
+private fun openUrl(
+    context: Context,
+    url: String,
+) {
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     }

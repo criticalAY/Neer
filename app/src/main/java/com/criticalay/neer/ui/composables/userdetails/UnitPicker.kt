@@ -31,7 +31,7 @@ import com.criticalay.neer.data.model.Units
 fun UnitPicker(
     selected: Units,
     onSelect: (Units) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val options = Units.entries
     SingleChoiceSegmentedButtonRow(modifier = modifier.fillMaxWidth()) {
@@ -39,7 +39,7 @@ fun UnitPicker(
             SegmentedButton(
                 selected = selected == unit,
                 onClick = { onSelect(unit) },
-                shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size)
+                shape = SegmentedButtonDefaults.itemShape(index = index, count = options.size),
             ) {
                 Text(unit.unitValue)
             }

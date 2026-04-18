@@ -41,8 +41,8 @@ import com.criticalay.neer.ui.composables.settings.SettingItem
 fun GenderItem(
     modifier: Modifier = Modifier,
     title: String,
-    selectedGender:String,
-    onOptionSelected: (option: Gender) -> Unit
+    selectedGender: String,
+    onOptionSelected: (option: Gender) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -51,15 +51,14 @@ fun GenderItem(
             modifier = Modifier
                 .clickable(
                     onClick = { expanded = !expanded },
-                    onClickLabel = stringResource(R.string.select_gender)
-                )
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
+                    onClickLabel = stringResource(R.string.select_gender),
+                ).padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 modifier = Modifier.weight(2f),
                 fontSize = 18.sp,
-                text = title
+                text = title,
             )
             Text(text = selectedGender)
         }
@@ -74,10 +73,9 @@ fun GenderItem(
                         onOptionSelected(gender)
                         expanded = false
                     },
-                    Modifier.offset(16.dp, 0.dp)
+                    Modifier.offset(16.dp, 0.dp),
                 )
             }
         }
     }
-
 }

@@ -51,16 +51,19 @@ fun HydrationHero(
     modifier: Modifier = Modifier,
     todayIntake: Int,
     targetIntake: Int,
-    selectedUnits: Units
+    selectedUnits: Units,
 ) {
     val percent = if (targetIntake <= 0) 0 else (todayIntake * 100 / targetIntake).coerceAtMost(999)
-    val progressFraction = if (targetIntake <= 0) 0f
-    else (todayIntake.toFloat() / targetIntake.toFloat()).coerceIn(0f, 1f)
+    val progressFraction = if (targetIntake <= 0) {
+        0f
+    } else {
+        (todayIntake.toFloat() / targetIntake.toFloat()).coerceIn(0f, 1f)
+    }
 
     val animatedIntake by animateIntAsState(
         targetValue = todayIntake,
         animationSpec = tween(durationMillis = 900),
-        label = "intakeCountUp"
+        label = "intakeCountUp",
     )
 
     val unitLabel = Converters.getUnitName(selectedUnits, 1)
@@ -69,54 +72,54 @@ fun HydrationHero(
 
     Column(
         modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth(0.82f)
                 .aspectRatio(1f)
                 .padding(8.dp),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             WaveGlass(
                 modifier = Modifier.fillMaxWidth(0.86f).aspectRatio(1f),
                 progress = progressFraction,
                 primaryColor = primary,
-                secondaryColor = secondary
+                secondaryColor = secondary,
             )
             CustomCircularProgressIndicator(
                 modifier = Modifier.fillMaxWidth().aspectRatio(1f),
                 initialValue = todayIntake,
                 maxValue = targetIntake.coerceAtLeast(1),
                 primaryColor = primary,
-                secondaryColor = secondary
+                secondaryColor = secondary,
             )
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Center,
             ) {
                 Text(
                     text = "$animatedIntake",
                     style = MaterialTheme.typography.displayMedium.copy(
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     ),
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
                 Text(
                     text = stringResource(
                         R.string.intake_of_target,
                         targetIntake,
-                        unitLabel
+                        unitLabel,
                     ),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
                     text = stringResource(R.string.percent_of_goal, percent),
                     style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.primary,
                 )
             }
         }

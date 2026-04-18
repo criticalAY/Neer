@@ -21,7 +21,6 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -99,7 +98,7 @@ import java.time.LocalTime
 @Composable
 fun UserDetailForm(
     onProceed: () -> Unit,
-    neerEventListener: (neerEvent: NeerEvent) -> Unit
+    neerEventListener: (neerEvent: NeerEvent) -> Unit,
 ) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
@@ -134,14 +133,16 @@ fun UserDetailForm(
     val ageInt = userAge.toIntOrNull()
 
     val recommendedMl = remember(weightDouble, userGender, ageInt, userSelectedUnit) {
-        if (weightDouble > 0.0)
+        if (weightDouble > 0.0) {
             HydrationPlan.computeDailyGoalMl(
                 weight = weightDouble,
                 gender = userGender,
                 ageYears = ageInt,
-                units = userSelectedUnit
+                units = userSelectedUnit,
             )
-        else 0
+        } else {
+            0
+        }
     }
     val manualGoalMl = manualGoal.toIntOrNull() ?: 0
     val effectiveGoalMl = if (useManualGoal) manualGoalMl else recommendedMl
@@ -153,13 +154,15 @@ fun UserDetailForm(
         effectiveGoalMl >= 500
 
     val plannedSchedule = remember(effectiveGoalMl, selectedWakeTime, selectedSleepTime) {
-        if (effectiveGoalMl > 0)
+        if (effectiveGoalMl > 0) {
             HydrationPlan.generateSchedule(
                 goalMl = effectiveGoalMl,
                 wakeTime = selectedWakeTime,
-                sleepTime = selectedSleepTime
+                sleepTime = selectedSleepTime,
             )
-        else emptyList()
+        } else {
+            emptyList()
+        }
     }
 
     val commitAndProceed: (Boolean) -> Unit = commit@{ remindersGranted ->
@@ -181,9 +184,9 @@ fun UserDetailForm(
                     height = userHeight.toDouble(),
                     bedTime = selectedSleepTime,
                     wakeUpTime = selectedWakeTime,
-                    unit = userSelectedUnit
-                )
-            )
+                    unit = userSelectedUnit,
+                ),
+            ),
         )
         neerEventListener(
             NeerEvent.TriggerBeverageEvent(
@@ -191,10 +194,10 @@ fun UserDetailForm(
                     Beverage(
                         userId = USER_ID,
                         beverageName = context.getString(R.string.water),
-                        totalIntakeAmount = effectiveGoalMl
-                    )
-                )
-            )
+                        totalIntakeAmount = effectiveGoalMl,
+                    ),
+                ),
+            ),
         )
         if (remindersEnabled && remindersGranted && plannedSchedule.isNotEmpty()) {
             val alarms = plannedSchedule.map { slot ->
@@ -203,14 +206,14 @@ fun UserDetailForm(
                     message = context.getString(
                         R.string.plan_reminder_body,
                         slot.amountMl,
-                        intakeUnit
-                    )
+                        intakeUnit,
+                    ),
                 )
             }
             neerEventListener(
                 NeerEvent.TriggerNotificationEvent(
-                    NotificationEvent.ReplaceAllAlarms(alarms)
-                )
+                    NotificationEvent.ReplaceAllAlarms(alarms),
+                ),
             )
         }
         onProceed()
@@ -224,14 +227,14 @@ fun UserDetailForm(
                 CenterAlignedTopAppBar(
                     title = { Text(text = stringResource(R.string.enter_details)) },
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.surface
-                    )
+                        containerColor = MaterialTheme.colorScheme.surface,
+                    ),
                 )
                 LinearProgressIndicator(
                     progress = { if (submitEnabled) 1f else 0.55f },
                     modifier = Modifier.fillMaxWidth(),
                     color = MaterialTheme.colorScheme.primary,
-                    trackColor = MaterialTheme.colorScheme.surfaceContainerHighest
+                    trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
                 )
             }
         },
@@ -239,7 +242,7 @@ fun UserDetailForm(
             Surface(
                 tonalElevation = 3.dp,
                 color = MaterialTheme.colorScheme.surface,
-                modifier = Modifier.navigationBarsPadding()
+                modifier = Modifier.navigationBarsPadding(),
             ) {
                 Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
                     Button(
@@ -255,262 +258,283 @@ fun UserDetailForm(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(52.dp),
-                        shape = RoundedCornerShape(16.dp)
+                        shape = RoundedCornerShape(16.dp),
                     ) {
                         Text(
                             text = stringResource(
-                                if (remindersEnabled) R.string.details_continue_with_plan
-                                else R.string.details_continue
+                                if (remindersEnabled) {
+                                    R.string.details_continue_with_plan
+                                } else {
+                                    R.string.details_continue
+                                },
                             ),
-                            style = MaterialTheme.typography.titleMedium
+                            style = MaterialTheme.typography.titleMedium,
                         )
                     }
                 }
             }
-        }
+        },
     ) { padding ->
         Box(
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize(),
-            contentAlignment = Alignment.TopCenter
+            contentAlignment = Alignment.TopCenter,
         ) {
-        Column(
-            modifier = Modifier
-                .widthIn(max = 640.dp)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp)
-                .padding(top = 8.dp, bottom = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
-        ) {
-            IntroBlock()
-
-            SectionCard(title = stringResource(R.string.details_section_name)) {
-                DetailTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(nameFocus),
-                    value = userName,
-                    onValueChange = { userName = it },
-                    label = stringResource(R.string.details_label_name),
-                    placeholder = stringResource(R.string.details_hint_name),
-                    leadingIcon = {
-                        Icon(
-                            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_account),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                        keyboardType = KeyboardType.Text
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onNext = { ageFocus.requestFocus() }
-                    )
-                )
-            }
-
-            SectionCard(title = stringResource(R.string.details_section_body)) {
-                UnitPicker(
-                    selected = userSelectedUnit,
-                    onSelect = { userSelectedUnit = it }
-                )
-                Spacer(Modifier.height(14.dp))
-                DetailTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(ageFocus),
-                    value = userAge,
-                    onValueChange = { v ->
-                        if (v.isEmpty()) userAge = ""
-                        else if (v.length <= 3 && v.isDigitsOnly()) userAge = v
-                    },
-                    label = stringResource(R.string.details_label_age),
-                    placeholder = stringResource(R.string.details_placeholder_age),
-                    leadingIcon = {
-                        Icon(
-                            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_cake),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                        keyboardType = KeyboardType.Number
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onNext = { heightFocus.requestFocus() }
-                    )
-                )
-                Spacer(Modifier.height(10.dp))
-                DetailTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(heightFocus),
-                    value = userHeight,
-                    onValueChange = { v ->
-                        if (v.isEmpty()) userHeight = ""
-                        else if (v.length <= 3 && v.isDigitsOnly()) userHeight = v
-                    },
-                    label = "${stringResource(R.string.details_label_height)} (${stringResource(R.string.details_unit_cm)})",
-                    placeholder = stringResource(R.string.details_placeholder_height),
-                    leadingIcon = {
-                        Icon(
-                            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_measure),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                        keyboardType = KeyboardType.Number
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onNext = { weightFocus.requestFocus() }
-                    )
-                )
-                Spacer(Modifier.height(10.dp))
-                DetailTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(weightFocus),
-                    value = userWeight,
-                    onValueChange = { v ->
-                        if (v.isEmpty()) userWeight = ""
-                        else if (v.length <= 5 && v.isDigitsOnly()) userWeight = v
-                    },
-                    label = "${stringResource(R.string.details_label_weight)} ($weightUnit)",
-                    placeholder = stringResource(R.string.details_placeholder_weight),
-                    leadingIcon = {
-                        Icon(
-                            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_weight_scale),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Done,
-                        keyboardType = KeyboardType.Number
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            focusManager.clearFocus()
-                            keyboardController?.hide()
-                        }
-                    )
-                )
-                Spacer(Modifier.height(14.dp))
-                GenderPicker(
-                    selected = userGender,
-                    onSelect = { userGender = it }
-                )
-            }
-
-            SectionCard(
-                title = stringResource(R.string.details_section_routine),
-                subtitle = stringResource(R.string.details_section_routine_sub)
+            Column(
+                modifier = Modifier
+                    .widthIn(max = 640.dp)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 20.dp)
+                    .padding(top = 8.dp, bottom = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp),
             ) {
-                WakeUpTimePicker(onTimeSelected = { selectedWakeTime = it })
-                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
-                SleepTimePicker(onTimeSelected = { selectedSleepTime = it })
-            }
+                IntroBlock()
 
-            SectionCard(
-                title = stringResource(R.string.details_section_goal),
-                subtitle = stringResource(R.string.details_section_goal_sub)
-            ) {
-                if (recommendedMl > 0) {
-                    GoalPreview(
-                        goalMl = if (useManualGoal) manualGoalMl else recommendedMl,
-                        unit = intakeUnit,
-                        isManual = useManualGoal
-                    )
-                } else {
-                    Text(
-                        text = stringResource(R.string.details_goal_profile_needed),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-                Spacer(Modifier.height(12.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = stringResource(R.string.details_goal_manual_toggle),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.weight(1f)
-                    )
-                    Switch(
-                        checked = useManualGoal,
-                        onCheckedChange = { useManualGoal = it }
-                    )
-                }
-                AnimatedVisibility(
-                    visible = useManualGoal,
-                    enter = fadeIn() + expandVertically(),
-                    exit = fadeOut() + shrinkVertically()
-                ) {
-                    Column(modifier = Modifier.padding(top = 12.dp)) {
-                        DetailTextField(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .focusRequester(manualGoalFocus),
-                            value = manualGoal,
-                            onValueChange = { v ->
-                                if (v.isEmpty() || (v.length <= 5 && v.isDigitsOnly()))
-                                    manualGoal = v
-                            },
-                            label = stringResource(R.string.details_goal_manual_label, intakeUnit),
-                            placeholder = stringResource(R.string.details_goal_manual_placeholder),
-                            keyboardOptions = KeyboardOptions(
-                                imeAction = ImeAction.Done,
-                                keyboardType = KeyboardType.Number
-                            ),
-                            keyboardActions = KeyboardActions(
-                                onDone = {
-                                    focusManager.clearFocus()
-                                    keyboardController?.hide()
-                                }
+                SectionCard(title = stringResource(R.string.details_section_name)) {
+                    DetailTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(nameFocus),
+                        value = userName,
+                        onValueChange = { userName = it },
+                        label = stringResource(R.string.details_label_name),
+                        placeholder = stringResource(R.string.details_hint_name),
+                        leadingIcon = {
+                            Icon(
+                                painter = androidx.compose.ui.res
+                                    .painterResource(id = R.drawable.ic_account),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
                             )
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                            keyboardType = KeyboardType.Text,
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onNext = { ageFocus.requestFocus() },
+                        ),
+                    )
+                }
+
+                SectionCard(title = stringResource(R.string.details_section_body)) {
+                    UnitPicker(
+                        selected = userSelectedUnit,
+                        onSelect = { userSelectedUnit = it },
+                    )
+                    Spacer(Modifier.height(14.dp))
+                    DetailTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(ageFocus),
+                        value = userAge,
+                        onValueChange = { v ->
+                            if (v.isEmpty()) {
+                                userAge = ""
+                            } else if (v.length <= 3 && v.isDigitsOnly()) {
+                                userAge = v
+                            }
+                        },
+                        label = stringResource(R.string.details_label_age),
+                        placeholder = stringResource(R.string.details_placeholder_age),
+                        leadingIcon = {
+                            Icon(
+                                painter = androidx.compose.ui.res
+                                    .painterResource(id = R.drawable.ic_cake),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                            keyboardType = KeyboardType.Number,
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onNext = { heightFocus.requestFocus() },
+                        ),
+                    )
+                    Spacer(Modifier.height(10.dp))
+                    DetailTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(heightFocus),
+                        value = userHeight,
+                        onValueChange = { v ->
+                            if (v.isEmpty()) {
+                                userHeight = ""
+                            } else if (v.length <= 3 && v.isDigitsOnly()) {
+                                userHeight = v
+                            }
+                        },
+                        label = "${stringResource(
+                            R.string.details_label_height,
+                        )} (${stringResource(R.string.details_unit_cm)})",
+                        placeholder = stringResource(R.string.details_placeholder_height),
+                        leadingIcon = {
+                            Icon(
+                                painter = androidx.compose.ui.res
+                                    .painterResource(id = R.drawable.ic_measure),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                            keyboardType = KeyboardType.Number,
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onNext = { weightFocus.requestFocus() },
+                        ),
+                    )
+                    Spacer(Modifier.height(10.dp))
+                    DetailTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(weightFocus),
+                        value = userWeight,
+                        onValueChange = { v ->
+                            if (v.isEmpty()) {
+                                userWeight = ""
+                            } else if (v.length <= 5 && v.isDigitsOnly()) {
+                                userWeight = v
+                            }
+                        },
+                        label = "${stringResource(R.string.details_label_weight)} ($weightUnit)",
+                        placeholder = stringResource(R.string.details_placeholder_weight),
+                        leadingIcon = {
+                            Icon(
+                                painter = androidx.compose.ui.res
+                                    .painterResource(id = R.drawable.ic_weight_scale),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Done,
+                            keyboardType = KeyboardType.Number,
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                focusManager.clearFocus()
+                                keyboardController?.hide()
+                            },
+                        ),
+                    )
+                    Spacer(Modifier.height(14.dp))
+                    GenderPicker(
+                        selected = userGender,
+                        onSelect = { userGender = it },
+                    )
+                }
+
+                SectionCard(
+                    title = stringResource(R.string.details_section_routine),
+                    subtitle = stringResource(R.string.details_section_routine_sub),
+                ) {
+                    WakeUpTimePicker(onTimeSelected = { selectedWakeTime = it })
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+                    SleepTimePicker(onTimeSelected = { selectedSleepTime = it })
+                }
+
+                SectionCard(
+                    title = stringResource(R.string.details_section_goal),
+                    subtitle = stringResource(R.string.details_section_goal_sub),
+                ) {
+                    if (recommendedMl > 0) {
+                        GoalPreview(
+                            goalMl = if (useManualGoal) manualGoalMl else recommendedMl,
+                            unit = intakeUnit,
+                            isManual = useManualGoal,
+                        )
+                    } else {
+                        Text(
+                            text = stringResource(R.string.details_goal_profile_needed),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
+                    Spacer(Modifier.height(12.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = stringResource(R.string.details_goal_manual_toggle),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.weight(1f),
+                        )
+                        Switch(
+                            checked = useManualGoal,
+                            onCheckedChange = { useManualGoal = it },
+                        )
+                    }
+                    AnimatedVisibility(
+                        visible = useManualGoal,
+                        enter = fadeIn() + expandVertically(),
+                        exit = fadeOut() + shrinkVertically(),
+                    ) {
+                        Column(modifier = Modifier.padding(top = 12.dp)) {
+                            DetailTextField(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .focusRequester(manualGoalFocus),
+                                value = manualGoal,
+                                onValueChange = { v ->
+                                    if (v.isEmpty() || (v.length <= 5 && v.isDigitsOnly())) {
+                                        manualGoal = v
+                                    }
+                                },
+                                label = stringResource(R.string.details_goal_manual_label, intakeUnit),
+                                placeholder = stringResource(R.string.details_goal_manual_placeholder),
+                                keyboardOptions = KeyboardOptions(
+                                    imeAction = ImeAction.Done,
+                                    keyboardType = KeyboardType.Number,
+                                ),
+                                keyboardActions = KeyboardActions(
+                                    onDone = {
+                                        focusManager.clearFocus()
+                                        keyboardController?.hide()
+                                    },
+                                ),
+                            )
+                        }
+                    }
                 }
-            }
 
-            SectionCard(title = stringResource(R.string.details_section_reminders)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_notification_active),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                    Spacer(Modifier.size(12.dp))
+                SectionCard(title = stringResource(R.string.details_section_reminders)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = androidx.compose.ui.res
+                                .painterResource(id = R.drawable.ic_notification_active),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                        )
+                        Spacer(Modifier.size(12.dp))
+                        Text(
+                            text = stringResource(R.string.details_reminders_toggle),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.weight(1f),
+                        )
+                        Switch(
+                            checked = remindersEnabled,
+                            onCheckedChange = { remindersEnabled = it },
+                        )
+                    }
+                    Spacer(Modifier.height(6.dp))
                     Text(
-                        text = stringResource(R.string.details_reminders_toggle),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.weight(1f)
-                    )
-                    Switch(
-                        checked = remindersEnabled,
-                        onCheckedChange = { remindersEnabled = it }
+                        text = if (remindersEnabled && plannedSchedule.isNotEmpty()) {
+                            stringResource(R.string.details_reminders_sub, plannedSchedule.size)
+                        } else if (remindersEnabled) {
+                            stringResource(R.string.water_detail_reminders_card_sub)
+                        } else {
+                            stringResource(R.string.details_reminders_sub_off)
+                        },
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-                Spacer(Modifier.height(6.dp))
-                Text(
-                    text = if (remindersEnabled && plannedSchedule.isNotEmpty())
-                        stringResource(R.string.details_reminders_sub, plannedSchedule.size)
-                    else if (remindersEnabled)
-                        stringResource(R.string.water_detail_reminders_card_sub)
-                    else
-                        stringResource(R.string.details_reminders_sub_off),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
             }
-        }
         }
     }
 
@@ -525,7 +549,7 @@ fun UserDetailForm(
                     showPermissionSheet = false
                     commitAndProceed(false)
                 }
-            }
+            },
         )
     }
 
@@ -540,47 +564,51 @@ private fun IntroBlock() {
         Text(
             text = stringResource(R.string.details_section_intro),
             style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.SemiBold),
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
         )
         Spacer(Modifier.height(4.dp))
         Text(
             text = stringResource(R.string.details_section_intro_sub),
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
 
 @Composable
-private fun GoalPreview(goalMl: Int, unit: String, isManual: Boolean) {
+private fun GoalPreview(
+    goalMl: Int,
+    unit: String,
+    isManual: Boolean,
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 14.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = stringResource(
                         R.string.details_goal_recommended,
                         goalMl,
-                        unit
+                        unit,
                     ),
                     style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
                 Text(
                     text = if (isManual) "Custom" else "From your body profile",
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
             }
         }
@@ -591,28 +619,28 @@ private fun GoalPreview(goalMl: Int, unit: String, isManual: Boolean) {
 private fun SectionCard(
     title: String,
     subtitle: String? = null,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
         Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
             )
             if (subtitle != null) {
                 Spacer(Modifier.size(2.dp))
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             Spacer(Modifier.height(12.dp))
@@ -623,7 +651,7 @@ private fun SectionCard(
 
 private fun HydrationPlan.ScheduleSlot.toAlarmItem(
     title: String,
-    message: String
+    message: String,
 ): AlarmItem {
     val todayBase = LocalDate.now()
     val fireDate = if (time.isBefore(LocalTime.now())) todayBase.plusDays(1) else todayBase
@@ -633,7 +661,7 @@ private fun HydrationPlan.ScheduleSlot.toAlarmItem(
         title = title,
         message = message,
         repeating = true,
-        alarmState = true
+        alarmState = true,
     )
 }
 

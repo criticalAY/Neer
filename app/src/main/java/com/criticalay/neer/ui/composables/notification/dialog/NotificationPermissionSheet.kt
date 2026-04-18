@@ -84,7 +84,7 @@ import com.criticalay.neer.utils.PreferencesManager
 @Composable
 fun NotificationPermissionSheet(
     onGranted: () -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -96,7 +96,7 @@ fun NotificationPermissionSheet(
     val alreadyGranted = remember {
         ContextCompat.checkSelfPermission(
             context,
-            Manifest.permission.POST_NOTIFICATIONS
+            Manifest.permission.POST_NOTIFICATIONS,
         ) == PackageManager.PERMISSION_GRANTED
     }
     if (alreadyGranted) {
@@ -115,14 +115,14 @@ fun NotificationPermissionSheet(
         activity?.let {
             ActivityCompat.shouldShowRequestPermissionRationale(
                 it,
-                Manifest.permission.POST_NOTIFICATIONS
+                Manifest.permission.POST_NOTIFICATIONS,
             )
         } ?: false
     }
     val permanentlyDenied = hasAskedBefore.value && !shouldShowRationale
 
     val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
+        contract = ActivityResultContracts.RequestPermission(),
     ) { granted ->
         hasAskedBefore.value = true
         prefs.markNotificationPermissionAsked()
@@ -139,7 +139,7 @@ fun NotificationPermissionSheet(
         permanentlyDenied = permanentlyDenied,
         onAllow = { permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS) },
         onOpenSettings = { openAppNotificationSettings(context) },
-        onDismiss = onDismiss
+        onDismiss = onDismiss,
     )
 }
 
@@ -149,74 +149,81 @@ private fun SheetContent(
     permanentlyDenied: Boolean,
     onAllow: () -> Unit,
     onOpenSettings: () -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp)
                 .padding(top = 4.dp, bottom = 32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Box(
                 modifier = Modifier
                     .size(72.dp)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.primaryContainer),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 Icon(
-                    painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_notification_active),
+                    painter = androidx.compose.ui.res
+                        .painterResource(id = R.drawable.ic_notification_active),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.size(36.dp)
+                    modifier = Modifier.size(36.dp),
                 )
             }
             Spacer(Modifier.height(18.dp))
             Text(
                 text = stringResource(R.string.notif_perm_title),
                 style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
             )
             Spacer(Modifier.height(8.dp))
             Text(
                 text = stringResource(
-                    if (permanentlyDenied) R.string.notif_perm_settings_body
-                    else R.string.notif_perm_body
+                    if (permanentlyDenied) {
+                        R.string.notif_perm_settings_body
+                    } else {
+                        R.string.notif_perm_body
+                    },
                 ),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Spacer(Modifier.height(24.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 OutlinedButton(
                     onClick = onDismiss,
                     modifier = Modifier.weight(1f),
-                    shape = RoundedCornerShape(14.dp)
+                    shape = RoundedCornerShape(14.dp),
                 ) {
                     Text(stringResource(R.string.notif_perm_not_now))
                 }
                 Button(
                     onClick = if (permanentlyDenied) onOpenSettings else onAllow,
                     modifier = Modifier.weight(1f),
-                    shape = RoundedCornerShape(14.dp)
+                    shape = RoundedCornerShape(14.dp),
                 ) {
                     Text(
                         stringResource(
-                            if (permanentlyDenied) R.string.notif_perm_open_settings
-                            else R.string.notif_perm_allow
-                        )
+                            if (permanentlyDenied) {
+                                R.string.notif_perm_open_settings
+                            } else {
+                                R.string.notif_perm_allow
+                            },
+                        ),
                     )
                 }
             }

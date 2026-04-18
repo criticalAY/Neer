@@ -21,14 +21,21 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.criticalay.neer.utils.Constants.BEVERAGE_DATABASE_TABLE
 
-@Entity(tableName = BEVERAGE_DATABASE_TABLE,
+@Entity(
+    tableName = BEVERAGE_DATABASE_TABLE,
     foreignKeys = [
-        ForeignKey(entity = User::class, parentColumns = ["id"], childColumns = ["userId"], onDelete = ForeignKey.CASCADE),
-    ])
+        ForeignKey(
+            entity = User::class,
+            parentColumns = ["id"],
+            childColumns = ["userId"],
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
+)
 data class Beverage(
-    val userId:Long,
+    val userId: Long,
     val beverageName: String,
-    val totalIntakeAmount : Int,
+    val totalIntakeAmount: Int,
     @PrimaryKey
     val beverageId: Long = 101,
 )

@@ -36,7 +36,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -60,7 +59,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
@@ -81,7 +79,6 @@ import kotlinx.coroutines.withContext
  */
 @AndroidEntryPoint
 class TrackingWidgetConfigureActivity : ComponentActivity() {
-
     private var appWidgetId: Int = AppWidgetManager.INVALID_APPWIDGET_ID
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
@@ -94,7 +91,7 @@ class TrackingWidgetConfigureActivity : ComponentActivity() {
 
         appWidgetId = intent?.extras?.getInt(
             AppWidgetManager.EXTRA_APPWIDGET_ID,
-            AppWidgetManager.INVALID_APPWIDGET_ID
+            AppWidgetManager.INVALID_APPWIDGET_ID,
         ) ?: AppWidgetManager.INVALID_APPWIDGET_ID
 
         if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
@@ -106,34 +103,39 @@ class TrackingWidgetConfigureActivity : ComponentActivity() {
             NeerTheme {
                 ConfigurePanel(
                     onConfirm = { amount1, amount2 -> confirm(amount1, amount2) },
-                    onCancel = { finish() }
+                    onCancel = { finish() },
                 )
             }
         }
     }
 
-    private fun confirm(amount1: Int, amount2: Int) {
+    private fun confirm(
+        amount1: Int,
+        amount2: Int,
+    ) {
         scope.launch {
             try {
                 withContext(Dispatchers.IO) {
                     val manager = GlanceAppWidgetManager(this@TrackingWidgetConfigureActivity)
                     val glanceId = manager.getGlanceIdBy(appWidgetId)
                     updateAppWidgetState(
-                        this@TrackingWidgetConfigureActivity, glanceId
+                        this@TrackingWidgetConfigureActivity,
+                        glanceId,
                     ) { prefs ->
                         prefs[WidgetStateKeys.QuickAddAmount1] = amount1
                         prefs[WidgetStateKeys.QuickAddAmount2] = amount2
                     }
                     val entryPoint = EntryPointAccessors.fromApplication(
                         applicationContext,
-                        WidgetEntryPoint::class.java
+                        WidgetEntryPoint::class.java,
                     )
                     runCatching { entryPoint.widgetUpdater().refresh() }
                     TrackingWidget().update(this@TrackingWidgetConfigureActivity, glanceId)
                 }
             } finally {
                 val resultValue = Intent().putExtra(
-                    AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId
+                    AppWidgetManager.EXTRA_APPWIDGET_ID,
+                    appWidgetId,
                 )
                 setResult(Activity.RESULT_OK, resultValue)
                 finish()
@@ -146,7 +148,7 @@ class TrackingWidgetConfigureActivity : ComponentActivity() {
 @Composable
 private fun ConfigurePanel(
     onConfirm: (Int, Int) -> Unit,
-    onCancel: () -> Unit
+    onCancel: () -> Unit,
 ) {
     var amount1 by remember { mutableFloatStateOf(250f) }
     var amount2 by remember { mutableFloatStateOf(500f) }
@@ -159,37 +161,37 @@ private fun ConfigurePanel(
             TopAppBar(
                 title = { Text("Quick-add amounts") },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
+                    containerColor = MaterialTheme.colorScheme.surface,
+                ),
             )
         },
         bottomBar = {
             Surface(
                 color = MaterialTheme.colorScheme.surface,
                 tonalElevation = 3.dp,
-                modifier = Modifier.navigationBarsPadding()
+                modifier = Modifier.navigationBarsPadding(),
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 20.dp, vertical = 12.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     OutlinedButton(
                         onClick = onCancel,
                         modifier = Modifier.height(52.dp),
-                        shape = RoundedCornerShape(16.dp)
+                        shape = RoundedCornerShape(16.dp),
                     ) { Text("Cancel") }
                     Button(
                         onClick = { onConfirm(amount1.toInt(), amount2.toInt()) },
                         modifier = Modifier
                             .height(52.dp)
                             .fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp)
+                        shape = RoundedCornerShape(16.dp),
                     ) { Text("Add widget") }
                 }
             }
-        }
+        },
     ) { padding ->
         Column(
             modifier = Modifier
@@ -198,24 +200,24 @@ private fun ConfigurePanel(
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 20.dp)
                 .padding(bottom = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text(
                 text = "Tap either button in the widget to log that amount without opening the app.",
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             AmountPicker(
                 title = "Button 1",
                 value = amount1.toInt(),
                 presets = presets,
-                onChange = { amount1 = it.toFloat() }
+                onChange = { amount1 = it.toFloat() },
             )
             AmountPicker(
                 title = "Button 2",
                 value = amount2.toInt(),
                 presets = presets,
-                onChange = { amount2 = it.toFloat() }
+                onChange = { amount2 = it.toFloat() },
             )
         }
     }
@@ -226,13 +228,13 @@ private fun AmountPicker(
     title: String,
     value: Int,
     presets: List<Int>,
-    onChange: (Int) -> Unit
+    onChange: (Int) -> Unit,
 ) {
     Card(
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
-        )
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        ),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -240,39 +242,39 @@ private fun AmountPicker(
                     text = title,
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
                 )
                 Text(
                     text = "$value ml",
                     style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.primary,
                 )
             }
             Spacer(Modifier.height(8.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 presets.take(4).forEach { preset ->
                     PresetChip(
                         label = "$preset",
                         selected = value == preset,
                         modifier = Modifier.weight(1f),
-                        onClick = { onChange(preset) }
+                        onClick = { onChange(preset) },
                     )
                 }
             }
             Spacer(Modifier.height(6.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 presets.drop(4).forEach { preset ->
                     PresetChip(
                         label = "$preset",
                         selected = value == preset,
                         modifier = Modifier.weight(1f),
-                        onClick = { onChange(preset) }
+                        onClick = { onChange(preset) },
                     )
                 }
             }
@@ -280,7 +282,7 @@ private fun AmountPicker(
                 value = value.toFloat(),
                 onValueChange = { onChange(it.toInt()) },
                 valueRange = 50f..1000f,
-                steps = 18
+                steps = 18,
             )
         }
     }
@@ -291,16 +293,18 @@ private fun PresetChip(
     label: String,
     selected: Boolean,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
-    val container = if (selected)
+    val container = if (selected) {
         MaterialTheme.colorScheme.primary
-    else
+    } else {
         MaterialTheme.colorScheme.secondaryContainer
-    val contentColor = if (selected)
+    }
+    val contentColor = if (selected) {
         MaterialTheme.colorScheme.onPrimary
-    else
+    } else {
         MaterialTheme.colorScheme.onSecondaryContainer
+    }
 
     Column(
         modifier = modifier
@@ -308,12 +312,12 @@ private fun PresetChip(
             .background(container)
             .clickable(onClick = onClick)
             .padding(vertical = 10.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
             text = label,
             style = MaterialTheme.typography.labelLarge,
-            color = contentColor
+            color = contentColor,
         )
     }
 }

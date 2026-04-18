@@ -20,17 +20,13 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,7 +39,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -56,17 +51,17 @@ import com.criticalay.neer.data.model.Units
 import com.criticalay.neer.ui.composables.home.alertdialog.AmountEditDialog
 import com.criticalay.neer.utils.Converters
 import com.criticalay.neer.utils.TimeUtils.formatLocalDateTimeToTime
-import timber.log.Timber
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import timber.log.Timber
 
 @Composable
 fun RecordList(
     modifier: Modifier = Modifier,
     todayAllIntakes: List<Intake>,
     selectedUnits: Units,
-    neerEventListener: (neerEvent: NeerEvent) -> Unit
+    neerEventListener: (neerEvent: NeerEvent) -> Unit,
 ) {
     LaunchedEffect(Unit) {
         val startOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MIN)
@@ -75,9 +70,9 @@ fun RecordList(
             NeerEvent.TriggerIntakeEvent(
                 IntakeEvent.GetTodayIntake(
                     startDay = startOfDay,
-                    endDay = startOfNextDay
-                )
-            )
+                    endDay = startOfNextDay,
+                ),
+            ),
         )
     }
 
@@ -93,13 +88,13 @@ fun RecordList(
                 AnimatedVisibility(
                     visible = true,
                     enter = fadeIn() + slideInVertically { it / 3 },
-                    exit = fadeOut()
+                    exit = fadeOut(),
                 ) {
                     val time = formatLocalDateTimeToTime(intake.intakeDateTime)
                     WaterRecordItem(
                         handleDelete = {
                             neerEventListener(
-                                NeerEvent.TriggerIntakeEvent(IntakeEvent.DeleteIntake(intake))
+                                NeerEvent.TriggerIntakeEvent(IntakeEvent.DeleteIntake(intake)),
                             )
                         },
                         handleEdit = {
@@ -109,7 +104,7 @@ fun RecordList(
                             showDialog.value = true
                         },
                         waterIntakeTime = time,
-                        waterIntakeAmount = "${intake.intakeAmount} ${Converters.getUnitName(selectedUnits, 1)}"
+                        waterIntakeAmount = "${intake.intakeAmount} ${Converters.getUnitName(selectedUnits, 1)}",
                     )
                 }
                 if (index != todayAllIntakes.lastIndex) Spacer(Modifier.height(10.dp))
@@ -125,12 +120,12 @@ fun RecordList(
                         NeerEvent.TriggerIntakeEvent(
                             IntakeEvent.UpdateIntakeById(
                                 intakeId = selectedIntakeId,
-                                intakeAmount = newValue
-                            )
-                        )
+                                intakeAmount = newValue,
+                            ),
+                        ),
                     )
                 },
-                currentValue = intakeAmount
+                currentValue = intakeAmount,
             )
         }
     }
@@ -141,26 +136,26 @@ private fun EmptyState(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.padding(vertical = 32.dp),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         androidx.compose.foundation.Image(
             painter = painterResource(id = R.drawable.empty_glass_hero),
             contentDescription = null,
-            modifier = Modifier.size(160.dp)
+            modifier = Modifier.size(160.dp),
         )
         Spacer(Modifier.height(16.dp))
         Text(
             text = stringResource(R.string.empty_today_headline),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
         Spacer(Modifier.height(4.dp))
         Text(
             text = stringResource(R.string.empty_today_subcopy),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
     }
 }

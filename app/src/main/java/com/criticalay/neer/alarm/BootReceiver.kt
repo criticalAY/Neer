@@ -22,12 +22,12 @@ import android.content.Intent
 import com.criticalay.neer.alarm.default_alarm.AlarmScheduler
 import com.criticalay.neer.data.repository.NeerRepository
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
 /**
  * Re-hydrates every enabled [com.criticalay.neer.alarm.default_alarm.data.AlarmItem]
@@ -36,11 +36,14 @@ import javax.inject.Inject
  */
 @AndroidEntryPoint
 class BootReceiver : BroadcastReceiver() {
-
     @Inject lateinit var repository: NeerRepository
+
     @Inject lateinit var scheduler: AlarmScheduler
 
-    override fun onReceive(context: Context, intent: Intent) {
+    override fun onReceive(
+        context: Context,
+        intent: Intent,
+    ) {
         val action = intent.action ?: return
         if (action !in HANDLED_ACTIONS) return
 
@@ -65,7 +68,7 @@ class BootReceiver : BroadcastReceiver() {
             Intent.ACTION_BOOT_COMPLETED,
             Intent.ACTION_LOCKED_BOOT_COMPLETED,
             Intent.ACTION_MY_PACKAGE_REPLACED,
-            "android.intent.action.QUICKBOOT_POWERON"
+            "android.intent.action.QUICKBOOT_POWERON",
         )
     }
 }

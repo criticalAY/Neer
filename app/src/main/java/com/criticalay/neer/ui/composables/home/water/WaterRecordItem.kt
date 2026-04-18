@@ -54,35 +54,35 @@ fun WaterRecordItem(
     handleDelete: () -> Unit,
     handleEdit: () -> Unit,
     waterIntakeTime: String,
-    waterIntakeAmount: String
+    waterIntakeAmount: String,
 ) {
     var expanded by remember { mutableStateOf(false) }
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp, vertical = 10.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Box(
                 modifier = Modifier
                     .size(44.dp)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.primaryContainer),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_outline_water_bottle),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(24.dp),
                 )
             }
             Spacer(Modifier.size(14.dp))
@@ -90,39 +90,40 @@ fun WaterRecordItem(
                 Text(
                     text = waterIntakeAmount,
                     style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
                 Text(
                     text = waterIntakeTime,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             Box {
                 IconButton(onClick = { expanded = !expanded }) {
                     Icon(
-                        painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_chevron_fwd),
+                        painter = androidx.compose.ui.res
+                            .painterResource(id = R.drawable.ic_chevron_fwd),
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
                 DropdownMenu(
                     expanded = expanded,
-                    onDismissRequest = { expanded = false }
+                    onDismissRequest = { expanded = false },
                 ) {
                     DropdownMenuItem(
                         text = { Text(text = stringResource(R.string.edit)) },
                         onClick = {
                             handleEdit()
                             expanded = false
-                        }
+                        },
                     )
                     DropdownMenuItem(
                         text = { Text(text = stringResource(R.string.delete)) },
                         onClick = {
                             handleDelete()
                             expanded = false
-                        }
+                        },
                     )
                 }
             }
@@ -137,6 +138,6 @@ fun PreviewWaterRecordItem() {
         waterIntakeAmount = "300 ml",
         waterIntakeTime = "12:53 AM",
         handleDelete = {},
-        handleEdit = {}
+        handleEdit = {},
     )
 }

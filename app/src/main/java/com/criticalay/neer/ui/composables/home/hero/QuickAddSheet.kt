@@ -65,7 +65,7 @@ fun QuickAddSheet(
     onDismiss: () -> Unit,
     onConfirm: (Int) -> Unit,
     initialAmount: Int,
-    selectedUnits: Units
+    selectedUnits: Units,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
@@ -75,23 +75,23 @@ fun QuickAddSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 24.dp, vertical = 8.dp)
+                .padding(horizontal = 24.dp, vertical = 8.dp),
         ) {
             Text(
                 text = stringResource(R.string.add_water),
                 style = MaterialTheme.typography.headlineSmall,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
             )
             Spacer(Modifier.height(4.dp))
             Text(
                 text = stringResource(R.string.quick_add_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Spacer(Modifier.height(16.dp))
 
@@ -99,7 +99,7 @@ fun QuickAddSheet(
             rows.forEach { row ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     row.forEach { preset ->
                         PresetChip(
@@ -108,9 +108,11 @@ fun QuickAddSheet(
                             selectedUnits = selectedUnits,
                             modifier = Modifier.weight(1f),
                             onSelect = {
-                                haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.TextHandleMove)
+                                haptics.performHapticFeedback(
+                                    androidx.compose.ui.hapticfeedback.HapticFeedbackType.TextHandleMove,
+                                )
                                 amount = preset
-                            }
+                            },
                         )
                     }
                 }
@@ -122,20 +124,20 @@ fun QuickAddSheet(
             Text(
                 text = stringResource(R.string.custom_amount),
                 style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Slider(
                 value = amount.toFloat(),
                 onValueChange = { amount = it.toInt() },
                 valueRange = 50f..1000f,
-                steps = 18
+                steps = 18,
             )
             Text(
                 text = "$amount ${Converters.getUnitName(selectedUnits, 1)}",
                 style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
             )
 
             Spacer(Modifier.height(16.dp))
@@ -149,20 +151,20 @@ fun QuickAddSheet(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
-                shape = RoundedCornerShape(20.dp)
+                shape = RoundedCornerShape(20.dp),
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_outline_water_full),
                     contentDescription = null,
-                    tint = Color.White
+                    tint = Color.White,
                 )
                 Spacer(Modifier.size(8.dp))
                 Text(
                     text = stringResource(
                         R.string.add_amount,
-                        "$amount ${Converters.getUnitName(selectedUnits, 1)}"
+                        "$amount ${Converters.getUnitName(selectedUnits, 1)}",
                     ),
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
                 )
             }
             Spacer(Modifier.height(24.dp))
@@ -176,16 +178,18 @@ private fun PresetChip(
     isSelected: Boolean,
     selectedUnits: Units,
     modifier: Modifier = Modifier,
-    onSelect: () -> Unit
+    onSelect: () -> Unit,
 ) {
-    val container = if (isSelected)
+    val container = if (isSelected) {
         MaterialTheme.colorScheme.primary
-    else
+    } else {
         MaterialTheme.colorScheme.secondaryContainer
-    val contentColor = if (isSelected)
+    }
+    val contentColor = if (isSelected) {
         MaterialTheme.colorScheme.onPrimary
-    else
+    } else {
         MaterialTheme.colorScheme.onSecondaryContainer
+    }
 
     Column(
         modifier = modifier
@@ -193,32 +197,32 @@ private fun PresetChip(
             .background(container)
             .clickable { onSelect() }
             .padding(vertical = 12.dp, horizontal = 4.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(
             modifier = Modifier
                 .size(28.dp)
                 .clip(CircleShape)
                 .background(contentColor.copy(alpha = 0.15f)),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_juice_glass),
                 contentDescription = null,
                 tint = contentColor,
-                modifier = Modifier.size(18.dp)
+                modifier = Modifier.size(18.dp),
             )
         }
         Spacer(Modifier.height(6.dp))
         Text(
             text = "$amount",
             style = MaterialTheme.typography.titleMedium,
-            color = contentColor
+            color = contentColor,
         )
         Text(
             text = Converters.getUnitName(selectedUnits, 1),
             style = MaterialTheme.typography.labelSmall,
-            color = contentColor.copy(alpha = 0.8f)
+            color = contentColor.copy(alpha = 0.8f),
         )
     }
 }

@@ -25,7 +25,7 @@ import com.criticalay.neer.ui.composables.settings.SettingsRow
 @Composable
 fun HydrationPlanRow(
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     SettingsRow(
         icon = R.drawable.ic_water_drop,
@@ -33,6 +33,6 @@ fun HydrationPlanRow(
         subtitle = stringResource(R.string.hydration_plan_row_sub),
         showChevron = true,
         onClick = onClick,
-        modifier = modifier
+        modifier = modifier,
     )
 }

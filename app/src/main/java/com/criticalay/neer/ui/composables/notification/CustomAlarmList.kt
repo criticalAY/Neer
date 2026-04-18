@@ -33,7 +33,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,20 +48,17 @@ import com.criticalay.neer.data.event.NeerEvent
 import com.criticalay.neer.data.event.NotificationEvent
 import com.criticalay.neer.utils.AppUtils
 import com.criticalay.neer.utils.TimeUtils
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomAlarmList(
     modifier: Modifier = Modifier,
     allNotifications: List<AlarmItem>,
-    neerEventListener: (neerEvent: NeerEvent) -> Unit
+    neerEventListener: (neerEvent: NeerEvent) -> Unit,
 ) {
     val context = LocalContext.current
     val scheduler = NeerAlarmScheduler(context = context)
@@ -73,7 +69,7 @@ fun CustomAlarmList(
     }
     var timeState = rememberTimePickerState(
         initialHour = defaultTime.hour,
-        initialMinute = defaultTime.minute
+        initialMinute = defaultTime.minute,
     )
 
     var selectedNotification by remember {
@@ -81,8 +77,8 @@ fun CustomAlarmList(
             AlarmItem(
                 time = LocalDateTime.now(),
                 title = AppUtils.getRandomTitle(context),
-                message = AppUtils.getRandomMessage(context)
-            )
+                message = AppUtils.getRandomMessage(context),
+            ),
         )
     }
     var repeating by remember {
@@ -95,31 +91,31 @@ fun CustomAlarmList(
     if (allNotifications.isEmpty()) {
         Column(
             modifier = modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
         ) {
-
             Image(
                 modifier = Modifier
                     .sizeIn(100.dp, 100.dp)
                     .align(Alignment.CenterHorizontally),
                 painter = painterResource(id = R.drawable.no_custom_alarm),
-                contentDescription = null
+                contentDescription = null,
             )
 
             Text(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(12.dp),
-                text = "No custom notification scheduled"
+                text = "No custom notification scheduled",
             )
-
         }
     } else {
         LazyColumn(state = lazyListState, modifier = modifier.padding(top = 10.dp)) {
-            items(allNotifications,
+            items(
+                allNotifications,
                 key = { alarmId ->
                     alarmId.alarmId
-                }) { alarm ->
+                },
+            ) { alarm ->
                 val time = TimeUtils.formatLocalDateTimeToTime(alarm.time)
                 CustomNotificationItem(
                     modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
@@ -131,13 +127,12 @@ fun CustomAlarmList(
                                 NeerEvent.TriggerNotificationEvent(
                                     NotificationEvent.ToggleNotificationState(
                                         alarmId = alarm.alarmId,
-                                        state = state
-                                    )
-                                )
+                                        state = state,
+                                    ),
+                                ),
                             )
                         } else {
                             if (repeating) {
-
                                 scheduler.scheduleRepeating(alarm)
                             } else {
                                 scheduler.scheduleOneTime(alarm)
@@ -146,44 +141,44 @@ fun CustomAlarmList(
                                 NeerEvent.TriggerNotificationEvent(
                                     NotificationEvent.ToggleNotificationState(
                                         alarmId = alarm.alarmId,
-                                        state = true
-                                    )
-                                )
+                                        state = true,
+                                    ),
+                                ),
                             )
                         }
                     },
                     alarmRepeatable = (
-                            if (alarm.repeating) {
-                                repeating = true
-                                "Repeating"
-                            } else {
-                                repeating = false
-                                "Once"
-                            }
-                            ),
+                        if (alarm.repeating) {
+                            repeating = true
+                            "Repeating"
+                        } else {
+                            repeating = false
+                            "Once"
+                        }
+                    ),
                     time = time,
                     longClick = {
                         selectedNotification = alarm
                         defaultTime = LocalTime.of(alarm.time.hour, alarm.time.minute)
                         showBottomSheet = true
-                    }
+                    },
                 )
             }
         }
 
         if (showBottomSheet) {
-
             val time = rememberTimePickerState(
                 initialHour = defaultTime.hour,
-                initialMinute = defaultTime.minute
+                initialMinute = defaultTime.minute,
             )
-            AlarmBottomSheet(timeState = time,
+            AlarmBottomSheet(
+                timeState = time,
                 title = stringResource(R.string.edit_notification),
                 onConfirm = { selectedTime ->
                     scheduler.cancelCustomAlarm(selectedNotification.alarmId)
                     selectedNotification = selectedNotification.copy(
                         time = LocalDateTime.of(LocalDate.now(), selectedTime),
-                        repeating = repeating
+                        repeating = repeating,
                     )
                     Timber.d("updating custom notification")
                     if (repeating) {
@@ -193,8 +188,8 @@ fun CustomAlarmList(
                     }
                     neerEventListener(
                         NeerEvent.TriggerNotificationEvent(
-                            NotificationEvent.UpdateNotification(selectedNotification)
-                        )
+                            NotificationEvent.UpdateNotification(selectedNotification),
+                        ),
                     )
                 },
                 showBottomSheet = { state ->
@@ -210,20 +205,18 @@ fun CustomAlarmList(
                     neerEventListener(
                         NeerEvent.TriggerNotificationEvent(
                             NotificationEvent.DeleteNotification(
-                                selectedNotification
-                            )
-                        )
+                                selectedNotification,
+                            ),
+                        ),
                     )
-                })
+                },
+            )
         }
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
-fun CustomAlarmListPreview(
-    modifier: Modifier = Modifier
-) {
+fun CustomAlarmListPreview(modifier: Modifier = Modifier) {
     CustomAlarmList(allNotifications = emptyList(), neerEventListener = {})
 }

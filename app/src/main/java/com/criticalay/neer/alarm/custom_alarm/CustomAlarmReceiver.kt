@@ -16,5 +16,4 @@
 
 package com.criticalay.neer.alarm.custom_alarm
 
-class CustomAlarmReceiver {
-}
+class CustomAlarmReceiver

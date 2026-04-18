@@ -30,7 +30,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.criticalay.neer.R
@@ -44,7 +43,7 @@ import java.time.format.DateTimeFormatter
 fun StatCardsRow(
     intakeHistory: List<Intake>,
     targetIntake: Int,
-    selectedUnits: Units
+    selectedUnits: Units,
 ) {
     val today = LocalDate.now()
     val totalsByDate: Map<LocalDate, Int> = intakeHistory
@@ -62,25 +61,25 @@ fun StatCardsRow(
 
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         StatCard(
             modifier = Modifier.weight(1f),
             title = stringResource(R.string.stats_streak_title),
             value = "$currentStreak",
-            subtitle = stringResource(R.string.stats_current_streak, currentStreak, plural)
+            subtitle = stringResource(R.string.stats_current_streak, currentStreak, plural),
         )
         StatCard(
             modifier = Modifier.weight(1f),
             title = stringResource(R.string.stats_average_title),
             value = "$averagePerDay",
-            subtitle = unitLabel
+            subtitle = unitLabel,
         )
         StatCard(
             modifier = Modifier.weight(1f),
             title = stringResource(R.string.stats_best_day_title),
             value = bestDay?.value?.toString() ?: "—",
-            subtitle = bestDay?.key?.format(dateFormatter) ?: unitLabel
+            subtitle = bestDay?.key?.format(dateFormatter) ?: unitLabel,
         )
     }
 }
@@ -90,32 +89,32 @@ private fun StatCard(
     modifier: Modifier = Modifier,
     title: String,
     value: String,
-    subtitle: String
+    subtitle: String,
 ) {
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
-        )
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        ),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Spacer(Modifier.height(6.dp))
             Text(
                 text = value,
                 style = MaterialTheme.typography.headlineSmall,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
             )
             Text(
                 text = subtitle,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1
+                maxLines = 1,
             )
         }
     }
@@ -124,7 +123,7 @@ private fun StatCard(
 private fun computeCurrentStreak(
     totalsByDate: Map<LocalDate, Int>,
     target: Int,
-    today: LocalDate
+    today: LocalDate,
 ): Int {
     if (target <= 0) return 0
     var streak = 0

@@ -20,12 +20,15 @@ import com.criticalay.neer.alarm.default_alarm.data.AlarmItem
 
 interface AlarmScheduler {
     fun scheduleRegular(item: AlarmItem)
+
     fun scheduleOneTime(item: AlarmItem)
+
     fun scheduleRepeating(item: AlarmItem)
 
     /** Schedule the item based on its [AlarmItem.repeating] flag, skipping if disabled. */
     fun scheduleIfEnabled(item: AlarmItem)
 
     fun cancel()
+
     fun cancelCustomAlarm(alarmId: Long)
 }

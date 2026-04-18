@@ -18,7 +18,6 @@ package com.criticalay.neer.ui.composables.settings
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -33,25 +32,19 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.criticalay.neer.BuildConfig
 import com.criticalay.neer.R
 import com.criticalay.neer.data.event.BeverageEvent
 import com.criticalay.neer.data.event.NeerEvent
 import com.criticalay.neer.data.event.UserEvent
 import com.criticalay.neer.data.model.User
-import com.criticalay.neer.data.repository.NeerRepository
 import com.criticalay.neer.ui.composables.settings.items.AppVersionSettingItem
 import com.criticalay.neer.ui.composables.settings.items.BedTime
 import com.criticalay.neer.ui.composables.settings.items.Gender
@@ -66,19 +59,17 @@ import com.criticalay.neer.ui.composables.settings.items.WakeUpTime
 import com.criticalay.neer.ui.composables.settings.items.Weight
 import com.criticalay.neer.ui.navigation.Destination
 import com.criticalay.neer.ui.navigation.NeerBottomNavigationBar
-import com.criticalay.neer.ui.viewmodel.SharedViewModel
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-    userDetails : User,
-    waterDrinkTarget : Int,
-    neerEventListener: (neerEvent:NeerEvent) -> Unit,
-    onPrivacy:() -> Unit,
+    userDetails: User,
+    waterDrinkTarget: Int,
+    neerEventListener: (neerEvent: NeerEvent) -> Unit,
+    onPrivacy: () -> Unit,
     onHydrationPlan: () -> Unit,
-    onTabSelect: (Destination) -> Unit
+    onTabSelect: (Destination) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     Scaffold(
@@ -88,24 +79,24 @@ fun SettingsScreen(
                 title = {
                     Text(
                         text = stringResource(R.string.settings),
-                        modifier = Modifier.padding(start = 10.dp)
+                        modifier = Modifier.padding(start = 10.dp),
                     )
                 },
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
             )
         },
         bottomBar = {
             NeerBottomNavigationBar(
                 currentRoute = Destination.Settings.path,
-                onTabSelect = onTabSelect
+                onTabSelect = onTabSelect,
             )
-        }
+        },
     ) { padding ->
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
                 .padding(padding)
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 16.dp),
         ) {
             LaunchedEffect(Unit) {
                 neerEventListener(NeerEvent.TriggerUserEvent(UserEvent.GetUserDetails))
@@ -113,7 +104,7 @@ fun SettingsScreen(
 
             SectionHeader(
                 icon = R.drawable.ic_account,
-                title = stringResource(R.string.personal)
+                title = stringResource(R.string.personal),
             )
             SettingsGroup {
                 userDetails.name?.let {
@@ -140,7 +131,7 @@ fun SettingsScreen(
                 HorizontalDivider()
                 TargetAmount(
                     targetAmount = waterDrinkTarget,
-                    selectedUnits = userDetails.unit
+                    selectedUnits = userDetails.unit,
                 ) { newTarget ->
                     Timber.d("User updated drink target")
                     neerEventListener(NeerEvent.TriggerBeverageEvent(BeverageEvent.UpdateTarget(newTarget)))
@@ -156,7 +147,7 @@ fun SettingsScreen(
 
             SectionHeader(
                 icon = R.drawable.ic_night,
-                title = stringResource(R.string.sleep_cycle)
+                title = stringResource(R.string.sleep_cycle),
             )
             SettingsGroup {
                 userDetails.wakeUpTime?.let {
@@ -174,7 +165,7 @@ fun SettingsScreen(
 
             SectionHeader(
                 icon = R.drawable.ic_info,
-                title = stringResource(R.string.others)
+                title = stringResource(R.string.others),
             )
             SettingsGroup {
                 Support()
@@ -183,7 +174,7 @@ fun SettingsScreen(
                 HorizontalDivider()
                 AppVersionSettingItem(
                     modifier = Modifier.fillMaxWidth(),
-                    appVersion = BuildConfig.VERSION_NAME
+                    appVersion = BuildConfig.VERSION_NAME,
                 )
             }
 
@@ -192,16 +183,15 @@ fun SettingsScreen(
     }
 }
 
-
 @Composable
 @Preview(showBackground = true)
-fun PreviewSettingsScreen(){
+fun PreviewSettingsScreen() {
     SettingsScreen(
         userDetails = User("Ashish"),
         waterDrinkTarget = 5000,
         neerEventListener = {},
         onPrivacy = {},
         onHydrationPlan = {},
-        onTabSelect = {}
+        onTabSelect = {},
     )
 }

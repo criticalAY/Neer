@@ -18,5 +18,6 @@ package com.criticalay.neer.notification
 
 interface NeerNotification {
     fun showNotification(notificationItem: NotificationItem)
+
     fun showCustomNotification(notificationItem: NotificationItem)
 }

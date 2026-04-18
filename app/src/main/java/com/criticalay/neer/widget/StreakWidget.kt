@@ -20,6 +20,7 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
+import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.Preferences
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
@@ -39,7 +40,6 @@ import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.state.PreferencesGlanceStateDefinition
-import androidx.compose.ui.unit.dp
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
@@ -47,10 +47,12 @@ import com.criticalay.neer.NeerActivity
 
 /** Read-only widget showing the current consecutive-goal-hit streak. */
 class StreakWidget : GlanceAppWidget() {
-
     override val stateDefinition = PreferencesGlanceStateDefinition
 
-    override suspend fun provideGlance(context: Context, id: GlanceId) {
+    override suspend fun provideGlance(
+        context: Context,
+        id: GlanceId,
+    ) {
         provideContent { Content() }
     }
 
@@ -68,23 +70,23 @@ class StreakWidget : GlanceAppWidget() {
                 .padding(16.dp)
                 .clickable(actionStartActivity<NeerActivity>()),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 text = if (streak == 0) "—" else "$streak",
                 style = TextStyle(
                     color = colors.onPrimaryContainer,
                     fontSize = TextUnit(44f, TextUnitType.Sp),
-                    fontWeight = FontWeight.Bold
-                )
+                    fontWeight = FontWeight.Bold,
+                ),
             )
             Spacer(GlanceModifier.height(2.dp))
             Text(
                 text = if (streak == 1) "day streak" else "day streak",
                 style = TextStyle(
                     color = colors.onPrimaryContainer,
-                    fontSize = TextUnit(13f, TextUnitType.Sp)
-                )
+                    fontSize = TextUnit(13f, TextUnitType.Sp),
+                ),
             )
             Spacer(GlanceModifier.height(8.dp))
             Text(
@@ -92,8 +94,8 @@ class StreakWidget : GlanceAppWidget() {
                 style = TextStyle(
                     color = colors.onPrimaryContainer,
                     fontSize = TextUnit(11f, TextUnitType.Sp),
-                    fontWeight = FontWeight.Medium
-                )
+                    fontWeight = FontWeight.Medium,
+                ),
             )
         }
     }

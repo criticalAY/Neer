@@ -53,7 +53,7 @@ import java.time.format.DateTimeFormatter
 fun WeeklyBarChart(
     intakeHistory: List<Intake>,
     targetIntake: Int,
-    selectedUnits: Units
+    selectedUnits: Units,
 ) {
     val today = LocalDate.now()
     val daily = remember(intakeHistory) {
@@ -69,32 +69,34 @@ fun WeeklyBarChart(
     // Chart ceiling always honours both the goal and the highest recorded day
     // so a 200%-of-goal day still fits and the target-gridline stays visible.
     val chartMax = maxOf(targetIntake, daily.maxOf { it.second }, 1)
-    val targetFraction = if (targetIntake > 0)
+    val targetFraction = if (targetIntake > 0) {
         (targetIntake.toFloat() / chartMax).coerceIn(0f, 1f)
-    else 0f
+    } else {
+        0f
+    }
     val dowFormatter = DateTimeFormatter.ofPattern("EEE")
 
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
-        )
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        ),
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
             Text(
                 text = stringResource(R.string.stats_weekly_title),
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
             )
             Text(
                 text = stringResource(
                     R.string.stats_average_value,
                     daily.map { it.second }.average().toInt(),
-                    Converters.getUnitName(selectedUnits, 1)
+                    Converters.getUnitName(selectedUnits, 1),
                 ),
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Spacer(Modifier.height(16.dp))
 
@@ -104,14 +106,14 @@ fun WeeklyBarChart(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(140.dp)
+                    .height(140.dp),
             ) {
                 if (targetFraction > 0f) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .fillMaxHeight(targetFraction)
-                            .align(Alignment.BottomStart)
+                            .align(Alignment.BottomStart),
                     ) {
                         Box(
                             modifier = Modifier
@@ -119,15 +121,15 @@ fun WeeklyBarChart(
                                 .height(1.dp)
                                 .align(Alignment.TopStart)
                                 .background(
-                                    MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
-                                )
+                                    MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                                ),
                         )
                     }
                 }
                 Row(
                     modifier = Modifier.fillMaxWidth().fillMaxHeight(),
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.Bottom
+                    verticalAlignment = Alignment.Bottom,
                 ) {
                     daily.forEach { (date, total) ->
                         val fraction = (total.toFloat() / chartMax.toFloat())
@@ -138,7 +140,7 @@ fun WeeklyBarChart(
                             fraction = fraction,
                             emphasize = isToday,
                             hitGoal = hitGoal,
-                            modifier = Modifier.weight(1f).fillMaxHeight()
+                            modifier = Modifier.weight(1f).fillMaxHeight(),
                         )
                     }
                 }
@@ -146,22 +148,23 @@ fun WeeklyBarChart(
             Spacer(Modifier.height(8.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 daily.forEach { (date, _) ->
                     val isToday = date == today
                     Text(
                         text = date.format(dowFormatter),
-                        style = if (isToday)
+                        style = if (isToday) {
                             MaterialTheme.typography.labelMedium.copy(
-                                color = MaterialTheme.colorScheme.primary
+                                color = MaterialTheme.colorScheme.primary,
                             )
-                        else
+                        } else {
                             MaterialTheme.typography.labelSmall.copy(
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            ),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        },
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
                     )
                 }
             }
@@ -174,12 +177,12 @@ private fun BarColumn(
     fraction: Float,
     emphasize: Boolean,
     hitGoal: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val animated by animateFloatAsState(
         targetValue = fraction,
         animationSpec = tween(durationMillis = 700),
-        label = "bar"
+        label = "bar",
     )
     val barColor = when {
         hitGoal -> MaterialTheme.colorScheme.primary
@@ -193,14 +196,14 @@ private fun BarColumn(
     // without pushing anything else.
     Box(
         modifier = modifier,
-        contentAlignment = Alignment.BottomCenter
+        contentAlignment = Alignment.BottomCenter,
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth(0.55f)
                 .fillMaxHeight(animated.coerceAtLeast(0.015f))
                 .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
-                .background(barColor)
+                .background(barColor),
         )
     }
 }

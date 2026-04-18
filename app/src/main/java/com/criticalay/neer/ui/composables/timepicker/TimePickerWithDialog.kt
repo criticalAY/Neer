@@ -49,26 +49,27 @@ fun TimePickerWithDialog() {
     var showDialog by remember { mutableStateOf(false) }
     val timeState = rememberTimePickerState(
         initialHour = selectedHour,
-        initialMinute = selectedMinute
+        initialMinute = selectedMinute,
     )
 
     if (showDialog) {
         BasicAlertDialog(
             onDismissRequest = { showDialog = false },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Column(
                 modifier = Modifier
                     .background(color = Color.LightGray.copy(alpha = .3f))
                     .padding(top = 28.dp, start = 20.dp, end = 20.dp, bottom = 12.dp),
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = CenterHorizontally
+                horizontalAlignment = CenterHorizontally,
             ) {
                 TimePicker(state = timeState)
                 Row(
                     modifier = Modifier
                         .padding(top = 12.dp)
-                        .fillMaxWidth(), horizontalArrangement = Arrangement.End
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
                 ) {
                     TextButton(onClick = { showDialog = false }) {
                         Text(text = "Dismiss")
@@ -95,6 +96,6 @@ fun TimePickerWithDialog() {
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewDialog(){
+fun PreviewDialog() {
     TimePickerWithDialog()
 }

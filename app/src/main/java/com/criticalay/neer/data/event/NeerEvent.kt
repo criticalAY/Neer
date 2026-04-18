@@ -16,20 +16,26 @@
 
 package com.criticalay.neer.data.event
 
-import com.criticalay.neer.data.model.Gender
-import com.criticalay.neer.data.model.Units
 import com.criticalay.neer.data.model.User
-import java.time.LocalTime
 
 sealed class NeerEvent {
-    class AddUser(val user: User) : NeerEvent()
+    class AddUser(
+        val user: User,
+    ) : NeerEvent()
 
-    data class TriggerIntakeEvent(val intakeEvent: IntakeEvent) : NeerEvent()
+    data class TriggerIntakeEvent(
+        val intakeEvent: IntakeEvent,
+    ) : NeerEvent()
 
-    data class TriggerUserEvent(val userEvent: UserEvent) : NeerEvent()
+    data class TriggerUserEvent(
+        val userEvent: UserEvent,
+    ) : NeerEvent()
 
-    data class TriggerBeverageEvent(val beverageEvent: BeverageEvent) : NeerEvent()
+    data class TriggerBeverageEvent(
+        val beverageEvent: BeverageEvent,
+    ) : NeerEvent()
 
-    data class TriggerNotificationEvent(val notificationEvent: NotificationEvent) : NeerEvent()
-
+    data class TriggerNotificationEvent(
+        val notificationEvent: NotificationEvent,
+    ) : NeerEvent()
 }

@@ -22,12 +22,11 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.criticalay.neer.data.model.Intake
-import kotlinx.coroutines.flow.Flow
 import java.time.LocalDateTime
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface IntakeDao {
-
     // Method to insert a new water intake entry
     @Insert
     suspend fun insertIntake(intake: Intake)
@@ -41,31 +40,60 @@ interface IntakeDao {
     suspend fun updateIntake(intake: Intake)
 
     // Method to get water intake entries for today
-    @Query("SELECT * FROM intake WHERE beverageId = :waterBeverageId AND intakeDateTime >= :startOfDay AND intakeDateTime < :startOfNextDay ORDER BY intakeId DESC")
-    fun getWaterIntakesForToday(waterBeverageId: Long, startOfDay: LocalDateTime, startOfNextDay: LocalDateTime): Flow<List<Intake>>
-
+    @Query(
+        "SELECT * FROM intake WHERE beverageId = :waterBeverageId AND intakeDateTime >= :startOfDay AND intakeDateTime < :startOfNextDay ORDER BY intakeId DESC",
+    )
+    fun getWaterIntakesForToday(
+        waterBeverageId: Long,
+        startOfDay: LocalDateTime,
+        startOfNextDay: LocalDateTime,
+    ): Flow<List<Intake>>
 
     // Method to get water intake entries for a specific date range.
     // Uses half-open interval [startDate, endDate) on the raw epoch-Long to
     // match how LocalDateTime is stored by Converters.dateToTimestamp. The old
     // DATE(intakeDateTime) form treated the epoch as a Julian day and returned
     // nothing for modern dates.
-    @Query("SELECT * FROM intake WHERE beverageId = :waterBeverageId AND intakeDateTime >= :startDate AND intakeDateTime < :endDate ORDER BY intakeDateTime ASC")
-    fun getWaterIntakesForDateRange(waterBeverageId: Long, startDate: LocalDateTime, endDate: LocalDateTime): Flow<List<Intake>>
+    @Query(
+        "SELECT * FROM intake WHERE beverageId = :waterBeverageId AND intakeDateTime >= :startDate AND intakeDateTime < :endDate ORDER BY intakeDateTime ASC",
+    )
+    fun getWaterIntakesForDateRange(
+        waterBeverageId: Long,
+        startDate: LocalDateTime,
+        endDate: LocalDateTime,
+    ): Flow<List<Intake>>
 
     // Method to get the total amount of water intake for today
-    @Query("SELECT SUM(intakeAmount) FROM intake WHERE beverageId = :waterBeverageId AND intakeDateTime >= :startDate AND intakeDateTime < :endDate ")
-    fun getTotalWaterIntakeForToday(waterBeverageId: Long, startDate: LocalDateTime, endDate: LocalDateTime): Flow<Int>
+    @Query(
+        "SELECT SUM(intakeAmount) FROM intake WHERE beverageId = :waterBeverageId AND intakeDateTime >= :startDate AND intakeDateTime < :endDate ",
+    )
+    fun getTotalWaterIntakeForToday(
+        waterBeverageId: Long,
+        startDate: LocalDateTime,
+        endDate: LocalDateTime,
+    ): Flow<Int>
 
     // Method to get monthly average intake amount for a specific month
-    @Query("SELECT AVG(intakeAmount) FROM intake WHERE beverageId = :beverageId AND strftime('%Y-%m', intakeDateTime) = :month")
-    suspend fun getMonthlyAverageIntake(beverageId: Long, month: String): Double?
+    @Query(
+        "SELECT AVG(intakeAmount) FROM intake WHERE beverageId = :beverageId AND strftime('%Y-%m', intakeDateTime) = :month",
+    )
+    suspend fun getMonthlyAverageIntake(
+        beverageId: Long,
+        month: String,
+    ): Double?
 
     // Method to get weekly average intake amount for a specific week
-    @Query("SELECT AVG(intakeAmount) FROM intake WHERE beverageId = :beverageId AND strftime('%W', intakeDateTime) = :week")
-    suspend fun getWeeklyAverageIntake(beverageId: Long, week: String): Double?
+    @Query(
+        "SELECT AVG(intakeAmount) FROM intake WHERE beverageId = :beverageId AND strftime('%W', intakeDateTime) = :week",
+    )
+    suspend fun getWeeklyAverageIntake(
+        beverageId: Long,
+        week: String,
+    ): Double?
 
     @Query("UPDATE intake SET intakeAmount = :intakeAmount WHERE intakeId = :intakeId")
-    suspend fun updateIntakeAmountById(intakeId: Long, intakeAmount: Int)
-
+    suspend fun updateIntakeAmountById(
+        intakeId: Long,
+        intakeAmount: Int,
+    )
 }

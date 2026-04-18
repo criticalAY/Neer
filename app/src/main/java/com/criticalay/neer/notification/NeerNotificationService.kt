@@ -25,36 +25,31 @@ import com.criticalay.neer.NeerActivity
 import com.criticalay.neer.R
 import com.criticalay.neer.utils.Constants.CUSTOM_REMINDER_CHANNEL_ID
 import com.criticalay.neer.utils.Constants.WATER_REMINDER_CHANNEL_ID
-import com.criticalay.neer.utils.PreferencesManager
-import com.criticalay.neer.utils.SleepCycle
 import timber.log.Timber
-import java.time.LocalTime
-import java.time.ZoneId
-import java.time.temporal.ChronoUnit
 
 class NeerNotificationService(
-    private val context: Context
+    private val context: Context,
 ) : NeerNotification {
-
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     override fun showNotification(notificationItem: NotificationItem) {
-            Timber.d("Showing notification")
-            val activityIntent = Intent(context, NeerActivity::class.java)
-            val activityPendingIntent = PendingIntent.getActivity(
-                context,
-                1,
-                activityIntent,
-                PendingIntent.FLAG_IMMUTABLE
-            )
-            val notification = NotificationCompat.Builder(context, WATER_REMINDER_CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_outline_water_bottle)
-                .setContentTitle(notificationItem.title)
-                .setContentText(notificationItem.message)
-                .setContentIntent(activityPendingIntent)
-                .build()
+        Timber.d("Showing notification")
+        val activityIntent = Intent(context, NeerActivity::class.java)
+        val activityPendingIntent = PendingIntent.getActivity(
+            context,
+            1,
+            activityIntent,
+            PendingIntent.FLAG_IMMUTABLE,
+        )
+        val notification = NotificationCompat
+            .Builder(context, WATER_REMINDER_CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_outline_water_bottle)
+            .setContentTitle(notificationItem.title)
+            .setContentText(notificationItem.message)
+            .setContentIntent(activityPendingIntent)
+            .build()
 
-            notificationManager.notify(1, notification)
+        notificationManager.notify(1, notification)
     }
 
     override fun showCustomNotification(notificationItem: NotificationItem) {
@@ -64,9 +59,10 @@ class NeerNotificationService(
             context,
             2,
             activityIntent,
-            PendingIntent.FLAG_IMMUTABLE
+            PendingIntent.FLAG_IMMUTABLE,
         )
-        val notification = NotificationCompat.Builder(context, CUSTOM_REMINDER_CHANNEL_ID)
+        val notification = NotificationCompat
+            .Builder(context, CUSTOM_REMINDER_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_outline_water_bottle)
             .setContentTitle(notificationItem.title)
             .setContentText(notificationItem.message)

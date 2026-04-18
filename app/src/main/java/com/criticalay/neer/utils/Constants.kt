@@ -24,7 +24,7 @@ object Constants {
 
     const val BEVERAGE_DATABASE_TABLE = "beverage"
     const val INTAKE_DATABASE_TABLE = "intake"
-    const val USER_ID =100L
+    const val USER_ID = 100L
     const val BEVERAGE_ID = 101L
 
     const val WATER_REMINDER_CHANNEL_ID = "neer_water_reminder_channel"

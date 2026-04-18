@@ -60,12 +60,12 @@ fun NotificationIntervalDialog(
                 Text(
                     modifier = Modifier.padding(10.dp),
                     text = stringResource(R.string.change_notification_interval),
-                    fontSize = 20.sp
+                    fontSize = 20.sp,
                 )
                 Text(
                     modifier = Modifier.padding(10.dp),
                     fontSize = 16.sp,
-                    text = stringResource(R.string.custom_interval_message)
+                    text = stringResource(R.string.custom_interval_message),
                 )
                 DetailTextField(
                     modifier = Modifier.fillMaxWidth(),
@@ -78,36 +78,38 @@ fun NotificationIntervalDialog(
                         }
                     },
                     label = "Interval in Hrs",
-                    placeholder =  stringResource(R.string.change_notification_interval),
+                    placeholder = stringResource(R.string.change_notification_interval),
                     leadingIcon = {
                         Icon(
-                            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_time_clock),
-                            contentDescription = null
+                            painter = androidx.compose.ui.res
+                                .painterResource(id = R.drawable.ic_time_clock),
+                            contentDescription = null,
                         )
                     },
                     trailingIcon = {
                         if (notificationIntevals.isNotBlank()) {
                             IconButton(onClick = { notificationIntevals = "" }) {
                                 Icon(
-                                    painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_close),
-                                    contentDescription = stringResource(R.string.clear)
+                                    painter = androidx.compose.ui.res
+                                        .painterResource(id = R.drawable.ic_close),
+                                    contentDescription = stringResource(R.string.clear),
                                 )
                             }
                         }
                     },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Decimal,
-                        imeAction = ImeAction.Done
-                    )
+                        imeAction = ImeAction.Done,
+                    ),
                 )
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
+                    horizontalArrangement = Arrangement.End,
                 ) {
                     TextButton(
                         onClick = { showAlertDialog(false) },
-                        modifier = Modifier.padding(8.dp)
+                        modifier = Modifier.padding(8.dp),
                     ) {
                         Text(stringResource(R.string.dismiss))
                     }
@@ -117,7 +119,7 @@ fun NotificationIntervalDialog(
                             showAlertDialog(false)
                         },
                         modifier = Modifier.padding(8.dp),
-                        enabled = notificationIntevals.isNotBlank()
+                        enabled = notificationIntevals.isNotBlank(),
                     ) {
                         Text(stringResource(R.string.confirm))
                     }
@@ -129,8 +131,7 @@ fun NotificationIntervalDialog(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewIntervalSetting(){
-   NotificationIntervalDialog(interval = 1.2, newValue = {}) {
-
+fun PreviewIntervalSetting() {
+    NotificationIntervalDialog(interval = 1.2, newValue = {}) {
     }
 }

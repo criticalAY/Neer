@@ -25,12 +25,12 @@ import com.criticalay.neer.ui.composables.settings.SettingsRow
 @Composable
 fun AppVersionSettingItem(
     modifier: Modifier = Modifier,
-    appVersion: String
+    appVersion: String,
 ) {
     SettingsRow(
         icon = R.drawable.ic_info,
         title = stringResource(id = R.string.setting_app_version_title),
         trailingValue = appVersion,
-        modifier = modifier
+        modifier = modifier,
     )
 }

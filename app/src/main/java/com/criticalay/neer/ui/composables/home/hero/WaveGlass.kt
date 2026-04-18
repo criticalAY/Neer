@@ -44,13 +44,13 @@ fun WaveGlass(
     modifier: Modifier = Modifier,
     progress: Float,
     primaryColor: Color,
-    secondaryColor: Color
+    secondaryColor: Color,
 ) {
     val clampedProgress = progress.coerceIn(0f, 1f)
     val animatedProgress by animateFloatAsState(
         targetValue = clampedProgress,
         animationSpec = tween(durationMillis = 900),
-        label = "waveFillProgress"
+        label = "waveFillProgress",
     )
 
     val transition = rememberInfiniteTransition(label = "waveSurface")
@@ -59,9 +59,9 @@ fun WaveGlass(
         targetValue = (2f * Math.PI).toFloat(),
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 3800, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
+            repeatMode = RepeatMode.Restart,
         ),
-        label = "wavePhase"
+        label = "wavePhase",
     )
 
     Box(modifier = modifier) {
@@ -77,8 +77,8 @@ fun WaveGlass(
                         left = centerX - radius,
                         top = centerY - radius,
                         right = centerX + radius,
-                        bottom = centerY + radius
-                    )
+                        bottom = centerY + radius,
+                    ),
                 )
             }
 
@@ -92,7 +92,7 @@ fun WaveGlass(
                     surfaceY = surfaceY,
                     amplitude = amplitude,
                     phase = wavePhase,
-                    color = secondaryColor.copy(alpha = 0.35f)
+                    color = secondaryColor.copy(alpha = 0.35f),
                 )
                 drawWave(
                     centerX = centerX,
@@ -100,7 +100,7 @@ fun WaveGlass(
                     surfaceY = surfaceY + amplitude * 0.4f,
                     amplitude = amplitude * 0.75f,
                     phase = wavePhase + 1.3f,
-                    color = primaryColor.copy(alpha = 0.55f)
+                    color = primaryColor.copy(alpha = 0.55f),
                 )
             }
         }
@@ -113,7 +113,7 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawWave(
     surfaceY: Float,
     amplitude: Float,
     phase: Float,
-    color: Color
+    color: Color,
 ) {
     val left = centerX - radius
     val right = centerX + radius

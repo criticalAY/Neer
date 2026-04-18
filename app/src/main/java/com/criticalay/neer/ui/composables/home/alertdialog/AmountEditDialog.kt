@@ -57,15 +57,14 @@ fun AmountEditDialog(
     Dialog(onDismissRequest = {
         // Do nothing
     }) {
-
         Card(modifier = modifier) {
             Column(
-                modifier = Modifier.padding(12.dp)
+                modifier = Modifier.padding(12.dp),
             ) {
                 Text(
                     modifier = Modifier.padding(10.dp),
                     text = stringResource(R.string.edit_drunk_amount),
-                    fontSize = 20.sp
+                    fontSize = 20.sp,
                 )
                 DetailTextField(
                     modifier = Modifier.fillMaxWidth(),
@@ -81,23 +80,25 @@ fun AmountEditDialog(
                     placeholder = stringResource(R.string.edit_drunk_amount),
                     leadingIcon = {
                         Icon(
-                            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_account),
-                            contentDescription = null
+                            painter = androidx.compose.ui.res
+                                .painterResource(id = R.drawable.ic_account),
+                            contentDescription = null,
                         )
                     },
                     trailingIcon = {
                         if (currentAmount.isNotBlank() && currentAmount.toInt() > 0) {
                             IconButton(onClick = { currentAmount = "" }) {
                                 Icon(
-                                    painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_close),
-                                    contentDescription = stringResource(R.string.clear)
+                                    painter = androidx.compose.ui.res
+                                        .painterResource(id = R.drawable.ic_close),
+                                    contentDescription = stringResource(R.string.clear),
                                 )
                             }
                         }
                     },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Done
+                        imeAction = ImeAction.Done,
                     ),
                 )
 
@@ -119,7 +120,7 @@ fun AmountEditDialog(
                             setShowDialog(false)
                         },
                         modifier = Modifier.padding(8.dp),
-                        enabled = currentAmount.isNotBlank() && currentAmount.toInt() > 0
+                        enabled = currentAmount.isNotBlank() && currentAmount.toInt() > 0,
                     ) {
                         Text(stringResource(R.string.confirm))
                     }

@@ -18,10 +18,11 @@ package com.criticalay.neer.utils
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.criticalay.neer.data.model.Units
 import java.time.LocalTime
 
-class PreferencesManager(context: Context) {
+class PreferencesManager(
+    context: Context,
+) {
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences("NeerPrefs", Context.MODE_PRIVATE)
 
@@ -31,9 +32,7 @@ class PreferencesManager(context: Context) {
         editor.apply()
     }
 
-    fun isFirstLaunch(): Boolean {
-        return sharedPreferences.getBoolean("firstLaunch", true)
-    }
+    fun isFirstLaunch(): Boolean = sharedPreferences.getBoolean("firstLaunch", true)
 
     fun saveOnboarding() {
         val editor = sharedPreferences.edit()
@@ -41,11 +40,12 @@ class PreferencesManager(context: Context) {
         editor.apply()
     }
 
-    fun isOnboarded(defaultValue:Boolean): Boolean {
-        return sharedPreferences.getBoolean("onboarded", defaultValue)
-    }
+    fun isOnboarded(defaultValue: Boolean): Boolean = sharedPreferences.getBoolean("onboarded", defaultValue)
 
-    fun saveSleepCycleTime(key: SleepCycle, localTime: LocalTime) {
+    fun saveSleepCycleTime(
+        key: SleepCycle,
+        localTime: LocalTime,
+    ) {
         val editor = sharedPreferences.edit()
         editor.putString(key.value, localTime.toString())
         editor.apply()
@@ -66,9 +66,7 @@ class PreferencesManager(context: Context) {
         editor.apply()
     }
 
-    fun isWaterDetailsFilled(): Boolean {
-        return sharedPreferences.getBoolean("water_details_filled", false)
-    }
+    fun isWaterDetailsFilled(): Boolean = sharedPreferences.getBoolean("water_details_filled", false)
 
     fun saveUserDetails() {
         val editor = sharedPreferences.edit()
@@ -76,29 +74,23 @@ class PreferencesManager(context: Context) {
         editor.apply()
     }
 
-    fun isUserDetailsFilled(): Boolean {
-        return sharedPreferences.getBoolean("user_details_filled", false)
-    }
+    fun isUserDetailsFilled(): Boolean = sharedPreferences.getBoolean("user_details_filled", false)
 
-    fun setWaterAmount(value:Int) {
+    fun setWaterAmount(value: Int) {
         val editor = sharedPreferences.edit()
         editor.putInt("selected_water_amount", value)
         editor.apply()
     }
 
-    fun getWaterAmount(): Int {
-        return sharedPreferences.getInt("selected_water_amount", 100)
-    }
+    fun getWaterAmount(): Int = sharedPreferences.getInt("selected_water_amount", 100)
 
-    fun saveNotificationPreference(value:Boolean){
+    fun saveNotificationPreference(value: Boolean) {
         val editor = sharedPreferences.edit()
         editor.putBoolean("notification_pref", value)
         editor.apply()
     }
 
-    fun getNotificationPreference():Boolean{
-        return sharedPreferences.getBoolean("notification_pref", false)
-    }
+    fun getNotificationPreference(): Boolean = sharedPreferences.getBoolean("notification_pref", false)
 
     /** True once we've asked for POST_NOTIFICATIONS at least once; lets us
      *  distinguish a first-time prompt (show rationale + launch) from a
@@ -107,30 +99,34 @@ class PreferencesManager(context: Context) {
         sharedPreferences.getBoolean("has_asked_notification_permission", false)
 
     fun markNotificationPermissionAsked() {
-        sharedPreferences.edit()
+        sharedPreferences
+            .edit()
             .putBoolean("has_asked_notification_permission", true)
             .apply()
     }
 
-    fun setNotificationInterval(interval:Double){
+    fun setNotificationInterval(interval: Double) {
         val editor = sharedPreferences.edit()
         editor.putDouble("notification_interval", interval)
         editor.apply()
     }
 
-    fun getNotificationInterval():Double{
-        return sharedPreferences.getDouble("notification_interval",1.0)
-    }
+    fun getNotificationInterval(): Double = sharedPreferences.getDouble("notification_interval", 1.0)
 
-    private fun SharedPreferences.Editor.putDouble(key: String, double: Double) =
-        putLong(key, java.lang.Double.doubleToRawLongBits(double))
+    private fun SharedPreferences.Editor.putDouble(
+        key: String,
+        double: Double,
+    ) = putLong(key, java.lang.Double.doubleToRawLongBits(double))
 
-    private fun SharedPreferences.getDouble(key: String, default: Double) =
-        java.lang.Double.longBitsToDouble(getLong(key, java.lang.Double.doubleToRawLongBits(default)))
-
+    private fun SharedPreferences.getDouble(
+        key: String,
+        default: Double,
+    ) = java.lang.Double.longBitsToDouble(getLong(key, java.lang.Double.doubleToRawLongBits(default)))
 }
 
-enum class SleepCycle(val value : String) {
+enum class SleepCycle(
+    val value: String,
+) {
     SLEEP_TIME("sleep_time"),
-    WAKE_TIME("wake_time")
+    WAKE_TIME("wake_time"),
 }

@@ -25,11 +25,11 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun SettingItem(
     modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     Surface(
         modifier = modifier
-            .heightIn(min = 56.dp)
+            .heightIn(min = 56.dp),
     ) {
         content()
     }

@@ -88,7 +88,7 @@ import java.time.format.DateTimeFormatter
 fun HydrationPlanScreen(
     userDetails: User,
     neerEventListener: (NeerEvent) -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
 ) {
     val context = LocalContext.current
     val profileComplete = userDetails.weight > 0.0 &&
@@ -105,96 +105,98 @@ fun HydrationPlanScreen(
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
-                            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_back),
-                            contentDescription = stringResource(R.string.go_back)
+                            painter = androidx.compose.ui.res
+                                .painterResource(id = R.drawable.ic_back),
+                            contentDescription = stringResource(R.string.go_back),
                         )
                     }
                 },
                 actions = {
                     IconButton(onClick = { showInfo = true }) {
                         Icon(
-                            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_info),
-                            contentDescription = stringResource(R.string.plan_info_description)
+                            painter = androidx.compose.ui.res
+                                .painterResource(id = R.drawable.ic_info),
+                            contentDescription = stringResource(R.string.plan_info_description),
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
+                    containerColor = MaterialTheme.colorScheme.surface,
+                ),
             )
-        }
+        },
     ) { padding ->
         Box(
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize(),
-            contentAlignment = Alignment.TopCenter
+            contentAlignment = Alignment.TopCenter,
         ) {
-        Column(
-            modifier = Modifier
-                .widthIn(max = 640.dp)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp, vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            if (!profileComplete) {
-                EmptyProfileNotice()
-                return@Column
-            }
-
-            val breakdown = remember(userDetails) {
-                HydrationPlan.explain(
-                    weight = userDetails.weight,
-                    gender = userDetails.gender,
-                    ageYears = userDetails.age,
-                    units = userDetails.unit
-                )
-            }
-            val schedule = remember(breakdown.goalMl, userDetails.wakeUpTime, userDetails.bedTime) {
-                HydrationPlan.generateSchedule(
-                    goalMl = breakdown.goalMl,
-                    wakeTime = userDetails.wakeUpTime!!,
-                    sleepTime = userDetails.bedTime!!
-                )
-            }
-
-            GoalCard(
-                breakdown = breakdown,
-                unitLabel = Converters.getUnitName(userDetails.unit, 1),
-                gender = userDetails.gender,
-                onApplyGoal = {
-                    neerEventListener(
-                        NeerEvent.TriggerBeverageEvent(BeverageEvent.UpdateTarget(breakdown.goalMl))
-                    )
-                    Toast.makeText(context, R.string.plan_goal_applied, Toast.LENGTH_SHORT).show()
+            Column(
+                modifier = Modifier
+                    .widthIn(max = 640.dp)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 20.dp, vertical = 12.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                if (!profileComplete) {
+                    EmptyProfileNotice()
+                    return@Column
                 }
-            )
 
-            ScheduleCard(
-                schedule = schedule,
-                wakeTime = userDetails.wakeUpTime!!,
-                sleepTime = userDetails.bedTime!!,
-                unitLabel = Converters.getUnitName(userDetails.unit, 1),
-                onEnableReminders = { showPermissionSheet = true }
-            )
+                val breakdown = remember(userDetails) {
+                    HydrationPlan.explain(
+                        weight = userDetails.weight,
+                        gender = userDetails.gender,
+                        ageYears = userDetails.age,
+                        units = userDetails.unit,
+                    )
+                }
+                val schedule = remember(breakdown.goalMl, userDetails.wakeUpTime, userDetails.bedTime) {
+                    HydrationPlan.generateSchedule(
+                        goalMl = breakdown.goalMl,
+                        wakeTime = userDetails.wakeUpTime!!,
+                        sleepTime = userDetails.bedTime!!,
+                    )
+                }
 
-            Text(
-                text = stringResource(R.string.plan_research_note),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(Modifier.height(24.dp))
-        }
+                GoalCard(
+                    breakdown = breakdown,
+                    unitLabel = Converters.getUnitName(userDetails.unit, 1),
+                    gender = userDetails.gender,
+                    onApplyGoal = {
+                        neerEventListener(
+                            NeerEvent.TriggerBeverageEvent(BeverageEvent.UpdateTarget(breakdown.goalMl)),
+                        )
+                        Toast.makeText(context, R.string.plan_goal_applied, Toast.LENGTH_SHORT).show()
+                    },
+                )
+
+                ScheduleCard(
+                    schedule = schedule,
+                    wakeTime = userDetails.wakeUpTime!!,
+                    sleepTime = userDetails.bedTime!!,
+                    unitLabel = Converters.getUnitName(userDetails.unit, 1),
+                    onEnableReminders = { showPermissionSheet = true },
+                )
+
+                Text(
+                    text = stringResource(R.string.plan_research_note),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                Spacer(Modifier.height(24.dp))
+            }
         }
     }
 
     if (showInfo) {
         HydrationInfoSheet(
             userDetails = userDetails,
-            onDismiss = { showInfo = false }
+            onDismiss = { showInfo = false },
         )
     }
 
@@ -211,10 +213,10 @@ fun HydrationPlanScreen(
                             weight = userDetails.weight,
                             gender = userDetails.gender,
                             ageYears = userDetails.age,
-                            units = userDetails.unit
+                            units = userDetails.unit,
                         ),
                         wakeTime = userDetails.wakeUpTime!!,
-                        sleepTime = userDetails.bedTime!!
+                        sleepTime = userDetails.bedTime!!,
                     )
                     val alarms = schedule.map { slot ->
                         slot.toAlarmItem(
@@ -222,22 +224,23 @@ fun HydrationPlanScreen(
                             message = context.getString(
                                 R.string.plan_reminder_body,
                                 slot.amountMl,
-                                Converters.getUnitName(userDetails.unit, 1)
-                            )
+                                Converters.getUnitName(userDetails.unit, 1),
+                            ),
                         )
                     }
                     neerEventListener(
-                        NeerEvent.TriggerNotificationEvent(NotificationEvent.ReplaceAllAlarms(alarms))
+                        NeerEvent.TriggerNotificationEvent(NotificationEvent.ReplaceAllAlarms(alarms)),
                     )
-                    Toast.makeText(
-                        context,
-                        R.string.plan_reminders_scheduled,
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast
+                        .makeText(
+                            context,
+                            R.string.plan_reminders_scheduled,
+                            Toast.LENGTH_SHORT,
+                        ).show()
                 }
                 showPermissionSheet = false
             },
-            onDismiss = { showPermissionSheet = false }
+            onDismiss = { showPermissionSheet = false },
         )
     }
 }
@@ -246,25 +249,27 @@ fun HydrationPlanScreen(
 @Composable
 private fun HydrationInfoSheet(
     userDetails: User,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val context = LocalContext.current
     val breakdown = remember(userDetails) {
-        if (userDetails.weight > 0.0)
+        if (userDetails.weight > 0.0) {
             HydrationPlan.explain(
                 weight = userDetails.weight,
                 gender = userDetails.gender,
                 ageYears = userDetails.age,
-                units = userDetails.unit
+                units = userDetails.unit,
             )
-        else null
+        } else {
+            null
+        }
     }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
     ) {
         Column(
             modifier = Modifier
@@ -272,89 +277,95 @@ private fun HydrationInfoSheet(
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 24.dp)
                 .padding(bottom = 32.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text(
                 text = stringResource(R.string.plan_info_title),
                 style = MaterialTheme.typography.headlineSmall,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
             )
             Text(
                 text = stringResource(R.string.plan_info_intro),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
             InfoStep(
                 title = stringResource(R.string.plan_info_step1_title),
-                body = step1Body(breakdown, userDetails.unit)
+                body = step1Body(breakdown, userDetails.unit),
             )
             InfoStep(
                 title = stringResource(R.string.plan_info_step2_title),
                 body = stringResource(
                     R.string.plan_info_step2_body,
                     genderLabel(userDetails.gender),
-                    breakdown?.aiFloorMl ?: aiFloorForGender(userDetails.gender)
-                )
+                    breakdown?.aiFloorMl ?: aiFloorForGender(userDetails.gender),
+                ),
             )
             InfoStep(
                 title = stringResource(R.string.plan_info_step3_title),
                 body = stringResource(
                     R.string.plan_info_step3_body,
-                    if (breakdown?.elderlyAdjustmentApplied == true)
-                        stringResource(R.string.plan_info_step3_elderly) else "",
-                    breakdown?.goalMl ?: aiFloorForGender(userDetails.gender)
-                )
+                    if (breakdown?.elderlyAdjustmentApplied == true) {
+                        stringResource(R.string.plan_info_step3_elderly)
+                    } else {
+                        ""
+                    },
+                    breakdown?.goalMl ?: aiFloorForGender(userDetails.gender),
+                ),
             )
 
             InfoStep(
                 title = stringResource(R.string.plan_info_schedule_title),
-                body = stringResource(R.string.plan_info_schedule_body)
+                body = stringResource(R.string.plan_info_schedule_body),
             )
 
             Text(
                 text = stringResource(R.string.plan_info_sources_title),
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
             )
 
             SourceLink(
                 label = stringResource(R.string.plan_info_source_iom),
                 url = stringResource(R.string.plan_info_source_iom_url),
-                onOpen = { openUrl(context, it) }
+                onOpen = { openUrl(context, it) },
             )
             SourceLink(
                 label = stringResource(R.string.plan_info_source_nap_news),
                 url = stringResource(R.string.plan_info_source_nap_news_url),
-                onOpen = { openUrl(context, it) }
+                onOpen = { openUrl(context, it) },
             )
             SourceLink(
                 label = stringResource(R.string.plan_info_source_mayo),
                 url = stringResource(R.string.plan_info_source_mayo_url),
-                onOpen = { openUrl(context, it) }
+                onOpen = { openUrl(context, it) },
             )
             SourceLink(
                 label = stringResource(R.string.plan_info_source_pubmed),
                 url = stringResource(R.string.plan_info_source_pubmed_url),
-                onOpen = { openUrl(context, it) }
+                onOpen = { openUrl(context, it) },
             )
             SourceLink(
                 label = stringResource(R.string.plan_info_source_acsm),
                 url = stringResource(R.string.plan_info_source_acsm_url),
-                onOpen = { openUrl(context, it) }
+                onOpen = { openUrl(context, it) },
             )
 
             Text(
                 text = stringResource(R.string.plan_info_disclaimer),
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }
 }
 
 @Composable
-private fun step1Body(breakdown: HydrationPlan.GoalBreakdown?, units: Units): String {
+private fun step1Body(
+    breakdown: HydrationPlan.GoalBreakdown?,
+    units: Units,
+): String {
     if (breakdown == null) return "—"
     return if (units == Units.LBS_OZ) {
         val lb = breakdown.weightKg / 0.45359237
@@ -365,18 +376,21 @@ private fun step1Body(breakdown: HydrationPlan.GoalBreakdown?, units: Units): St
 }
 
 @Composable
-private fun InfoStep(title: String, body: String) {
+private fun InfoStep(
+    title: String,
+    body: String,
+) {
     Column {
         Text(
             text = title,
             style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.primary,
         )
         Spacer(Modifier.size(4.dp))
         Text(
             text = body,
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
         )
     }
 }
@@ -385,7 +399,7 @@ private fun InfoStep(title: String, body: String) {
 private fun SourceLink(
     label: String,
     url: String,
-    onOpen: (String) -> Unit
+    onOpen: (String) -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -394,41 +408,47 @@ private fun SourceLink(
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .clickable { onOpen(url) }
             .padding(horizontal = 14.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = label,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
             )
             Text(
                 text = url.removePrefix("https://").removePrefix("http://"),
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
             )
         }
         Icon(
-            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_open_external),
+            painter = androidx.compose.ui.res
+                .painterResource(id = R.drawable.ic_open_external),
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary
+            tint = MaterialTheme.colorScheme.primary,
         )
     }
 }
 
-private fun genderLabel(gender: Gender): String = when (gender) {
-    Gender.MALE -> "men"
-    Gender.FEMALE -> "women"
-    Gender.OTHER -> "adults"
-}
+private fun genderLabel(gender: Gender): String =
+    when (gender) {
+        Gender.MALE -> "men"
+        Gender.FEMALE -> "women"
+        Gender.OTHER -> "adults"
+    }
 
-private fun aiFloorForGender(gender: Gender): Int = when (gender) {
-    Gender.MALE -> 3700
-    Gender.FEMALE -> 2700
-    Gender.OTHER -> 3200
-}
+private fun aiFloorForGender(gender: Gender): Int =
+    when (gender) {
+        Gender.MALE -> 3700
+        Gender.FEMALE -> 2700
+        Gender.OTHER -> 3200
+    }
 
-private fun openUrl(context: Context, url: String) {
+private fun openUrl(
+    context: Context,
+    url: String,
+) {
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     }
@@ -440,39 +460,39 @@ private fun GoalCard(
     breakdown: HydrationPlan.GoalBreakdown,
     unitLabel: String,
     gender: Gender,
-    onApplyGoal: () -> Unit
+    onApplyGoal: () -> Unit,
 ) {
     Card(
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        )
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+        ),
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(24.dp)
+                .padding(24.dp),
         ) {
             Text(
                 text = stringResource(R.string.plan_daily_goal),
                 style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
             )
             Spacer(Modifier.height(8.dp))
             Row(verticalAlignment = Alignment.Bottom) {
                 Text(
                     text = "${breakdown.goalMl}",
                     style = MaterialTheme.typography.displayMedium.copy(
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     ),
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
                 Spacer(Modifier.size(6.dp))
                 Text(
                     text = unitLabel,
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    modifier = Modifier.padding(bottom = 8.dp),
                 )
             }
             Spacer(Modifier.height(12.dp))
@@ -484,24 +504,24 @@ private fun GoalCard(
             Text(
                 text = stringResource(R.string.plan_goal_mlkg, breakdown.weightBasedMl),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
             )
             Text(
                 text = stringResource(R.string.plan_goal_ai_floor, genderLabel, breakdown.aiFloorMl),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
             )
             if (breakdown.elderlyAdjustmentApplied) {
                 Text(
                     text = stringResource(R.string.plan_goal_elderly),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
             }
             Spacer(Modifier.height(16.dp))
             OutlinedButton(
                 onClick = onApplyGoal,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(stringResource(R.string.plan_apply_goal))
             }
@@ -515,24 +535,24 @@ private fun ScheduleCard(
     wakeTime: LocalTime,
     sleepTime: LocalTime,
     unitLabel: String,
-    onEnableReminders: () -> Unit
+    onEnableReminders: () -> Unit,
 ) {
     val timeFormatter = DateTimeFormatter.ofPattern("h:mm a")
     Card(
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
-        )
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        ),
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(24.dp)
+                .padding(24.dp),
         ) {
             Text(
                 text = stringResource(R.string.plan_schedule_title),
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
             )
             Spacer(Modifier.height(4.dp))
             Text(
@@ -540,24 +560,28 @@ private fun ScheduleCard(
                     R.string.plan_schedule_sub,
                     wakeTime.format(timeFormatter),
                     sleepTime.format(timeFormatter),
-                    60
+                    60,
                 ),
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Spacer(Modifier.height(16.dp))
             schedule.forEach { slot ->
                 ScheduleRow(
                     time = slot.time.format(timeFormatter),
-                    amount = "${slot.amountMl} $unitLabel"
+                    amount = "${slot.amountMl} $unitLabel",
                 )
             }
             Spacer(Modifier.height(16.dp))
             Button(
                 onClick = onEnableReminders,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             ) {
-                Icon(painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_time_clock), contentDescription = null)
+                Icon(
+                    painter = androidx.compose.ui.res
+                        .painterResource(id = R.drawable.ic_time_clock),
+                    contentDescription = null,
+                )
                 Spacer(Modifier.size(8.dp))
                 Text(stringResource(R.string.plan_enable_reminders))
             }
@@ -566,25 +590,29 @@ private fun ScheduleCard(
 }
 
 @Composable
-private fun ScheduleRow(time: String, amount: String) {
+private fun ScheduleRow(
+    time: String,
+    amount: String,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 6.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
             modifier = Modifier
                 .size(36.dp)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.primaryContainer),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             Icon(
-                painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_water_drop),
+                painter = androidx.compose.ui.res
+                    .painterResource(id = R.drawable.ic_water_drop),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                modifier = Modifier.size(18.dp)
+                modifier = Modifier.size(18.dp),
             )
         }
         Spacer(Modifier.size(14.dp))
@@ -592,12 +620,12 @@ private fun ScheduleRow(time: String, amount: String) {
             text = time,
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(end = 16.dp)
+            modifier = Modifier.padding(end = 16.dp),
         )
         Text(
             text = amount,
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
@@ -610,13 +638,13 @@ private fun EmptyProfileNotice() {
         style = MaterialTheme.typography.bodyLarge,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         textAlign = TextAlign.Center,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     )
 }
 
 private fun HydrationPlan.ScheduleSlot.toAlarmItem(
     title: String,
-    message: String
+    message: String,
 ): AlarmItem {
     val todayBase = LocalDate.now()
     val fireDate = if (time.isBefore(LocalTime.now())) todayBase.plusDays(1) else todayBase
@@ -626,7 +654,7 @@ private fun HydrationPlan.ScheduleSlot.toAlarmItem(
         title = title,
         message = message,
         repeating = true,
-        alarmState = true
+        alarmState = true,
     )
 }
 

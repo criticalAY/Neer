@@ -27,7 +27,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AlarmDao {
-
     @Query("SELECT * FROM $ALARM_DATABASE_TABLE")
     fun getAllAlarms(): Flow<List<AlarmItem>>?
 
@@ -50,5 +49,8 @@ interface AlarmDao {
     suspend fun deleteAlarm(alarmItem: AlarmItem)
 
     @Query("UPDATE $ALARM_DATABASE_TABLE SET alarmState = :state WHERE alarmId = :alarmId")
-    suspend fun toggleAlarmState(alarmId: Long, state: Boolean)
+    suspend fun toggleAlarmState(
+        alarmId: Long,
+        state: Boolean,
+    )
 }

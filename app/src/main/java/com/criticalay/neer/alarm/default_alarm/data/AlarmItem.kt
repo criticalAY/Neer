@@ -22,13 +22,13 @@ import com.criticalay.neer.utils.Constants.ALARM_DATABASE_TABLE
 import java.time.LocalDateTime
 
 @Entity(tableName = ALARM_DATABASE_TABLE)
-data class AlarmItem (
+data class AlarmItem(
     val time: LocalDateTime,
-    val interval:Double? = null,
-    val title:String,
-    val message:String,
+    val interval: Double? = null,
+    val title: String,
+    val message: String,
     val repeating: Boolean = false,
     val alarmState: Boolean = true,
     @PrimaryKey(autoGenerate = true)
-    val alarmId:Long = 0L
+    val alarmId: Long = 0L,
 )

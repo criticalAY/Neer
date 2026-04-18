@@ -18,5 +18,6 @@ package com.criticalay.neer.alarm.default_alarm
 
 import android.content.Context
 
-class NeerAlarmManager(val context: Context) {
-}
+class NeerAlarmManager(
+    val context: Context,
+)

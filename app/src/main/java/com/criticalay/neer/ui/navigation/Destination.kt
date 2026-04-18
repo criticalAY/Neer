@@ -16,7 +16,9 @@
 
 package com.criticalay.neer.ui.navigation
 
-sealed class Destination(val path: String) {
+sealed class Destination(
+    val path: String,
+) {
     data object HomeScreen : Destination("home")
 
     data object UserDetails : Destination("userDetails")
@@ -36,15 +38,13 @@ sealed class Destination(val path: String) {
     data object Onboarding : Destination("onboarding")
 
     companion object {
-        fun fromString(route: String): Destination {
-            return when (route) {
+        fun fromString(route: String): Destination =
+            when (route) {
                 Settings.path -> Settings
                 Stats.path -> Stats
                 UserDetails.path -> UserDetails
                 WaterDetails.path -> WaterDetails
                 else -> HomeScreen
             }
-
-        }
     }
 }

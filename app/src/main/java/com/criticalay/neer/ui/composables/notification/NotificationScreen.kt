@@ -54,8 +54,8 @@ import com.criticalay.neer.ui.composables.SectionSpacer
 import com.criticalay.neer.ui.composables.notification.dialog.AlertDialogNotification
 import com.criticalay.neer.utils.AppUtils
 import com.criticalay.neer.utils.PreferencesManager
-import timber.log.Timber
 import java.time.LocalDateTime
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,7 +63,7 @@ fun NotificationScreen(
     modifier: Modifier = Modifier,
     notificationList: List<AlarmItem>,
     neerEventListener: (event: NeerEvent) -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
 ) {
     val context = LocalContext.current
     val scheduler = NeerAlarmScheduler(context = context)
@@ -75,14 +75,14 @@ fun NotificationScreen(
     var intervalTime by remember {
         mutableStateOf(
             PreferencesManager(context = context)
-                .getNotificationInterval()
+                .getNotificationInterval(),
         )
     }
 
     var showBottomSheet by remember { mutableStateOf(false) }
     val timeState = rememberTimePickerState(
         initialHour = 5,
-        initialMinute = 50
+        initialMinute = 50,
     )
     var repeatable by remember {
         mutableStateOf(false)
@@ -100,19 +100,19 @@ fun NotificationScreen(
                 title = {
                     Text(
                         text = stringResource(R.string.notification),
-                        modifier = Modifier.padding(start = 10.dp)
+                        modifier = Modifier.padding(start = 10.dp),
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = { onBack() }) {
                         Icon(
-                            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_back),
-                            contentDescription = stringResource(R.string.go_back)
+                            painter = androidx.compose.ui.res
+                                .painterResource(id = R.drawable.ic_back),
+                            contentDescription = stringResource(R.string.go_back),
                         )
-
                     }
                 },
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
             )
         },
         floatingActionButton = {
@@ -120,19 +120,23 @@ fun NotificationScreen(
                 modifier = Modifier.padding(10.dp),
                 onClick = { showBottomSheet = true },
             ) {
-                Icon(painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_add), "Floating action button.")
+                Icon(
+                    painter = androidx.compose.ui.res
+                        .painterResource(id = R.drawable.ic_add),
+                    "Floating action button.",
+                )
             }
-        }
+        },
     ) { padding ->
         Column(
             modifier = modifier
                 .padding(padding)
-                .fillMaxSize()
+                .fillMaxSize(),
         ) {
             NotificationSetting(
                 modifier = Modifier
                     .verticalScroll(
-                        rememberScrollState()
+                        rememberScrollState(),
                     ),
                 title = stringResource(R.string.setting_enable_notifications),
                 checked = switchState,
@@ -148,18 +152,18 @@ fun NotificationScreen(
                             PreferencesManager(context = context)
                                 .getNotificationInterval(),
                             AppUtils.getRandomTitle(context),
-                            AppUtils.getRandomMessage(context)
+                            AppUtils.getRandomMessage(context),
                         )
                         scheduler.scheduleRegular(alarmItem)
                         switchState = true
                     }
-                }
+                },
             )
 
             HorizontalDivider()
 
             NotificationIntervalSetting(
-                notificationInterval = intervalTime
+                notificationInterval = intervalTime,
             ) { interval ->
                 Timber.d("New interval is %.2f", interval)
                 val scheduler = NeerAlarmScheduler(context = context)
@@ -170,19 +174,19 @@ fun NotificationScreen(
                     LocalDateTime.now().plusMinutes(30),
                     interval,
                     AppUtils.getRandomTitle(context),
-                    AppUtils.getRandomMessage(context)
+                    AppUtils.getRandomMessage(context),
                 )
                 scheduler.scheduleRegular(alarmItem)
             }
 
             SectionSpacer(
                 modifier = Modifier.fillMaxWidth(),
-                title = "Custom notification"
+                title = "Custom notification",
             )
 
             CustomAlarmList(
                 allNotifications = notificationList,
-                neerEventListener = neerEventListener
+                neerEventListener = neerEventListener,
             )
 
             if (showBottomSheet) {
@@ -194,19 +198,18 @@ fun NotificationScreen(
                             time = selectedDateTime.with(time),
                             title = AppUtils.getRandomTitle(context),
                             message = AppUtils.getRandomMessage(context),
-                            repeating = repeatable
+                            repeating = repeatable,
                         )
                         neerEventListener(
                             NeerEvent.TriggerNotificationEvent(
-                                NotificationEvent.SaveNotification(alarm)
-                            )
+                                NotificationEvent.SaveNotification(alarm),
+                            ),
                         )
                         val latestNotificationItem = notificationList.lastOrNull()
                         Timber.d("Setting custom notification")
                         if (latestNotificationItem != null) {
                             if (repeatable) {
                                 scheduler.scheduleRepeating(latestNotificationItem)
-
                             } else {
                                 scheduler.scheduleOneTime(latestNotificationItem)
                             }
@@ -217,7 +220,7 @@ fun NotificationScreen(
                     },
                     repeatable = { repeating ->
                         repeatable = repeating
-                    }
+                    },
                 )
             }
 
@@ -236,7 +239,7 @@ fun NotificationScreen(
                     },
                     dialogTitle = stringResource(R.string.disable_notifications),
                     dialogText = stringResource(R.string.notification_disable_message),
-                    icon = R.drawable.ic_info
+                    icon = R.drawable.ic_info,
                 )
             }
         }
@@ -247,8 +250,6 @@ fun NotificationScreen(
 @Composable
 fun PreviewNotificationScreen() {
     NotificationScreen(notificationList = emptyList(), neerEventListener = {
-
     }) {
-
     }
 }

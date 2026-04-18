@@ -29,31 +29,31 @@ import com.criticalay.neer.R
 private data class TabSpec(
     val destination: Destination,
     val labelRes: Int,
-    @DrawableRes val iconRes: Int
+    @DrawableRes val iconRes: Int,
 )
 
 private val tabs = listOf(
     TabSpec(
         destination = Destination.HomeScreen,
         labelRes = R.string.tab_home,
-        iconRes = R.drawable.ic_home
+        iconRes = R.drawable.ic_home,
     ),
     TabSpec(
         destination = Destination.Stats,
         labelRes = R.string.tab_stats,
-        iconRes = R.drawable.ic_stats
+        iconRes = R.drawable.ic_stats,
     ),
     TabSpec(
         destination = Destination.Settings,
         labelRes = R.string.tab_settings,
-        iconRes = R.drawable.ic_settings
-    )
+        iconRes = R.drawable.ic_settings,
+    ),
 )
 
 @Composable
 fun NeerBottomNavigationBar(
     currentRoute: String,
-    onTabSelect: (Destination) -> Unit
+    onTabSelect: (Destination) -> Unit,
 ) {
     NavigationBar {
         tabs.forEach { tab ->
@@ -64,11 +64,11 @@ fun NeerBottomNavigationBar(
                 icon = {
                     Icon(
                         painter = painterResource(id = tab.iconRes),
-                        contentDescription = null
+                        contentDescription = null,
                     )
                 },
                 label = { Text(stringResource(tab.labelRes)) },
-                alwaysShowLabel = true
+                alwaysShowLabel = true,
             )
         }
     }

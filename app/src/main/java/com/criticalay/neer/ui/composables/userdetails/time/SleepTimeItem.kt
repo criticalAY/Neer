@@ -19,8 +19,6 @@ package com.criticalay.neer.ui.composables.userdetails.time
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,35 +29,33 @@ import androidx.compose.ui.unit.sp
 import com.criticalay.neer.R
 import com.criticalay.neer.ui.composables.settings.SettingItem
 
-
 @Composable
 fun SleepTimeItem(
     modifier: Modifier = Modifier,
     title: String,
-    setTime : String,
+    setTime: String,
     onSettingClicked: () -> Unit,
 ) {
     SettingItem(modifier = modifier) {
         Row(
             modifier = with(Modifier) {
                 clickable(
-                    onClickLabel = stringResource(R.string.select_sleep_time)
+                    onClickLabel = stringResource(R.string.select_sleep_time),
                 ) {
                     onSettingClicked()
-                }
-                    .padding(horizontal = 16.dp)
+                }.padding(horizontal = 16.dp)
             },
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 text = title,
                 modifier = Modifier
                     .weight(1f),
-                fontSize = 18.sp
+                fontSize = 18.sp,
             )
             Text(
                 text = setTime,
-                fontSize = 18.sp
+                fontSize = 18.sp,
             )
         }
     }

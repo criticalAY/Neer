@@ -24,9 +24,9 @@ import android.content.Intent
 import android.os.Build
 import com.criticalay.neer.alarm.default_alarm.AlarmReceiver
 import com.criticalay.neer.alarm.default_alarm.AlarmScheduler
-import timber.log.Timber
 import java.time.LocalDateTime
 import java.time.ZoneId
+import timber.log.Timber
 
 /**
  * Schedules water-reminder alarms through [AlarmManager].
@@ -37,9 +37,8 @@ import java.time.ZoneId
  * so Doze still lets reminders fire — at the cost of OS-imposed batching.
  */
 class NeerAlarmScheduler(
-    val context: Context
+    val context: Context,
 ) : AlarmScheduler {
-
     private val alarmManager = context.getSystemService(AlarmManager::class.java)
 
     private val regularRequestCode = REGULAR_ALARM_REQUEST_CODE
@@ -56,7 +55,7 @@ class NeerAlarmScheduler(
             AlarmManager.RTC_WAKEUP,
             firstFireMillis,
             intervalMillis,
-            pendingIntent
+            pendingIntent,
         )
     }
 
@@ -100,7 +99,7 @@ class NeerAlarmScheduler(
             context,
             regularRequestCode,
             intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
     }
 
@@ -113,7 +112,7 @@ class NeerAlarmScheduler(
             context,
             alarmId.toInt(),
             intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
     }
 
@@ -135,23 +134,28 @@ class NeerAlarmScheduler(
     }
 
     @SuppressLint("MissingPermission")
-    private fun scheduleExactOrAllowWhileIdle(triggerAtMillis: Long, pendingIntent: PendingIntent) {
+    private fun scheduleExactOrAllowWhileIdle(
+        triggerAtMillis: Long,
+        pendingIntent: PendingIntent,
+    ) {
         val canSchedule = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             alarmManager.canScheduleExactAlarms()
-        } else true
+        } else {
+            true
+        }
 
         if (canSchedule) {
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
                 triggerAtMillis,
-                pendingIntent
+                pendingIntent,
             )
         } else {
             Timber.w("Exact alarms not permitted — falling back to setAndAllowWhileIdle")
             alarmManager.setAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
                 triggerAtMillis,
-                pendingIntent
+                pendingIntent,
             )
         }
     }

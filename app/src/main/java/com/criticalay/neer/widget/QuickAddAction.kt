@@ -25,8 +25,8 @@ import com.criticalay.neer.data.model.Intake
 import com.criticalay.neer.utils.Constants.BEVERAGE_ID
 import com.criticalay.neer.utils.Constants.USER_ID
 import dagger.hilt.android.EntryPointAccessors
-import timber.log.Timber
 import java.time.LocalDateTime
+import timber.log.Timber
 
 /**
  * Logs a water intake when the user taps a quick-add button in the widget.
@@ -39,18 +39,17 @@ import java.time.LocalDateTime
  * reconciles every other widget with the authoritative DB totals.
  */
 class QuickAddAction : ActionCallback {
-
     override suspend fun onAction(
         context: Context,
         glanceId: GlanceId,
-        parameters: ActionParameters
+        parameters: ActionParameters,
     ) {
         val amount = parameters[AmountKey] ?: return
         if (amount <= 0) return
 
         val entryPoint = EntryPointAccessors.fromApplication(
             context.applicationContext,
-            WidgetEntryPoint::class.java
+            WidgetEntryPoint::class.java,
         )
         val repository = entryPoint.repository()
         val widgetUpdater = entryPoint.widgetUpdater()
@@ -70,8 +69,8 @@ class QuickAddAction : ActionCallback {
                 userId = USER_ID,
                 beverageId = BEVERAGE_ID,
                 intakeAmount = amount,
-                intakeDateTime = LocalDateTime.now()
-            )
+                intakeDateTime = LocalDateTime.now(),
+            ),
         )
 
         // 3) Reconcile every widget instance with authoritative data (streak + any
