@@ -16,8 +16,6 @@
 
 package com.criticalay.neer.ui.composables.settings.items
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -30,7 +28,7 @@ fun HydrationPlanRow(
     onClick: () -> Unit
 ) {
     SettingsRow(
-        icon = Icons.Filled.WaterDrop,
+        icon = R.drawable.ic_water_drop,
         title = stringResource(R.string.hydration_plan_row),
         subtitle = stringResource(R.string.hydration_plan_row_sub),
         showChevron = true,

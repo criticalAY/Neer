@@ -22,10 +22,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -110,7 +106,7 @@ fun NotificationScreen(
                 navigationIcon = {
                     IconButton(onClick = { onBack() }) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_back),
                             contentDescription = stringResource(R.string.go_back)
                         )
 
@@ -124,7 +120,7 @@ fun NotificationScreen(
                 modifier = Modifier.padding(10.dp),
                 onClick = { showBottomSheet = true },
             ) {
-                Icon(Icons.Filled.Add, "Floating action button.")
+                Icon(painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_add), "Floating action button.")
             }
         }
     ) { padding ->
@@ -240,7 +236,7 @@ fun NotificationScreen(
                     },
                     dialogTitle = stringResource(R.string.disable_notifications),
                     dialogText = stringResource(R.string.notification_disable_message),
-                    icon = Icons.Default.Warning
+                    icon = R.drawable.ic_info
                 )
             }
         }

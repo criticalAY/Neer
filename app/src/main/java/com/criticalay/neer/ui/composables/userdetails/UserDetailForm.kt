@@ -40,12 +40,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Cake
-import androidx.compose.material.icons.outlined.Height
-import androidx.compose.material.icons.outlined.MonitorWeight
-import androidx.compose.material.icons.outlined.NotificationsActive
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -303,7 +297,7 @@ fun UserDetailForm(
                     placeholder = stringResource(R.string.details_hint_name),
                     leadingIcon = {
                         Icon(
-                            imageVector = Icons.Outlined.Person,
+                            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_account),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary
                         )
@@ -337,7 +331,7 @@ fun UserDetailForm(
                     placeholder = stringResource(R.string.details_placeholder_age),
                     leadingIcon = {
                         Icon(
-                            imageVector = Icons.Outlined.Cake,
+                            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_cake),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary
                         )
@@ -364,7 +358,7 @@ fun UserDetailForm(
                     placeholder = stringResource(R.string.details_placeholder_height),
                     leadingIcon = {
                         Icon(
-                            imageVector = Icons.Outlined.Height,
+                            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_measure),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary
                         )
@@ -391,7 +385,7 @@ fun UserDetailForm(
                     placeholder = stringResource(R.string.details_placeholder_weight),
                     leadingIcon = {
                         Icon(
-                            imageVector = Icons.Outlined.MonitorWeight,
+                            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_weight_scale),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary
                         )
@@ -488,7 +482,7 @@ fun UserDetailForm(
             SectionCard(title = stringResource(R.string.details_section_reminders)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        imageVector = Icons.Outlined.NotificationsActive,
+                        painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_notification_active),
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary
                     )

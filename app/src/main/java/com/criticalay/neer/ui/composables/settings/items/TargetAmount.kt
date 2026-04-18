@@ -23,13 +23,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Clear
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.rounded.Adjust
-import androidx.compose.material.icons.rounded.Lens
-import androidx.compose.material.icons.rounded.LocalBar
-import androidx.compose.material.icons.rounded.Support
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -65,7 +58,7 @@ fun TargetAmount(
 ) {
     var showDialog by remember { mutableStateOf(false) }
     com.criticalay.neer.ui.composables.settings.SettingsRow(
-        icon = Icons.Rounded.Adjust,
+        icon = R.drawable.ic_target,
         title = stringResource(R.string.drink_target),
         trailingValue = "$targetAmount ${Converters.getUnitName(selectedUnits, 1)}",
         onClick = { showDialog = true },
@@ -117,7 +110,7 @@ private fun EditHeightDialog(
                     placeholder = stringResource(R.string.change_your_drink_target),
                     leadingIcon = {
                         Icon(
-                            imageVector = Icons.Rounded.LocalBar,
+                            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_bar_glass),
                             contentDescription = null
                         )
                     },
@@ -125,7 +118,7 @@ private fun EditHeightDialog(
                         if (userHeight.isNotBlank()) {
                             IconButton(onClick = { userHeight = "" }) {
                                 Icon(
-                                    imageVector = Icons.Outlined.Clear,
+                                    painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_close),
                                     contentDescription = stringResource(R.string.clear)
                                 )
                             }

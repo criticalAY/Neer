@@ -30,10 +30,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.WaterDrop
-import androidx.compose.material.icons.rounded.NotificationsActive
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -120,7 +116,7 @@ fun Home(
                 actions = {
                     IconButton(onClick = navigateToNotifications) {
                         Icon(
-                            imageVector = Icons.Rounded.NotificationsActive,
+                            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_notification_active),
                             contentDescription = stringResource(R.string.notification)
                         )
                     }
@@ -139,7 +135,7 @@ fun Home(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = { showQuickAdd = true },
-                icon = { Icon(Icons.Filled.Add, contentDescription = null) },
+                icon = { Icon(painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_add), contentDescription = null) },
                 text = { Text(stringResource(R.string.add_water)) },
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -332,7 +328,7 @@ private fun TodayRecordHeader(intakeCount: Int) {
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         Icon(
-            imageVector = Icons.Filled.WaterDrop,
+            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_water_drop),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(22.dp)

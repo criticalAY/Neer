@@ -24,10 +24,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Bedtime
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MediumTopAppBar
@@ -116,7 +112,7 @@ fun SettingsScreen(
             }
 
             SectionHeader(
-                icon = Icons.Outlined.Person,
+                icon = R.drawable.ic_account,
                 title = stringResource(R.string.personal)
             )
             SettingsGroup {
@@ -159,7 +155,7 @@ fun SettingsScreen(
             }
 
             SectionHeader(
-                icon = Icons.Outlined.Bedtime,
+                icon = R.drawable.ic_night,
                 title = stringResource(R.string.sleep_cycle)
             )
             SettingsGroup {
@@ -177,7 +173,7 @@ fun SettingsScreen(
             }
 
             SectionHeader(
-                icon = Icons.Outlined.Info,
+                icon = R.drawable.ic_info,
                 title = stringResource(R.string.others)
             )
             SettingsGroup {

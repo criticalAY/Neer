@@ -22,9 +22,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Clear
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -84,7 +81,7 @@ fun AmountEditDialog(
                     placeholder = stringResource(R.string.edit_drunk_amount),
                     leadingIcon = {
                         Icon(
-                            imageVector = Icons.Outlined.Person,
+                            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_account),
                             contentDescription = null
                         )
                     },
@@ -92,7 +89,7 @@ fun AmountEditDialog(
                         if (currentAmount.isNotBlank() && currentAmount.toInt() > 0) {
                             IconButton(onClick = { currentAmount = "" }) {
                                 Icon(
-                                    imageVector = Icons.Outlined.Clear,
+                                    painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_close),
                                     contentDescription = stringResource(R.string.clear)
                                 )
                             }

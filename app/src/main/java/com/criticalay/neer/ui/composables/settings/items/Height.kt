@@ -23,11 +23,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Clear
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.rounded.Height
-import androidx.compose.material.icons.rounded.Support
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -60,7 +55,7 @@ fun Height(
 ) {
     var showDialog by remember { mutableStateOf(false) }
     com.criticalay.neer.ui.composables.settings.SettingsRow(
-        icon = Icons.Rounded.Height,
+        icon = R.drawable.ic_measure,
         title = stringResource(R.string.height),
         trailingValue = stringResource(R.string.height_value, userHeight),
         onClick = { showDialog = true },
@@ -112,7 +107,7 @@ private fun EditHeightDialog(
                     placeholder = stringResource(R.string.change_your_height),
                     leadingIcon = {
                         Icon(
-                            imageVector = Icons.Outlined.Person,
+                            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_measure),
                             contentDescription = null
                         )
                     },
@@ -120,7 +115,7 @@ private fun EditHeightDialog(
                         if (userHeight.isNotBlank()) {
                             IconButton(onClick = { userHeight = "" }) {
                                 Icon(
-                                    imageVector = Icons.Outlined.Clear,
+                                    painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_close),
                                     contentDescription = stringResource(R.string.clear)
                                 )
                             }

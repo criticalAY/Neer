@@ -16,8 +16,6 @@
 
 package com.criticalay.neer.ui.composables.settings.items
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -30,7 +28,7 @@ fun AppVersionSettingItem(
     appVersion: String
 ) {
     SettingsRow(
-        icon = Icons.Rounded.Info,
+        icon = R.drawable.ic_info,
         title = stringResource(id = R.string.setting_app_version_title),
         trailingValue = appVersion,
         modifier = modifier

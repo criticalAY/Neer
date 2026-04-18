@@ -22,10 +22,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.rounded.PrivacyTip
-import androidx.compose.material.icons.rounded.WaterDrop
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -71,7 +67,7 @@ fun PrivacyScreen(
                 navigationIcon = {
                     IconButton(onClick = { onBack() }) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_back),
                             contentDescription = stringResource(R.string.go_back)
                         )
 
@@ -97,7 +93,7 @@ fun PrivacyScreen(
             ) {
                 Icon(
                     modifier = Modifier.sizeIn(150.dp, 150.dp),
-                    imageVector = Icons.Rounded.PrivacyTip, contentDescription = null,
+                    painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_privacy), contentDescription = null,
                 )
             }
             Text(

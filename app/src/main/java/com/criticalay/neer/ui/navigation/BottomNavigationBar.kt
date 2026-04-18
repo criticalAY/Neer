@@ -16,47 +16,37 @@
 
 package com.criticalay.neer.ui.navigation
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.outlined.BarChart
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.rounded.BarChart
+import androidx.annotation.DrawableRes
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.criticalay.neer.R
 
 private data class TabSpec(
     val destination: Destination,
     val labelRes: Int,
-    val iconSelected: ImageVector,
-    val iconUnselected: ImageVector
+    @DrawableRes val iconRes: Int
 )
 
 private val tabs = listOf(
     TabSpec(
         destination = Destination.HomeScreen,
         labelRes = R.string.tab_home,
-        iconSelected = Icons.Filled.Home,
-        iconUnselected = Icons.Outlined.Home
+        iconRes = R.drawable.ic_home
     ),
     TabSpec(
         destination = Destination.Stats,
         labelRes = R.string.tab_stats,
-        iconSelected = Icons.Rounded.BarChart,
-        iconUnselected = Icons.Outlined.BarChart
+        iconRes = R.drawable.ic_stats
     ),
     TabSpec(
         destination = Destination.Settings,
         labelRes = R.string.tab_settings,
-        iconSelected = Icons.Filled.Settings,
-        iconUnselected = Icons.Outlined.Settings
+        iconRes = R.drawable.ic_settings
     )
 )
 
@@ -73,7 +63,7 @@ fun NeerBottomNavigationBar(
                 onClick = { if (!selected) onTabSelect(tab.destination) },
                 icon = {
                     Icon(
-                        imageVector = if (selected) tab.iconSelected else tab.iconUnselected,
+                        painter = painterResource(id = tab.iconRes),
                         contentDescription = null
                     )
                 },

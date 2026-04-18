@@ -22,10 +22,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Clear
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -85,7 +81,7 @@ fun NotificationIntervalDialog(
                     placeholder =  stringResource(R.string.change_notification_interval),
                     leadingIcon = {
                         Icon(
-                            imageVector = Icons.Rounded.Schedule,
+                            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_time_clock),
                             contentDescription = null
                         )
                     },
@@ -93,7 +89,7 @@ fun NotificationIntervalDialog(
                         if (notificationIntevals.isNotBlank()) {
                             IconButton(onClick = { notificationIntevals = "" }) {
                                 Icon(
-                                    imageVector = Icons.Outlined.Clear,
+                                    painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_close),
                                     contentDescription = stringResource(R.string.clear)
                                 )
                             }

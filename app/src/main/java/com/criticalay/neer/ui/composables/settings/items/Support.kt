@@ -31,12 +31,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.outlined.BugReport
-import androidx.compose.material.icons.outlined.Coffee
-import androidx.compose.material.icons.outlined.Star
-import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -72,7 +66,7 @@ fun Support(
     val context = LocalContext.current
 
     SettingsRow(
-        icon = Icons.Rounded.Favorite,
+        icon = R.drawable.ic_heart,
         title = stringResource(R.string.support),
         subtitle = stringResource(R.string.support_subtitle),
         showChevron = true,
@@ -101,7 +95,7 @@ fun Support(
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            imageVector = Icons.Rounded.Favorite,
+                            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_heart),
                             contentDescription = null,
                             tint = MaterialTheme.colorScheme.onPrimaryContainer
                         )
@@ -124,19 +118,19 @@ fun Support(
                 Spacer(Modifier.height(20.dp))
 
                 SupportAction(
-                    icon = Icons.Outlined.Coffee,
+                    icon = R.drawable.ic_coffee,
                     title = stringResource(R.string.support_buy_coffee),
                     subtitle = stringResource(R.string.support_buy_coffee_sub),
                     onClick = { openUrl(context, BUY_ME_COFFEE_URL) }
                 )
                 SupportAction(
-                    icon = Icons.Outlined.Star,
+                    icon = R.drawable.ic_star,
                     title = stringResource(R.string.support_github),
                     subtitle = stringResource(R.string.support_github_sub),
                     onClick = { openUrl(context, GITHUB_URL) }
                 )
                 SupportAction(
-                    icon = Icons.Outlined.BugReport,
+                    icon = R.drawable.ic_bug_report,
                     title = stringResource(R.string.support_issue),
                     subtitle = stringResource(R.string.support_issue_sub),
                     onClick = { openUrl(context, GITHUB_ISSUES_URL) }
@@ -148,7 +142,7 @@ fun Support(
 
 @Composable
 private fun SupportAction(
-    icon: ImageVector,
+    @androidx.annotation.DrawableRes icon: Int,
     title: String,
     subtitle: String,
     onClick: () -> Unit
@@ -170,7 +164,7 @@ private fun SupportAction(
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                imageVector = icon,
+                painter = androidx.compose.ui.res.painterResource(id = icon),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onPrimaryContainer,
                 modifier = Modifier.size(20.dp)
@@ -190,7 +184,7 @@ private fun SupportAction(
             )
         }
         Icon(
-            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_chevron_fwd),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurfaceVariant
         )

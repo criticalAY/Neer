@@ -31,12 +31,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.NavigateNext
-import androidx.compose.material.icons.filled.WaterDrop
-import androidx.compose.material.icons.outlined.BarChart
-import androidx.compose.material.icons.outlined.NotificationsActive
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -83,7 +77,7 @@ fun OnboardingScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.WaterDrop,
+                        painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_water_drop),
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.onPrimaryContainer
                     )
@@ -125,15 +119,15 @@ fun OnboardingScreen(
             Spacer(Modifier.height(24.dp))
 
             FeatureRow(
-                icon = Icons.Outlined.Person,
+                icon = R.drawable.ic_account,
                 label = stringResource(R.string.onboarding_feature_personal)
             )
             FeatureRow(
-                icon = Icons.Outlined.NotificationsActive,
+                icon = R.drawable.ic_notification_active,
                 label = stringResource(R.string.onboarding_feature_reminders)
             )
             FeatureRow(
-                icon = Icons.Outlined.BarChart,
+                icon = R.drawable.ic_barchart,
                 label = stringResource(R.string.onboarding_feature_stats)
             )
 
@@ -153,7 +147,7 @@ fun OnboardingScreen(
                 )
                 Spacer(Modifier.size(8.dp))
                 Icon(
-                    imageVector = Icons.AutoMirrored.Filled.NavigateNext,
+                    painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_chevron_fwd),
                     contentDescription = null
                 )
             }
@@ -163,7 +157,7 @@ fun OnboardingScreen(
 }
 
 @Composable
-private fun FeatureRow(icon: ImageVector, label: String) {
+private fun FeatureRow(@androidx.annotation.DrawableRes icon: Int, label: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -179,7 +173,7 @@ private fun FeatureRow(icon: ImageVector, label: String) {
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                imageVector = icon,
+                painter = painterResource(id = icon),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSecondaryContainer,
                 modifier = Modifier.size(20.dp)

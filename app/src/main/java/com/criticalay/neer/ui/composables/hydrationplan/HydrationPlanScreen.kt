@@ -40,12 +40,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.OpenInNew
-import androidx.compose.material.icons.filled.WaterDrop
-import androidx.compose.material.icons.outlined.AccessTime
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -111,7 +105,7 @@ fun HydrationPlanScreen(
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_back),
                             contentDescription = stringResource(R.string.go_back)
                         )
                     }
@@ -119,7 +113,7 @@ fun HydrationPlanScreen(
                 actions = {
                     IconButton(onClick = { showInfo = true }) {
                         Icon(
-                            imageVector = Icons.Outlined.Info,
+                            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_info),
                             contentDescription = stringResource(R.string.plan_info_description)
                         )
                     }
@@ -415,7 +409,7 @@ private fun SourceLink(
             )
         }
         Icon(
-            imageVector = Icons.AutoMirrored.Filled.OpenInNew,
+            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_open_external),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary
         )
@@ -563,7 +557,7 @@ private fun ScheduleCard(
                 onClick = onEnableReminders,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Icon(Icons.Outlined.AccessTime, contentDescription = null)
+                Icon(painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_time_clock), contentDescription = null)
                 Spacer(Modifier.size(8.dp))
                 Text(stringResource(R.string.plan_enable_reminders))
             }
@@ -587,7 +581,7 @@ private fun ScheduleRow(time: String, amount: String) {
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                imageVector = Icons.Filled.WaterDrop,
+                painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_water_drop),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onPrimaryContainer,
                 modifier = Modifier.size(18.dp)

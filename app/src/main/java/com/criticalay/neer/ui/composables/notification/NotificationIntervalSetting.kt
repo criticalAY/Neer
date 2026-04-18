@@ -19,9 +19,6 @@ package com.criticalay.neer.ui.composables.notification
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Timelapse
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -59,7 +56,7 @@ fun NotificationIntervalSetting(
         ){
             Icon(
                 modifier= Modifier.padding(5.dp),
-                imageVector = Icons.Outlined.Timelapse,
+                painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_rounded_alarm_on),
                 contentDescription = null)
             Text(
                 modifier = Modifier

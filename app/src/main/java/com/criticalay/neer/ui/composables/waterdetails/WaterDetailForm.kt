@@ -36,12 +36,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.WaterDrop
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Notifications
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -236,7 +230,7 @@ private fun RecommendedGoalCard(
         Column(modifier = Modifier.padding(24.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                    imageVector = Icons.Filled.WaterDrop,
+                    painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_water_drop),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
@@ -288,7 +282,7 @@ private fun RecommendedGoalCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    imageVector = Icons.Outlined.Info,
+                    painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_info),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier.size(16.dp)
@@ -343,7 +337,7 @@ private fun ManualGoalSection(
                     )
                 }
                 Icon(
-                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_chevron_fwd),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -365,7 +359,7 @@ private fun ManualGoalSection(
                         placeholder = stringResource(R.string.enter_your_water_intake, unitLabel),
                         leadingIcon = {
                             Icon(
-                                imageVector = Icons.Outlined.Person,
+                                painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_account),
                                 contentDescription = null
                             )
                         },
@@ -412,7 +406,7 @@ private fun RemindersCard(
         Column(modifier = Modifier.padding(24.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                    imageVector = Icons.Outlined.Notifications,
+                    painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_notification),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary
                 )

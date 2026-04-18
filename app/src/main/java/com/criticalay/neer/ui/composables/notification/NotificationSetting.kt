@@ -19,10 +19,6 @@ package com.criticalay.neer.ui.composables.notification
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.toggleable
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Campaign
-import androidx.compose.material.icons.outlined.HistoryToggleOff
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -66,7 +62,7 @@ fun NotificationSetting(
         ) {
             Icon(
                 modifier= Modifier.padding(5.dp),
-                imageVector = Icons.Outlined.Campaign,
+                painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_announcement),
                 contentDescription = null)
             Text(
                 text = title,

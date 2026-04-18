@@ -21,9 +21,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.BubbleChart
-import androidx.compose.material.icons.rounded.Support
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -53,7 +50,7 @@ fun Units(
     Box {
         var expanded by remember { mutableStateOf(false) }
         com.criticalay.neer.ui.composables.settings.SettingsRow(
-            icon = Icons.Rounded.BubbleChart,
+            icon = R.drawable.ic_bubble,
             title = stringResource(R.string.units),
             trailingValue = userSelectedUnits,
             onClick = { expanded = true },

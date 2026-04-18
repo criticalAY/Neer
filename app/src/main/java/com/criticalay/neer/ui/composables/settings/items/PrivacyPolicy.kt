@@ -16,8 +16,6 @@
 
 package com.criticalay.neer.ui.composables.settings.items
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.PrivacyTip
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -30,7 +28,7 @@ fun PrivacyPolicy(
     handleClick: () -> Unit
 ) {
     SettingsRow(
-        icon = Icons.Rounded.PrivacyTip,
+        icon = R.drawable.ic_privacy,
         title = stringResource(R.string.privacy_policy),
         subtitle = stringResource(R.string.privacy_policy_subtitle),
         showChevron = true,

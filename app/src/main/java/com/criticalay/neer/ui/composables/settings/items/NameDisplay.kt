@@ -23,10 +23,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Clear
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -56,7 +52,7 @@ fun NameDisplay(
 ) {
     var showDialog by remember { mutableStateOf(false) }
     SettingsRow(
-        icon = Icons.Rounded.Person,
+        icon = R.drawable.ic_account,
         title = stringResource(R.string.name),
         trailingValue = userName.ifBlank { null },
         onClick = { showDialog = true },
@@ -111,7 +107,7 @@ private fun EditNameDialog(
                     placeholder = stringResource(R.string.edit_your_name),
                     leadingIcon = {
                         Icon(
-                            imageVector = Icons.Outlined.Person,
+                            painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_account),
                             contentDescription = null
                         )
                     },
@@ -119,7 +115,7 @@ private fun EditNameDialog(
                         if (userName.isNotBlank()) {
                             IconButton(onClick = { userName = "" }) {
                                 Icon(
-                                    imageVector = Icons.Outlined.Clear,
+                                    painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_close),
                                     contentDescription = stringResource(R.string.clear)
                                 )
                             }

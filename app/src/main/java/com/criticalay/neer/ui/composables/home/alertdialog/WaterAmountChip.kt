@@ -18,8 +18,6 @@ package com.criticalay.neer.ui.composables.home.alertdialog
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
@@ -56,7 +54,7 @@ fun WaterAmountChip(
         trailingIcon = if (selected) {
             {
                 Icon(
-                    imageVector = Icons.Filled.Done,
+                    painter = androidx.compose.ui.res.painterResource(id = R.drawable.ic_tick),
                     contentDescription = stringResource(R.string.done),
                 )
             }

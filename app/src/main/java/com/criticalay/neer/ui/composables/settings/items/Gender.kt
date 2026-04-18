@@ -25,11 +25,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Clear
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.rounded.Support
-import androidx.compose.material.icons.rounded.Wc
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -66,7 +61,7 @@ fun Gender(
     Box {
         var expanded by remember { mutableStateOf(false) }
         com.criticalay.neer.ui.composables.settings.SettingsRow(
-            icon = Icons.Rounded.Wc,
+            icon = R.drawable.ic_wc,
             title = stringResource(R.string.gender),
             trailingValue = userGender,
             onClick = { expanded = !expanded },

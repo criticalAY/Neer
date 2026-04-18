@@ -19,9 +19,6 @@ package com.criticalay.neer.ui.composables.settings.items
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Support
-import androidx.compose.material.icons.rounded.WbSunny
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -65,7 +62,7 @@ fun WakeUpTime(
         formatTime(timeState.hour, timeState.minute, timeState.hour < 12)
     }
     com.criticalay.neer.ui.composables.settings.SettingsRow(
-        icon = Icons.Rounded.WbSunny,
+        icon = R.drawable.ic_sun,
         title = stringResource(R.string.wake_up_time),
         trailingValue = formattedTime,
         onClick = { showTimeDialog = true },

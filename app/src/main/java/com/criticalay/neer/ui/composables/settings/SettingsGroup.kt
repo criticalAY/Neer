@@ -16,9 +16,9 @@
 
 package com.criticalay.neer.ui.composables.settings
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,8 +30,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -41,12 +39,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.criticalay.neer.R
 
 @Composable
 fun SectionHeader(
-    icon: ImageVector? = null,
+    @DrawableRes icon: Int? = null,
     title: String,
     modifier: Modifier = Modifier
 ) {
@@ -58,7 +57,7 @@ fun SectionHeader(
     ) {
         if (icon != null) {
             Icon(
-                imageVector = icon,
+                painter = painterResource(id = icon),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(18.dp)
@@ -76,12 +75,12 @@ fun SectionHeader(
 /**
  * Shared row layout for every Settings item. Icon puck on the left, title
  * (+ optional subtitle) in the middle, optional trailing value and/or chevron
- * on the right. All sizing + colors come from the Material3 theme — no more
- * hardcoded 18sp scattered across 11 files.
+ * on the right. Icon is now a plain drawable resource so callers don't need
+ * to pull in material-icons-extended.
  */
 @Composable
 fun SettingsRow(
-    icon: ImageVector,
+    @DrawableRes icon: Int,
     title: String,
     modifier: Modifier = Modifier,
     subtitle: String? = null,
@@ -106,7 +105,7 @@ fun SettingsRow(
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                imageVector = icon,
+                painter = painterResource(id = icon),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onPrimaryContainer,
                 modifier = Modifier.size(20.dp)
@@ -138,7 +137,7 @@ fun SettingsRow(
         if (showChevron) {
             Spacer(Modifier.size(6.dp))
             Icon(
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                painter = painterResource(id = R.drawable.ic_chevron_fwd),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
