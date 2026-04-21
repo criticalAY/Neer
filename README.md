@@ -57,6 +57,19 @@ Since we do not collect any personal information, we do not use your information
 We are committed to protecting the security of your information. While we strive to use commercially acceptable means to protect your personal information,
 please note that no method of transmission over the internet or method of electronic storage is 100% secure and reliable, and we cannot guarantee its absolute security.
 
+## Data Retention
+Neer stores all user-provided data (such as age, weight, height, water intake history, reminder preferences, and sleep/wake times) **only on your device**, inside the app's private storage.
+We do not operate any servers, and none of this data is transmitted to us or to any third party.
+Your data is retained on your device for as long as the app is installed, or until you choose to delete it (see below).
+
+## Data Deletion
+Because all your data lives on your device, you are in full control of it. You can delete your data at any time using any of the following methods:
+
+1. **Clear app data from Android Settings:** Go to *Settings → Apps → Neer → Storage → Clear storage / Clear data*. This permanently erases all your water-intake history, preferences, and profile information.
+2. **Uninstall the app:** Uninstalling Neer from your device removes all data the app has stored locally. There is nothing left behind on any remote server because none is used.
+
+If you have any questions about data deletion, please open an issue in this repository or contact the developer at the email listed in the app's *About* screen.
+
 ## Changes to This Privacy Policy
 We may update our Privacy Policy from time to time. Thus, you are advised to review this page periodically for any changes. We will notify you of any changes by posting the new Privacy Policy on this page.
 
