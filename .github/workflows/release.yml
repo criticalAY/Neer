@@ -2,17 +2,23 @@
 #
 # Triggered from the Actions tab → "Release" → "Run workflow". Collects the
 # version parts + release type, computes the versionCode per the app's scheme
-# (AbbCCtDD), builds a release APK (signed with the keystore from secrets
-# if configured, otherwise the debug key as a fallback), tags the commit,
-# and publishes a GitHub Release with the APK attached. Alpha and beta
-# releases are marked as pre-release.
+# (AbbCCtDD), runs the checks, builds a signed release APK, verifies the APK
+# really carries our release certificate, tags the commit, and publishes a
+# GitHub Release with the APK attached. Alpha and beta releases are marked as
+# pre-release.
 #
-# Required repo secrets for production signing (optional — skip for debug-
-# signed APKs):
+# Required repo secrets — the workflow fails fast if any are missing, because
+# a release signed with the debug key cannot be installed as an update by
+# anyone who already has the app, and IzzyOnDroid/F-Droid will reject it:
 #   SIGNING_KEY         — base64-encoded contents of your .jks keystore file
 #   KEYSTORE_PASSWORD   — keystore password
 #   KEY_ALIAS           — signing key alias
 #   KEY_PASSWORD        — signing key password
+#
+# Reproducibility: the runner image and JDK are pinned, and the build
+# environment is recorded in the release notes, so IzzyOnDroid can attempt a
+# reproducible build against the same toolchain. Always release from here —
+# never upload a locally built APK (see #30).
 
 name: Release
 
@@ -22,11 +28,11 @@ on:
       major:
         description: "Major version (1 digit)"
         type: string
-        default: "1"
+        default: "2"
       minor:
         description: "Minor version (2 digits, zero-padded)"
         type: string
-        default: "03"
+        default: "01"
       patch:
         description: "Patch / maintenance version (2 digits, zero-padded)"
         type: string
@@ -47,13 +53,47 @@ on:
 permissions:
   contents: write
 
+# Two releases building at once would race on the tag push.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+env:
+  # SHA-256 of the certificate our release key produces, as recorded by
+  # IzzyOnDroid's scanner in #30 after the April 2026 key rotation. The build
+  # fails if the APK we are about to publish is signed by anything else — that
+  # is the check which would have caught the 2.00.00 rejection before shipping.
+  # If the key is ever rotated again, update this value and notify IzzySoft.
+  EXPECTED_CERT_SHA256: "6248657a9f292d32f4086f3580a6b945c06d0a7a4108d6d37254afe3dc1aea3e"
+
 jobs:
   release:
     name: Build & publish
-    runs-on: ubuntu-latest
+    # Pinned rather than ubuntu-latest: a moving runner image changes the
+    # toolchain under us, which breaks reproducible builds.
+    runs-on: ubuntu-24.04
     steps:
       - name: Check out source
         uses: actions/checkout@v7
+
+      - name: Verify signing secrets are present
+        env:
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        shell: bash
+        run: |
+          missing=()
+          [ -n "$SIGNING_KEY" ]       || missing+=(SIGNING_KEY)
+          [ -n "$KEYSTORE_PASSWORD" ] || missing+=(KEYSTORE_PASSWORD)
+          [ -n "$KEY_ALIAS" ]         || missing+=(KEY_ALIAS)
+          [ -n "$KEY_PASSWORD" ]      || missing+=(KEY_PASSWORD)
+          if [ ${#missing[@]} -gt 0 ]; then
+            echo "::error::Missing release signing secrets: ${missing[*]}. Refusing to publish a debug-signed release."
+            exit 1
+          fi
+          echo "All four signing secrets are present."
 
       - name: Compute version fields
         id: v
@@ -64,6 +104,16 @@ jobs:
           PATCH="${{ inputs.patch }}"
           TYPE="${{ inputs.release_type }}"
           BUILD="${{ inputs.build }}"
+
+          # Reject anything that would silently overflow the AbbCCtDD scheme.
+          # A 9-digit versionCode is still a valid Android versionCode, so it
+          # would ship and permanently break upgrade ordering.
+          [[ "$MAJOR" =~ ^[0-9]$ ]]      || { echo "::error::major must be a single digit 0-9, got '$MAJOR'"; exit 1; }
+          [[ "$MINOR" =~ ^[0-9]{1,2}$ ]] || { echo "::error::minor must be 1-2 digits, got '$MINOR'"; exit 1; }
+          [[ "$PATCH" =~ ^[0-9]{1,2}$ ]] || { echo "::error::patch must be 1-2 digits, got '$PATCH'"; exit 1; }
+          if [ "$TYPE" != "stable" ]; then
+            [[ "$BUILD" =~ ^[0-9]{1,2}$ ]] || { echo "::error::build must be 1-2 digits for alpha/beta, got '$BUILD'"; exit 1; }
+          fi
 
           # Zero-pad minor/patch/build to the widths required by the versionCode scheme.
           MINOR=$(printf "%02d" "$((10#$MINOR))")
@@ -94,6 +144,11 @@ jobs:
           VERSION_CODE="${MAJOR}${MINOR}${PATCH}${T_DIGIT}${BUILD_PAD}"
           TAG="v${VERSION_NAME}"
 
+          if [ "${#VERSION_CODE}" -ne 8 ]; then
+            echo "::error::versionCode '$VERSION_CODE' is not 8 digits — the AbbCCtDD scheme was violated"
+            exit 1
+          fi
+
           if [ "$TYPE" = "stable" ]; then
             PRERELEASE=false
           else
@@ -106,6 +161,17 @@ jobs:
           echo "prerelease=$PRERELEASE"     >> "$GITHUB_OUTPUT"
 
           echo "Building $TAG (versionCode=$VERSION_CODE)"
+
+      - name: Check the tag is free
+        shell: bash
+        run: |
+          # Fail before spending a build on a version that is already released,
+          # and before the tag push at the end fails and leaves a half-run.
+          if git ls-remote --exit-code --tags origin "refs/tags/${{ steps.v.outputs.tag }}" >/dev/null 2>&1; then
+            echo "::error::Tag ${{ steps.v.outputs.tag }} already exists on origin. Bump the version or delete the tag first."
+            exit 1
+          fi
+          echo "Tag ${{ steps.v.outputs.tag }} is free."
 
       - name: Check for a F-Droid/IzzyOnDroid changelog
         shell: bash
@@ -127,17 +193,15 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
 
+      - name: Run checks
+        run: ./gradlew :app:ktlintCheck :app:testDebugUnitTest
+
       - name: Decode signing keystore
         id: keystore
         env:
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
         shell: bash
         run: |
-          if [ -z "$SIGNING_KEY" ]; then
-            echo "::warning::SIGNING_KEY secret is not set — building with debug key."
-            echo "path=" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
           echo "$SIGNING_KEY" | base64 --decode > "$RUNNER_TEMP/release.jks"
           echo "path=$RUNNER_TEMP/release.jks" >> "$GITHUB_OUTPUT"
 
@@ -165,6 +229,58 @@ jobs:
           cp "$APK_SRC" "$APK_DEST"
           echo "path=$APK_DEST" >> "$GITHUB_OUTPUT"
 
+          MAPPING="app/build/outputs/mapping/release/mapping.txt"
+          if [ -f "$MAPPING" ]; then
+            gzip -c "$MAPPING" > "neer-${{ steps.v.outputs.version_name }}-mapping.txt.gz"
+            echo "mapping=neer-${{ steps.v.outputs.version_name }}-mapping.txt.gz" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::No R8 mapping.txt found — crash reports for this build cannot be deobfuscated"
+          fi
+
+      - name: Verify APK signature
+        shell: bash
+        run: |
+          APKSIGNER=$(find "$ANDROID_HOME/build-tools" -name apksigner -type f | sort -V | tail -n 1)
+          if [ -z "$APKSIGNER" ]; then
+            echo "::error::apksigner not found under $ANDROID_HOME/build-tools"
+            exit 1
+          fi
+
+          "$APKSIGNER" verify --print-certs --verbose "${{ steps.apk.outputs.path }}"
+
+          ACTUAL=$("$APKSIGNER" verify --print-certs "${{ steps.apk.outputs.path }}" \
+            | grep -m1 "certificate SHA-256 digest" | awk '{print $NF}')
+
+          echo "Signing certificate SHA-256: $ACTUAL"
+          if [ "$ACTUAL" != "$EXPECTED_CERT_SHA256" ]; then
+            echo "::error::APK is signed by the wrong certificate."
+            echo "::error::expected $EXPECTED_CERT_SHA256"
+            echo "::error::actual   $ACTUAL"
+            echo "::error::Refusing to publish — IzzyOnDroid/F-Droid would quarantine this build and existing users could not update."
+            exit 1
+          fi
+          echo "Signing certificate matches the registered release key."
+
+      - name: Record build environment
+        id: env
+        shell: bash
+        run: |
+          {
+            echo "env<<EOF"
+            echo "<details><summary>Build environment (for reproducible builds)</summary>"
+            echo
+            echo '```'
+            echo "runner image : $ImageOS ($(. /etc/os-release && echo "$PRETTY_NAME"))"
+            echo "jdk          : $(java -version 2>&1 | head -n 1)"
+            echo "gradle       : $(./gradlew --version | awk '/^Gradle /{print $2}')"
+            echo "agp          : $(grep -E '^agp' gradle/libs.versions.toml | cut -d'"' -f2)"
+            echo "commit       : $GITHUB_SHA"
+            echo '```'
+            echo
+            echo "</details>"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
       - name: Create and push tag
         shell: bash
         run: |
@@ -181,4 +297,7 @@ jobs:
           name: Neer ${{ steps.v.outputs.version_name }}
           prerelease: ${{ steps.v.outputs.prerelease == 'true' }}
           generate_release_notes: true
-          files: ${{ steps.apk.outputs.path }}
+          body: ${{ steps.env.outputs.env }}
+          files: |
+            ${{ steps.apk.outputs.path }}
+            ${{ steps.apk.outputs.mapping }}
