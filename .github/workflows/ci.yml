@@ -1,0 +1,77 @@
+# Build and test every pull request and every push to master.
+#
+# This repo had no CI until now, which is how master reached a state where
+# Gradle could not even configure the project (AGP 9 with the
+# org.jetbrains.kotlin.android plugin, which AGP 9 rejects). The gates below
+# are deliberately limited to checks that pass today, so a red run always
+# means a real regression.
+#
+# Deliberately NOT gated here: the full `lint` task. It currently reports 151
+# errors, 143 of which are MissingTranslation from the partially complete
+# zh-rCN translation (72 of 217 strings). Gating on that would mean a
+# permanently red CI. `assembleRelease` below still runs lintVitalRelease,
+# which covers the fatal-severity checks.
+
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+# A new push to the same ref makes the in-flight run obsolete.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build & test
+    # Pinned to match release.yml, so a green CI run means the same toolchain
+    # the release is built with.
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v7
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5.6.0
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      # Separate invocations so a failure names the gate that broke rather
+      # than one opaque "build failed". The Gradle daemon is reused across
+      # steps, so the extra invocations cost very little.
+      - name: Check formatting
+        run: ./gradlew :app:ktlintCheck
+
+      - name: Unit tests
+        run: ./gradlew :app:testDebugUnitTest
+
+      - name: Assemble debug
+        run: ./gradlew :app:assembleDebug
+
+      - name: Assemble release
+        # Exercises R8/minify and lintVitalRelease — the parts of the release
+        # build most likely to break without anyone noticing until release
+        # day. Debug-signed here, since secrets are not available to forks;
+        # release signing is verified in release.yml.
+        run: ./gradlew :app:assembleRelease
+
+      - name: Upload reports on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: build-reports
+          path: |
+            app/build/reports/
+            app/build/outputs/lint-results-*.html
+          if-no-files-found: ignore
+          retention-days: 7
