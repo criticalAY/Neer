@@ -111,7 +111,20 @@ android {
         compose = true
         buildConfig = true
     }
+
+    // AGP embeds an encrypted dependency tree in the APK signing block that only
+    // Google can read, so nobody else can verify what it contains. F-Droid and
+    // IzzyOnDroid flag it (DEPENDENCY_INFO_BLOCK, 0x504b4453) — leave it out.
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
+    }
+
     packaging {
+        // Stripping debug symbols bakes the local NDK version into the .so files
+        // we ship (androidx.graphics.path, datastore), which breaks reproducible
+        // builds for anyone without that exact NDK. Ship them unstripped instead.
+        jniLibs.keepDebugSymbols.add("**/*.so")
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }

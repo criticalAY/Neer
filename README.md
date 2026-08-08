@@ -17,6 +17,14 @@ Install
 
 </div>
 
+## Releases and signing
+Neer is developed by Ashish Yadav — [hiashish.com](https://hiashish.com/).
+Releases are built, signed, and published by the [release workflow](.github/workflows/release.yml) in this repository.
+
+> **Signing key change in v2.00.00:** the original signing key was lost and had to be replaced.
+> Android will not install an update signed with a different key, so if you have a build older than
+> v2.00.00 you need to uninstall it before you can update and keep receiving future updates.
+
 ## Features
 * Water Intake Reminder: Receive timely notifications reminding you to drink water regularly.
 * Customizable Goals: Set your daily water intake goals based on your preferences and needs.

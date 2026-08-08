@@ -1,0 +1,1 @@
+!! Signing key has changed, so you need to uninstall any previous version to be able to update and receive future updates !!

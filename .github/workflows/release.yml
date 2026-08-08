@@ -107,6 +107,17 @@ jobs:
 
           echo "Building $TAG (versionCode=$VERSION_CODE)"
 
+      - name: Check for a F-Droid/IzzyOnDroid changelog
+        shell: bash
+        run: |
+          CHANGELOG="fastlane/metadata/android/en-US/changelogs/${{ steps.v.outputs.version_code }}.txt"
+          if [ -f "$CHANGELOG" ]; then
+            echo "Found $CHANGELOG:"
+            cat "$CHANGELOG"
+          else
+            echo "::warning::No $CHANGELOG — IzzyOnDroid/F-Droid will show no release notes for this build. Add one and re-run if that matters."
+          fi
+
       - name: Set up JDK 17
         uses: actions/setup-java@v5.6.0
         with:
