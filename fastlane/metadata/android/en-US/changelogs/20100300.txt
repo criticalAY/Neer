@@ -1,0 +1,9 @@
+Maintenance release — no changes to how the app works.
+
+- Now targets Android API 37
+- Release builds no longer embed Google's encrypted dependency-info blob
+- The Gradle distribution used to build Neer is now checksum-pinned
+- The privacy policy documents what data is kept on your device and how to delete it
+- Updated Compose, AndroidX, Kotlin, Hilt and Room
+
+The signing key is unchanged from 2.00.00, so this updates normally.
