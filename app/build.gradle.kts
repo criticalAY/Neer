@@ -71,8 +71,8 @@ android {
         //
         // This ensures the correct ordering between the various types of releases (dev < alpha < beta < release) which is
         // needed for upgrades to be offered correctly.
-        versionCode = overrideVersionCode ?: 20100001
-        versionName = overrideVersionName ?: "2.01.00dev"
+        versionCode = overrideVersionCode ?: 20200001
+        versionName = overrideVersionName ?: "2.02.00dev"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
