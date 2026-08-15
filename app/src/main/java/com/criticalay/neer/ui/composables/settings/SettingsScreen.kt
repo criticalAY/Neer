@@ -100,6 +100,7 @@ fun SettingsScreen(
         ) {
             LaunchedEffect(Unit) {
                 neerEventListener(NeerEvent.TriggerUserEvent(UserEvent.GetUserDetails))
+                neerEventListener(NeerEvent.TriggerBeverageEvent(BeverageEvent.GetTargetAmount))
             }
 
             SectionHeader(
